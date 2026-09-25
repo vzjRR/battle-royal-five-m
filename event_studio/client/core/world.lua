@@ -152,7 +152,7 @@ function World.onExit(data)
         TaskLeaveVehicle(ped, GetVehiclePedIsIn(ped, false), 16)
         Wait(300)
     end
-    if wasEntered then World.restoreWeapons() end
+    if wasEntered or World.snapshot then World.restoreWeapons() end
     if data and data.coords then World.teleport(data.coords, data.heading, true) end
     if bridge().onLeaveEvent then pcall(bridge().onLeaveEvent) end
     if ES.ClientHooks and ES.ClientHooks.onLeaveEvent then pcall(ES.ClientHooks.onLeaveEvent, data) end
@@ -161,4 +161,7 @@ end
 ES.on('teleport', function(d) CreateThread(function() World.teleport(d.coords, d.heading, true) end) end)
 ES.on('freeze', function(d) World.freeze(d.frozen) end)
 ES.on('respawn', function(d) CreateThread(function() World.respawn(d) end) end)
-ES.on('loadout', function(d) World.giveLoadout(d.weapons, d.clear) end)
+ES.on('loadout', function(d)
+    if ES.Client.current and not World.snapshot then World.snapshotWeapons() end
+    World.giveLoadout(d.weapons, d.clear)
+end)

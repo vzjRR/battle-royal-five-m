@@ -152,7 +152,7 @@ SCHEDULED → REGISTRATION → LOBBY → COUNTDOWN → ACTIVE ⇄ PAUSED → FIN
 
 - **One inbound net event**: `es:rpc (name, requestId, payload)`. All client→server traffic goes through `rpc.lua` which applies rate limit → schema → permission → handler. There are no other `RegisterNetEvent` handlers on the server except engine-internal lifecycle events from the Cfx runtime.
 - **One outbound net event**: `es:push (topic, data)` sent only to affected players (instance members + spectators). `es:rpc:res` returns RPC results.
-- **Scoreboard** pushes are throttled per instance (`Config.UI.scoreboardHz`, default 1) and only include changed rows.
+- **Scoreboard** pushes are throttled per instance (`Config.UI.scoreboardHz`, default 1) and only sent when the content changed (change-only; unchanged boards are never re-sent).
 - **Timers** are sent as `remainingMs`; the NUI counts down locally. No per-second messages.
 - **Browser** data is pulled on open.
 - **Routing buckets** from a configurable pool (`Config.General.buckets = { from = 7100, to = 7299 }`), `lockdown = 'relaxed'`, population disabled. Buckets are isolation, **not** a security boundary.

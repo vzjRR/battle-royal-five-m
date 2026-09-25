@@ -58,5 +58,5 @@ Feature branches; each PR updates docs touched by the change (docs are part of D
 ## 8. Debugging
 
 - `set es_debug 1` in server.cfg → verbose logs.
-- `/esdebug` (admin) prints instance table summaries.
+- `eventstudio status` / `eventstudio list` (console or admin) print adapter and instance summaries.
 - NUI: open with F8 → `nui_devtools` (FiveM client) to inspect.

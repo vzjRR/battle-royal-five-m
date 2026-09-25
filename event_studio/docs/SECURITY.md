@@ -27,7 +27,7 @@ RPC.register('admin:instance:stop', {
 | `event:leave` | membership |
 | `event:spectate` | spectators allowed, not a participant, instance live |
 | `action` `checkpoint {index}` | participant active, index == expected (ordered) or unvisited (unordered), server-side ped coords within `radius + tolerance` (default +8 m), time since previous checkpoint ≥ plausible minimum (`distance / maxSpeed`), not paused |
-| `action` `deathHint {killer}` | victim ped health ≤ 0 on the server; killer only accepted if present in the victim's recent damage log (10 s) — otherwise last damager or none |
+| `action` `died {killer}` | victim ped health ≤ 100 (dead) on the server, re-checked once after 750 ms for sync lag; killer only accepted if present in the victim's recent damage log (10 s) — otherwise last damager or none |
 | `action` `answer {choice}` | round open, first answer only, choice in range; correct answer never sent before round closes |
 | `action` `react` | round state; early press = penalty; response time measured on the server |
 | `action` `pickup` / `capture` | never trusted — objectives are computed from server coords each tick |

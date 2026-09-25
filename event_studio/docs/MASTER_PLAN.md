@@ -71,7 +71,7 @@ See EVENT_ENGINE.md. Instance object with participants, teams, components, pause
 
 ## 9. Networking architecture
 
-Single inbound RPC (`es:rpc`), single push channel (`es:push`), targeted to instance members/spectators; throttled scoreboard diffs; client-side countdown from `remainingMs`; bucket pool with relaxed lockdown and no population.
+Single inbound RPC (`es:rpc`), single push channel (`es:push`), targeted to instance members/spectators; throttled change-only scoreboard; client-side countdown from `remainingMs`; bucket pool with relaxed lockdown and no population.
 
 ## 10. UI architecture
 
@@ -115,7 +115,7 @@ TESTING.md. Three layers:
 
 - No client threads unless in an event; component loops start on enter and stop on leave. Marker drawing (per-frame) only for the nearest 1–2 markers within draw distance.
 - Server tick 500 ms; per-instance work O(participants).
-- Push diffs; throttle to 1 Hz; timers client-side.
+- Change-only scoreboard pushes throttled to 1 Hz; timers client-side.
 - Browser pull-based; leaderboards cached 60 s.
 - Storage writes batched at instance end.
 - Profiling plan: `resmon` at idle / lobby / active 8 / active 32 / 3 simultaneous / cleanup; targets idle 0.00 ms, active client < 0.20 ms, server < 0.50 ms per active instance at 32 players.
@@ -220,7 +220,7 @@ resource starts clean · standalone works · ≥1 framework adapter works · adm
 | UI reusable? | Builder generated from schemas; themes. | — |
 | Database necessary & efficient? | Optional; writes at instance end only. | Collapsed 12 candidate tables into 8. |
 | Unnecessary dependencies? | None hard beyond OneSync. | Dropped ox_lib requirement. |
-| Performance acceptable? | Yes by design; to be profiled in Phase 11. | Scoreboard diffs + throttle. |
+| Performance acceptable? | Yes by design; to be profiled in Phase 11. | Change-only scoreboard + throttle. |
 | Understandable code? | Small files, one responsibility each, EVENT_ENGINE doc. | — |
 | Install without source edits? | Yes — config + auto-detect + auto-migrate. | — |
 | Future packs? | Yes — mode folders + data exports. | — |
@@ -230,3 +230,26 @@ Contradictions found and resolved during review:
 1. The brief lists `DRAFT` as an instance state; it is modelled as a definition status because nothing runs in draft.
 2. The brief's `/event` command overlaps `/events`; `/event` is mapped to the admin center (configurable).
 3. Brief requires Discord for security violations and "not mandatory": webhook disabled by default, all logs also go to console/storage.
+
+---
+
+## 26. Implementation status (0.1.0-alpha)
+
+| Phase | Status | Notes |
+|---|---|---|
+| 0 Research · 1 Architecture | ✅ | this document set |
+| 2 Core Event Engine | ✅ | instance state machine, manager, buckets, components; covered by simulation tests |
+| 3 Admin System | ✅ | admin RPCs + Admin Center NUI (dashboard, events, builder, arenas, scheduler, live, tournaments, leaderboard, logs, settings) |
+| 4 Player UI | ✅ | browser, HUD, results, spectator, trivia/reaction panels |
+| 5 Scheduler | ✅ | recurrence rules, rotations, director |
+| 6 Scoring / Leaderboards | ✅ | profiles, season points, stats, personal bests |
+| 7 First Event Pack | ✅ | race, deathmatch, sumo, koth, hunt |
+| 8 Additional Packs | ✅ initial | gungame, ctf, zone_survival, redlight, trivia, reaction, custom |
+| 9 Tournament System | ✅ engine + admin UI | single elimination, round robin, best-of-N |
+| 10 Security Hardening | 🟡 | gateway/validation/ledger done and tested; live-server fuzzing pending |
+| 11 Performance | 🟡 | design targets met by construction; resmon profiling pending (needs live server) |
+| 12 Testing | 🟡 | 64 automated tests pass; in-game matrix (TESTING.md §2) pending |
+| 13 Documentation | ✅ | guides, API, architecture, testing |
+| 14 Commercial Packaging | 🟡 | escrow_ignore prepared; final license text pending (creator) |
+
+Definition-of-Done items that can only be confirmed on a real FXServer (rendering, vehicles, framework money calls, ambulance interplay) are listed in `docs/TESTING.md §2` and are the gate for `0.5.0`.

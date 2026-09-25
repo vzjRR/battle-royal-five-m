@@ -62,6 +62,7 @@ function Instance:addParticipant(src, force)
         p.everActive = true
         p.activeSince = ES.now()
         self:enterWorld(src)
+        self:syncState(src)
         for _, obj in ipairs(self.componentOrder) do
             if obj.onJoin then pcall(obj.onJoin, obj, p) end
         end
@@ -249,6 +250,7 @@ function Instance:rejoin(p, src)
     p.disconnectedAt = nil
     self.participants[src] = p
     self:enterWorld(src)
+    self:syncState(src)
     for _, obj in ipairs(self.componentOrder) do
         if obj.onJoin then pcall(obj.onJoin, obj, p, true) end
     end

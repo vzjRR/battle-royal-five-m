@@ -37,8 +37,9 @@ ES.RegisterClientComponent('combat', {
         if not data.active then return end
         Combat.active = true
         Combat.dead = false
-        ES.World.giveLoadout(data.weapons, true)
         local g = ES.Client.current and ES.Client.current.gameplay or {}
+        if g.restoreWeapons ~= false then ES.World.snapshotWeapons() end -- idempotent; never lose own weapons
+        ES.World.giveLoadout(data.weapons, true)
         local ped = PlayerPedId()
         SetEntityMaxHealth(ped, math.max(200, g.health or 200))
         SetEntityHealth(ped, g.health or 200)

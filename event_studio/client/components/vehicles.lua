@@ -30,6 +30,13 @@ end
 
 local function seat(data)
     CreateThread(function()
+        -- the vehicle only streams in when we are near its spawn point
+        if data.coords then
+            local pos = GetEntityCoords(PlayerPedId())
+            if #(pos - vector3(data.coords.x, data.coords.y, data.coords.z)) > 50.0 then
+                ES.World.teleport(data.coords, data.heading, false)
+            end
+        end
         local veh = vehicleFromNet(data.net)
         if veh == 0 then return end
         local ped = PlayerPedId()

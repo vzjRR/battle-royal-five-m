@@ -58,6 +58,20 @@ ES.RegisterMode('race', {
 })
 ```
 
+### Optional mode flags
+
+| Flag | Effect |
+|---|---|
+| `graceOnFinish` | `inst:finish()` enters FINISHING (grace window) instead of RESULTS |
+| `lastStanding` / `lastTeamStanding` | finish automatically when one player / team remains |
+| `endWhenOneTeamLeft = false` | keep running when only one team has members |
+| `allowRejoin = false` | no reconnect grace for this mode |
+| `personalBests` | store best finish times per definition |
+| `objectiveKey` / `rulesKey` | locale keys shown in HUD / browser |
+| `validate(def)` | extra definition validation (return false, err) |
+| `viability(inst)` | override automatic finishing (return true = keep, false = finish, nil = default) |
+| `onLateJoin`, `onRejoin`, `onResume`, `rowExtra(inst, p)` | extra hooks |
+
 ## 3. Instance API used by modes
 
 | Method | Purpose |

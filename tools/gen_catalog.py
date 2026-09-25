@@ -135,7 +135,7 @@ E = [
 ('Trivia','social','2-64','Solo','Server-timed multiple choice questions','Most points',None,'Correct × points + speed bonus',None,'Easy','Low',None,'V1 · mode `trivia`'),
 ('Reaction Challenge','social','2-64','Solo','Press when signal appears (server-timed); early = penalty','Fastest average',None,'Reaction points',None,'Easy','Low',None,'V1 · mode `reaction`'),
 ('Quick Draw','social','2-16','Solo','Duel: draw & fire on signal','Fastest valid shot',None,'Round wins','reaction + combat','Medium','Medium',None,'V2'),
-('Memory Challenge','social','2-64','Solo','Remember sequence shown by server','Most correct',None,'Correct answers','trivia engine (sequence questions)','Easy','Low',None,'V1 · `trivia` (sequence question type) partial; V2 dedicated'),
+('Memory Challenge','social','2-64','Solo','Remember sequence shown by server','Most correct',None,'Correct answers','trivia engine (sequence questions)','Easy','Low',None,'V2 · sequence question type for `trivia`'),
 ('Guessing Challenge','social','2-64','Solo','Guess a number/value, closest wins','Closest answers',None,'Closeness points','trivia engine (numeric)','Easy','Low',None,'V1 · `trivia` (`numeric` question type)'),
 ('Random Mini Challenge','social','2-64','Solo','Rotation of short social modes','Challenge winner',None,'Per challenge','director','Easy','Low',None,'V1 · director'),
 ('Staff Challenge','social','2-64','Solo','Staff-hosted with manual scoring via admin panel','Staff decision',None,'Manual points (audited)','admin manual scoring','Easy','Low','Staff abuse (audit logged)','V1 · mode `custom` (manual)'),

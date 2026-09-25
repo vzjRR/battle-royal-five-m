@@ -323,6 +323,8 @@ enter[S.LOBBY] = function(self)
             self:enterWorld(p.src)
         end
     end
+    -- clients learn they are in an event (weapon snapshot etc.) before any loadout/vehicle arrives
+    self:syncState()
     if self.mode.setup then self.mode.setup(self) end
     for _, p in pairs(self.participants) do
         if p.status == 'active' then

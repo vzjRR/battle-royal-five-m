@@ -4,7 +4,7 @@
 
 > Status: **V1** = playable in V1 via the named mode · **V2** = architecture-ready, needs a new component/option · **Future** = later expansion.
 
-**Totals:** 119 events · V1 80 · V2 32 · Future 7
+**Totals:** 119 events · V1 79 · V2 33 · Future 7
 
 ## V1 modes (the reusable engine modes)
 
@@ -19,7 +19,7 @@
 | `zone_survival` | survival | zones(shrink), combat, bounds, spawns | 6 |
 | `hunt` | hunt | checkpoints(unordered/hidden), spawns | 9 |
 | `redlight` | social | zones(finish), server displacement check | 2 |
-| `trivia` | social | server rounds, NUI input | 3 |
+| `trivia` | social | server rounds, NUI input | 2 |
 | `reaction` | social | server rounds, NUI input | 1 |
 | `custom` | social / any | manual scoring by staff, API scoring | 1 |
 
@@ -1875,7 +1875,7 @@
 | Potential exploits | answer sniffing, auto-clickers, timing spoofing |
 | Status | V2 |
 
-### 103. Memory Challenge  ·  **V1**
+### 103. Memory Challenge  ·  **V2**
 
 | Field | Value |
 |---|---|
@@ -1891,7 +1891,7 @@
 | Difficulty (player) | Easy |
 | Development complexity | Low |
 | Potential exploits | answer sniffing, auto-clickers, timing spoofing |
-| Status | V1 · `trivia` (sequence question type) partial; V2 dedicated |
+| Status | V2 · sequence question type for `trivia` |
 
 ### 104. Guessing Challenge  ·  **V1**
 
