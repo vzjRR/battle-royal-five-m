@@ -121,7 +121,9 @@ function validate(value, spec, path)
     if value == nil then
         if spec.default ~= nil then return true, U.deepCopy(spec.default) end
         if spec.optional then return true, nil end
+        if spec.type == 'object' and spec.fields then value = {} else
         return false, (path ~= '' and path .. ': ' or '') .. 'required'
+        end
     end
     local fn = validators[spec.type]
     if not fn then return false, (path .. ': unknown schema type ' .. tostring(spec.type)) end

@@ -77,6 +77,7 @@ function Manager.join(src, id, force)
     if not inst then return false, 'not_found' end
     local current = Manager.byPlayer[src]
     if current and current ~= inst then return false, 'in_other_event' end
+    if current == inst and inst.participants[src] then return false, 'already_joined' end
     if not force then
         local last = Manager.lastJoin[src]
         if last and os.time() - last < (Config.General.joinCooldown or 0) then return false, 'cooldown' end
