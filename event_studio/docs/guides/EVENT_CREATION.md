@@ -12,7 +12,7 @@ There are three levels, from easiest to most powerful:
 ES.Definition({
     id = 'pier_pistol_duel',            -- unique, [a-z0-9_-]
     name = 'Pier Pistol Duel',
-    mode = 'deathmatch',                -- race | deathmatch | gungame | sumo | koth | ctf | zone_survival | hunt | redlight | trivia | reaction | custom
+    mode = 'deathmatch',                -- race | deathmatch | gungame | sumo | koth | ctf | zone_survival | hunt | redlight | trivia | reaction | custom | juggernaut | vip | hunters | keep_moving | musical_chairs
     arena = 'docks_yard',               -- arena id (not needed for trivia/reaction/custom)
     description = '1v1, first to three rounds.',
     category = 'combat',                -- optional (defaults to the mode's category)
@@ -50,6 +50,11 @@ Anything you leave out comes from `Config.General.definitionDefaults`. Definitio
 | trivia | questionSet, questions, count, secondsPerQuestion, pointsCorrect, speedBonus, shuffle |
 | reaction | rounds, minDelay, maxDelay, earlyPenalty, points, windowMs |
 | custom | teleport, weapons, vehicle, instructions |
+| juggernaut | juggernautHealth, juggernautArmor, juggernautWeapons, attackerWeapons, passOnKill, pointsPerSecond, juggernautKillPoints, takedownPoints, scoreTarget, respawnDelay |
+| vip | rounds, swapSides, roundSeconds, vipHealth, vipWeapons, weapons, respawnDelay (arena needs `teamSpawns` + `finish`) |
+| hunters | hunterRatio, infect, hunterWeapons, runnerWeapons, runnerPointsPerSecond, catchPoints, surviveBonus, hunterReleaseSeconds |
+| keep_moving | vehicle, minKmh, increaseKmh, increaseEvery, graceSeconds, startGrace, eliminateOnWreck (arena needs `vehicleSpawns`) |
+| musical_chairs | musicMin, musicMax, seatSeconds, chairRadius, spread |
 
 ## 2. Arena
 

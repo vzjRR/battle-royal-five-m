@@ -1,5 +1,5 @@
 -- EVENT STUDIO — shared namespace
--- Creator: vzjRR
+-- Publisher: Krovix Store
 
 ES = ES or {}
 ES.name = 'event_studio'

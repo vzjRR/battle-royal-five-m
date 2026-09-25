@@ -1,6 +1,6 @@
 # EVENT STUDIO — Research
 
-> Phase 0 output. Author: vzjRR. Status: complete for V1 planning.
+> Phase 0 output. Author: Krovix Store. Status: complete for V1 planning.
 >
 > Every finding below is tagged:
 > - **[INSPIRATION]** — a mechanic or idea seen elsewhere (GTA Online, other games, other resources). Concept only; no code, UI or text is copied.

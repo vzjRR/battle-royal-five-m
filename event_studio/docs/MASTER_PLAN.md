@@ -1,6 +1,6 @@
 # EVENT STUDIO — Master Plan
 
-> Product owner / creator: **vzjRR** · Version target: `0.1.0-alpha` → `1.0.0`
+> Product owner / publisher: **Krovix Store** · Version target: `0.1.0-alpha` → `1.0.0`
 > Companion documents: [RESEARCH](RESEARCH.md) · [ARCHITECTURE](ARCHITECTURE.md) · [EVENT_ENGINE](EVENT_ENGINE.md) · [EVENT_CATALOG](EVENT_CATALOG.md) · [SECURITY](SECURITY.md) · [DATABASE](DATABASE.md) · [API](API.md) · [DEVELOPMENT](DEVELOPMENT.md) · [TESTING](TESTING.md)
 
 ---
@@ -91,7 +91,7 @@ Full plan: [PROTECTION.md](PROTECTION.md). Summary of the researched, platform-c
 
 | Goal | Mechanism |
 |---|---|
-| Only servers approved by vzjRR can run it | **Cfx Asset Escrow**: the entitlement is checked against the server's license key before decryption. Customers are approved through **Tebex** (checkout or **manual payments**). |
+| Only servers approved by Krovix Store can run it | **Cfx Asset Escrow**: the entitlement is checked against the server's license key before decryption. Customers are approved through **Tebex** (checkout or **manual payments**). |
 | Revoke a customer | Sell as a **Tebex subscription**: access ends with the subscription (PLA §6.3(ii)). One-time sales are irrevocable (PLA §6.3(i)). |
 | Core cannot be read or edited | Escrow encrypts all Lua; server code is only decrypted in memory. Editable surface = `config/**`, `locales`, `web/themes`, `integrations/custom`, `migrations`. |
 | Client/NUI copying is worthless | Server-authoritative architecture: no rules, scoring, rewards or admin logic on the client; NUI is a view. |
@@ -273,11 +273,11 @@ Contradictions found and resolved during review:
 | 5 Scheduler | ✅ | recurrence rules, rotations, director |
 | 6 Scoring / Leaderboards | ✅ | profiles, season points, stats, personal bests |
 | 7 First Event Pack | ✅ | race, deathmatch, sumo, koth, hunt |
-| 8 Additional Packs | ✅ initial | gungame, ctf, zone_survival, redlight, trivia, reaction, custom |
+| 8 Additional Packs | ✅ | gungame, ctf, zone_survival, redlight, trivia, reaction, custom; V2 pack: roles component + juggernaut, vip, hunters, keep_moving, musical_chairs |
 | 9 Tournament System | ✅ engine + admin UI | single elimination, round robin, best-of-N |
-| 10 Security Hardening | 🟡 | gateway/validation/ledger done and tested; live-server fuzzing pending |
-| 11 Performance | 🟡 | design targets met by construction; resmon profiling pending (needs live server) |
-| 12 Testing | 🟡 | 64 automated tests pass; in-game matrix (TESTING.md §2) pending |
+| 10 Security Hardening | 🟡 | gateway/validation/ledger done; offline fuzzing of every RPC and every mode (test_fuzz.lua) passes; live-server checks pending |
+| 11 Performance | 🟡 | offline benchmark (tests/bench.lua): ≤ 0.17 ms Lua per 500 ms tick at 64 players / 3 events, 0 when idle; resmon on a live server pending |
+| 12 Testing | 🟡 | 90 automated tests pass (unit, simulation, fuzzing) + offline tick benchmark; in-game matrix (TESTING.md §2) pending |
 | 13 Documentation | ✅ | guides, API, architecture, testing |
 | 14 Commercial Packaging | 🟡 | protection plan (PROTECTION.md) + release builder with compliance checks done; Cfx Portal upload, Tebex packages and final EULA pending (creator) |
 

@@ -223,6 +223,7 @@ function SetVehicleColours() end
 function SetEntityOrphanMode() end
 function SetPedIntoVehicle(ped, veh) local src = pedOwner(ped) if src then Sim.players[src].vehicle = veh end end
 function GetVehiclePedIsIn(ped) local src = pedOwner(ped) return src and Sim.players[src].vehicle or 0 end
+function GetEntityVelocity(ent) local v = Sim.vehicles[ent] return v and v.vel or { x = 0.0, y = 0.0, z = 0.0 } end
 function GetVehicleEngineHealth(veh) return Sim.vehicles[veh] and Sim.vehicles[veh].engine or -4000.0 end
 function SetRoutingBucketPopulationEnabled() end
 function SetRoutingBucketEntityLockdownMode() end

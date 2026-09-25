@@ -19,7 +19,13 @@ ES_VERBOSE=1 lua5.4 tests/run.lua
 | `test_sim_race.lua` | full race at **1, 2, 4, 8, 16, 32, 64 players** (buckets, vehicles, results, rewards, cleanup, return positions), checkpoint validation (order/distance/speed), elimination race, leaving mid-race |
 | `test_sim_combat.lua` | kill counting, spoofed killer hints, fake death hints, damage filter (whitelist, cross-instance, outsiders, friendly fire), LMS, TDM, disconnect + reconnect within grace, grace expiry, crash-recovery return point |
 | `test_sim_modes.lua` | sumo, derby, KOTH, domination, CTF, zone survival, hidden hunt (no coordinate leak), red light, trivia (answers hidden), reaction, gun game, duel rounds, staff manual scoring |
+| `test_sim_v2.lua` | juggernaut (role health, role passing, time scoring), Protect the VIP (extraction, VIP kill, timeout, rounds), hunters vs runners (head start, infection, survivor bonus), keep moving (speed check, grace), musical chairs (N-1 chairs, closest to the center keeps the chair) |
+| `test_fuzz.lua` | every RPC × 60 hostile payloads as a player (no errors, no privilege leak) and × 40 as an admin; 300 random actions in each of 17 modes (no errors, no fake kills or finishes). `ES_SEED=n` changes the seed |
 | `test_sim_platform.lua` | RPC fuzzing, rate limiting, permissions & roles, confirmation, builder validation & persistence, join rules, payout ledger idempotency, parallel isolated instances, pause clock, resource stop cleanup, scheduler auto-creation, director, tournament end-to-end, browser visibility |
+
+Offline tick benchmark (not a test): `lua5.4 tests/bench.lua`.
+
+CI: `.github/workflows/test.yml` runs the syntax check, all tests and the release guard on every push.
 
 Syntax check of every Lua file (client included):
 

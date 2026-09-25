@@ -41,6 +41,17 @@ ES.on('scoreboard', function(data)
     if ES.Spectator and ES.Spectator.active then ES.Spectator.refreshTargets() end
 end)
 
+ES.on('role', function(d)
+    Client.role = d
+    local ped = PlayerPedId()
+    if d.health then
+        SetEntityMaxHealth(ped, math.max(200, d.health))
+        SetEntityHealth(ped, d.health)
+    end
+    if d.armor then SetPedArmour(ped, d.armor) end
+    ES.NUI.send('role', d)
+end)
+
 ES.on('announce', function(d) ES.NUI.send('toast', d) end)
 ES.on('notify', function(d) ES.NUI.send('toast', d) end)
 ES.on('results', function(d) ES.NUI.send('results', d) end)
@@ -60,6 +71,7 @@ ES.on('left', function(d)
     local wasIn = Client.current ~= nil
     Client.current = nil
     Client.rows = {}
+    Client.role = nil
     LocalPlayer.state:set('es:clientEvent', false, false)
     clearComponents()
     if ES.Spectator then ES.Spectator.stop(true) end

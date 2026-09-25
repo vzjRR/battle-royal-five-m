@@ -68,7 +68,7 @@ function Spawns:respawn(p, point)
     local g = self.inst.def.gameplay
     self.inst:push(p, 'respawn', {
         coords = { x = point.x, y = point.y, z = point.z }, heading = point.w or 0.0,
-        health = g.health, armor = g.armor, protectionMs = self.protectionMs,
+        health = p.healthOverride or g.health, armor = p.armorOverride or g.armor, protectionMs = self.protectionMs,
     })
 end
 

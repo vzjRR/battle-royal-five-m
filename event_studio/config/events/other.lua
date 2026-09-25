@@ -136,3 +136,41 @@ ES.Definition({
     options = { instructions = 'Listen to the host. Points are awarded by staff.' },
     scoring = 'casual',
 })
+
+-- V2 PACK (roles, speed, social) ----------------------------------------
+
+ES.Definition({
+    id = 'juggernaut_docks', name = 'Juggernaut', mode = 'juggernaut', arena = 'docks_yard',
+    description = 'One armoured Juggernaut vs everyone. Kill the Juggernaut to become the Juggernaut.',
+    players = { min = 3, max = 16 }, timing = { registration = 150, duration = 600 },
+    rewards = podium,
+})
+
+ES.Definition({
+    id = 'protect_the_vip', name = 'Protect the VIP', mode = 'vip', arena = 'sandy_airfield',
+    description = 'Escort the VIP to the extraction point at Bravo. Best of three, sides swap.',
+    players = { min = 4, max = 16, teams = { count = 2, auto = true } }, timing = { registration = 180, duration = 1200 },
+    rewards = { placement = { [1] = { { type = 'cash', amount = 6000 } } }, participation = { { type = 'cash', amount = 500 } } },
+})
+
+ES.Definition({
+    id = 'hunters_vs_runners', name = 'Hunters vs Runners', mode = 'hunters', arena = 'docks_yard',
+    description = 'The hunters get knives and pistols. Runners get a head start and nothing else.',
+    players = { min = 4, max = 24 }, timing = { registration = 150, duration = 300 },
+    scoring = 'casual', rewards = podium,
+})
+
+ES.Definition({
+    id = 'keep_moving_airport', name = 'Keep Moving', mode = 'keep_moving', arena = 'lsia_time_trial',
+    category = 'vehicle',
+    description = 'Stay above the minimum speed. It goes up every 45 seconds.',
+    players = { min = 2, max = 4 }, timing = { registration = 120, duration = 480 },
+    rewards = podium,
+})
+
+ES.Definition({
+    id = 'musical_chairs', name = 'Musical Chairs', mode = 'musical_chairs', arena = 'lsia_runway_field',
+    description = 'When the music stops, grab a chair. One chair too few, every round.',
+    players = { min = 3, max = 16 }, timing = { registration = 120, duration = 600 },
+    scoring = 'casual', rewards = podium,
+})

@@ -326,7 +326,7 @@ function settings() {
     return h('div.scroll.pad', h('div.box', h('div.pad.kv',
         h('span', t('version')), h('b', d.version), h('span', t('role')), h('b', d.role || '—'), h('span', t('framework')), h('b', `${d.framework} (items: ${d.inventory})`),
         h('span', t('storage')), h('b', d.storage), h('span', t('season')), h('b', d.season), h('span', t('director')), h('b', d.director ? t('enabled') : t('disabled')),
-        h('span', t('mode')), h('b', d.modes.map((m) => m.id).join(', ')), h('span', 'Author'), h('b', 'vzjRR'))),
+        h('span', t('mode')), h('b', d.modes.map((m) => m.id).join(', ')), h('span', 'Publisher'), h('b', 'Krovix Store'))),
         h('div.box', { style: { marginTop: '14px' } }, h('div.box-head', 'Permissions'), h('div.pad.row', { style: { flexWrap: 'wrap' } },
             Object.keys(d.perms).sort().map((p) => h('span.chip.open', p)))),
         h('p.faint', { style: { marginTop: '14px' } }, 'Configuration lives in config/*.lua. Themes: web/themes/*.css. See docs/guides for details.'));

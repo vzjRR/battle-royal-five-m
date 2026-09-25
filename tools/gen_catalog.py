@@ -51,7 +51,7 @@ E = [
 ('Vehicle Push','vehicle','2-8','2 teams','Push a heavy object/vehicle into goal zone','Object reaches enemy goal','Opponent scores','Goals',None,'Hard','High','Physics desync of pushed entity','V2 · needs networked physics object ownership handling'),
 ('Vehicle Survival','vehicle','1-16','Solo','Survive in vehicle vs hazards / shrinking zone','Last alive',None,'Survival time points','vehicles, zones, eliminations','Medium','Medium',None,'V1 · mode `zone_survival` (`requireVehicle=true`)'),
 ('Checkpoint Destruction','vehicle','2-16','2 teams','Destroy enemy props/targets with vehicles','Destroy all first',None,'Objective points','vehicles, destructible objectives','Hard','High','Fake destruction events','V2'),
-('Hot Vehicle / Keep Moving','vehicle','2-16','Solo','Must stay above speed threshold (server-side velocity check) or be eliminated','Last moving',None,'Survival time','vehicles, server velocity check, eliminations','Medium','Medium',None,'V2 · component `speedGate`'),
+('Hot Vehicle / Keep Moving','vehicle','2-16','Solo','Must stay above a rising speed threshold (server-side velocity check) or be eliminated','Last moving',None,'Seconds above the limit','vehicles, server velocity check, eliminations','Medium','Medium',None,'V1 · mode `keep_moving`'),
 ('Delivery Under Pressure','vehicle','1-8','Solo/teams','Deliver a vehicle to destination without exceeding damage','Delivered first with health above threshold',None,'Time + health bonus','vehicles, checkpoints, health check','Medium','Medium',None,'V2'),
 ('Escort Vehicle','vehicle','4-16','2 teams','Defenders escort a slow vehicle to destination; attackers stop it','Vehicle reaches destination / destroyed',None,'Objective','vehicles, roles, checkpoints, combat','Hard','High',None,'Future'),
 ('Vehicle Protection','vehicle','4-16','2 teams','Protect a parked vehicle for time','Vehicle survives / destroyed',None,'Objective','vehicles, roles, combat','Medium','Medium',None,'V2'),
@@ -73,11 +73,11 @@ E = [
 ('Elimination Tournament','combat','4-64','Solo','Bracket of duels/LMS matches','Tournament winner',None,'Tournament placement',None,'Medium','Medium',None,'V1 · tournament (single elimination) of `duel`'),
 ('Duel','combat','2','Solo','1v1, rounds, one life','Best of N rounds',None,'Round wins',None,'Easy','Low',None,'V1 · `deathmatch` preset `pistol_duel` (min=max=2, rounds)'),
 ('Team Elimination','combat','4-32','2 teams','Elimination rounds, no respawn','Round wins',None,'Round wins',None,'Easy','Low',None,'V1 · `deathmatch` (teams, lives=1)'),
-('Juggernaut','combat','4-24','Juggernaut vs team','One heavily armoured player vs attackers','Kill juggernaut / juggernaut survives',None,'Role-based points','combat, roles','Medium','Medium',None,'V2 · needs roles component'),
-('Hunter vs Runners','combat','4-24','2 roles','Runners survive/escape, hunters eliminate','Runners survive / all caught',None,'Role points','roles, combat, checkpoints','Medium','Medium',None,'V2'),
+('Juggernaut','combat','3-24','Juggernaut vs everyone','One heavily armoured player vs attackers; killer takes the role','Most points (time as Juggernaut + takedowns)',None,'Role-based points','combat, roles','Medium','Medium',None,'V1 · mode `juggernaut`'),
+('Hunter vs Runners','combat','3-24','2 roles','Runners survive with a head start, hunters catch; optional infection','Runners survive / all caught',None,'Survival seconds, catches, survive bonus','roles, combat','Medium','Medium',None,'V1 · mode `hunters`'),
 ('Assassin Hunt','combat','4-32','Solo','Each player assigned a secret target','Most valid assassinations',None,'Valid target kills +, wrong kills −','combat, roles, secret assignment','Medium','Medium','Target leaks (server only sends own target)','V2'),
 ('Bounty Hunt','combat','4-32','Solo','Leader carries bounty, visible on map','Most bounty points',None,'Bounty kills','combat, roles, blips','Medium','Medium',None,'V2'),
-('Protect the VIP','combat','6-24','2 teams','VIP must reach extraction / survive','VIP extracted / killed',None,'Objective','roles, combat, checkpoints','Hard','Medium',None,'V2'),
+('Protect the VIP','combat','2-24','2 teams','Bodyguards escort the VIP to extraction; attackers hunt the VIP; rounds with side swap','VIP extracted / killed / timeout',None,'Round wins','roles, combat, zones','Hard','Medium',None,'V1 · mode `vip`'),
 # OBJECTIVE
 ('Capture the Flag','objective','4-32','2 teams','Grab enemy flag at base, return to own base while own flag home','Capture target / most caps',None,'Captures ×points; returns, carrier kills',None,'Medium','Medium',None,'V1 · mode `ctf`'),
 ('Capture Point','objective','2-32','Solo/teams','Single zone; capture progress by occupancy','Hold target reached',None,'Points per second held',None,'Easy','Low',None,'V1 · mode `koth`'),
@@ -127,7 +127,7 @@ E = [
 ('Balance Challenge','obstacle','1-16','Solo','Stay on narrow structure longest','Last on structure',None,'Survival time','bounds (z/height)','Easy','Low',None,'V2 · on-foot bounds (height) preset'),
 ('Skill Course','obstacle','1-16','Solo','Mixed checkpoint course','Fastest finish',None,'Placement',None,'Medium','Low',None,'V1 · `race`'),
 # SOCIAL
-('Musical Chairs','social','3-32','Solo','Music stops → reach one of N-1 zones (server occupancy)','Last remaining','Not in a zone when round ends','Placement by elimination order','zones, rounds','Easy','Medium',None,'V2'),
+('Musical Chairs','social','2-32','Solo','Music stops → reach one of N-1 chairs (server occupancy, closest to center keeps it)','Last remaining','No chair when the round ends','Placement by elimination order','zones, rounds','Easy','Medium',None,'V1 · mode `musical_chairs`'),
 ('Random Challenge','social','2-64','Solo','Director picks a random quick challenge','Challenge winner',None,'Per challenge','director, social modes','Easy','Low',None,'V1 · director with social pool'),
 ('Simon Says','social','3-32','Solo','Host issues commands; failures eliminated','Last remaining',None,'Placement','host tools, rounds','Easy','Medium','Host bias (social)','V2'),
 ('Freeze / Movement Challenge','social','2-64','Solo','Don\'t move for N seconds (server coords)','Last remaining',None,'Placement',None,'Easy','Low',None,'V1 · mode `redlight` (always red)'),
@@ -184,6 +184,11 @@ modes = [
  ('trivia','social','server rounds, NUI input'),
  ('reaction','social','server rounds, NUI input'),
  ('custom','social / any','manual scoring by staff, API scoring'),
+ ('juggernaut','combat','roles, combat, spawns'),
+ ('vip','combat','teams, roles, combat, zones'),
+ ('hunters','combat','roles, combat, spawns'),
+ ('keep_moving','vehicle','vehicles, server velocity, bounds'),
+ ('musical_chairs','social','dynamic zones, rounds'),
 ]
 for m,c,comp in modes:
     served = sum(1 for e in E if f'`{m}`' in e[12] and status_tag(e[12])=='V1')

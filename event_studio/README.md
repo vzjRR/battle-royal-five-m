@@ -2,13 +2,13 @@
 
 **An event & competition platform for FiveM servers.** Create, schedule, run, watch, score and reward recurring events (races, PvP, objectives, survival, hunts, obstacle courses, social games and tournaments) from one resource.
 
-Creator: **vzjRR** · Version: **0.1.0-alpha** · Frameworks: **Standalone, ESX, QBCore, Qbox**
+By **Krovix Store** · Version: **0.1.0-alpha** · Frameworks: **Standalone, ESX, QBCore, Qbox**
 
 ---
 
 ## Highlights
 
-- **One event engine, 12 modes, 36 ready-made presets.** Modes: race, deathmatch, gun game, sumo/derby, king of the hill/domination, capture the flag, zone survival, hunt/scavenger, red light green light, trivia, reaction, custom (staff-hosted). Between them they cover 79 of the 119 event types in the [catalog](docs/EVENT_CATALOG.md).
+- **One event engine, 17 modes, 41 ready-made presets.** Modes: race, deathmatch, gun game, sumo/derby, king of the hill/domination, capture the flag, zone survival, hunt/scavenger, red light green light, trivia, reaction, custom (staff-hosted), juggernaut, protect the VIP, hunters vs runners, keep moving, musical chairs. Between them they cover 84 of the 119 event types in the [catalog](docs/EVENT_CATALOG.md).
 - **Several events at once.** Each event runs in its own routing bucket, with no traffic or peds and its own vehicles.
 - **The server decides everything.** Checkpoints are checked against the server's own positions and travel times. Kills come from a server-side damage log. Zones, bounds and red-light movement are computed on the server. Every payout passes through a ledger that blocks duplicates. There is a single network entry point with rate limiting, input validation and permission checks.
 - **Admin Center (in game):** dashboard, event builder whose forms come from each mode's options, arena editor ("add point at my position"), scheduler with rotations, live control (start, pause, force-finish, cancel, restart, spectate, add/remove/teleport/reset/disqualify players, announce, manual score), tournaments, leaderboards, logs.

@@ -41,9 +41,11 @@ ES.RegisterClientComponent('combat', {
         if g.restoreWeapons ~= false then ES.World.snapshotWeapons() end -- idempotent; never lose own weapons
         ES.World.giveLoadout(data.weapons, true)
         local ped = PlayerPedId()
-        SetEntityMaxHealth(ped, math.max(200, g.health or 200))
-        SetEntityHealth(ped, g.health or 200)
-        SetPedArmour(ped, g.armor or 0)
+        local r = ES.Client.role or {}
+        local hp, armor = r.health or g.health or 200, r.armor or g.armor or 0
+        SetEntityMaxHealth(ped, math.max(200, hp))
+        SetEntityHealth(ped, hp)
+        SetPedArmour(ped, armor)
         SetCanAttackFriendly(ped, true, false)
         NetworkSetFriendlyFireOption(true)
         watch()

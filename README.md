@@ -1,6 +1,6 @@
 # EVENT STUDIO
 
-A standalone, commercial event & competition platform for FiveM, by **vzjRR**.
+A standalone, commercial event & competition platform for FiveM, by **Krovix Store**.
 
 The resource lives in [`event_studio/`](event_studio/). Start with [`event_studio/README.md`](event_studio/README.md).
 

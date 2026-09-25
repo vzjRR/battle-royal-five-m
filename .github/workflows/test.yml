@@ -1,0 +1,19 @@
+name: tests
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install Lua 5.4
+        run: sudo apt-get update && sudo apt-get install -y lua5.4
+      - name: Lua syntax check (server + client)
+        run: find event_studio -name '*.lua' -print0 | xargs -0 -n1 luac5.4 -p
+      - name: Unit + simulation tests
+        run: lua5.4 event_studio/tests/run.lua
+      - name: Release build guard
+        run: python3 tools/build_release.py --no-zip --skip-tests

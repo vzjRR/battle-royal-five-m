@@ -4,7 +4,7 @@
 
 > Status: **V1** = playable in V1 via the named mode · **V2** = architecture-ready, needs a new component/option · **Future** = later expansion.
 
-**Totals:** 119 events · V1 79 · V2 33 · Future 7
+**Totals:** 119 events · V1 84 · V2 28 · Future 7
 
 ## V1 modes (the reusable engine modes)
 
@@ -22,6 +22,11 @@
 | `trivia` | social | server rounds, NUI input | 2 |
 | `reaction` | social | server rounds, NUI input | 1 |
 | `custom` | social / any | manual scoring by staff, API scoring | 1 |
+| `juggernaut` | combat | roles, combat, spawns | 1 |
+| `vip` | combat | teams, roles, combat, zones | 1 |
+| `hunters` | combat | roles, combat, spawns | 1 |
+| `keep_moving` | vehicle | vehicles, server velocity, bounds | 1 |
+| `musical_chairs` | social | dynamic zones, rounds | 1 |
 
 ## Racing
 
@@ -459,23 +464,23 @@
 | Potential exploits | Fake destruction events |
 | Status | V2 |
 
-### 25. Hot Vehicle / Keep Moving  ·  **V2**
+### 25. Hot Vehicle / Keep Moving  ·  **V1**
 
 | Field | Value |
 |---|---|
 | Category | Vehicle Competitions |
 | Players | 2-16 |
 | Teams | Solo |
-| Core mechanic | Must stay above speed threshold (server-side velocity check) or be eliminated |
+| Core mechanic | Must stay above a rising speed threshold (server-side velocity check) or be eliminated |
 | Win condition | Last moving |
 | Lose condition | eliminated (out of bounds / wrecked) |
-| Scoring | Survival time |
+| Scoring | Seconds above the limit |
 | Required systems | vehicles, server velocity check, eliminations |
 | Dependencies | OneSync; vehicles |
 | Difficulty (player) | Medium |
 | Development complexity | Medium |
 | Potential exploits | god-mode vehicle, handling mods, leaving vehicle, teleport |
-| Status | V2 · component `speedGate` |
+| Status | V1 · mode `keep_moving` |
 
 ### 26. Delivery Under Pressure  ·  **V2**
 
@@ -839,15 +844,15 @@
 | Potential exploits | fake kills, god mode, weapon spawning, aimbot (out of scope: anticheat) |
 | Status | V1 · `deathmatch` (teams, lives=1) |
 
-### 46. Juggernaut  ·  **V2**
+### 46. Juggernaut  ·  **V1**
 
 | Field | Value |
 |---|---|
 | Category | Combat / PvP |
-| Players | 4-24 |
-| Teams | Juggernaut vs team |
-| Core mechanic | One heavily armoured player vs attackers |
-| Win condition | Kill juggernaut / juggernaut survives |
+| Players | 3-24 |
+| Teams | Juggernaut vs everyone |
+| Core mechanic | One heavily armoured player vs attackers; killer takes the role |
+| Win condition | Most points (time as Juggernaut + takedowns) |
 | Lose condition | out of lives / lower score at time |
 | Scoring | Role-based points |
 | Required systems | combat, roles |
@@ -855,25 +860,25 @@
 | Difficulty (player) | Medium |
 | Development complexity | Medium |
 | Potential exploits | fake kills, god mode, weapon spawning, aimbot (out of scope: anticheat) |
-| Status | V2 · needs roles component |
+| Status | V1 · mode `juggernaut` |
 
-### 47. Hunter vs Runners  ·  **V2**
+### 47. Hunter vs Runners  ·  **V1**
 
 | Field | Value |
 |---|---|
 | Category | Combat / PvP |
-| Players | 4-24 |
+| Players | 3-24 |
 | Teams | 2 roles |
-| Core mechanic | Runners survive/escape, hunters eliminate |
+| Core mechanic | Runners survive with a head start, hunters catch; optional infection |
 | Win condition | Runners survive / all caught |
 | Lose condition | out of lives / lower score at time |
-| Scoring | Role points |
-| Required systems | roles, combat, checkpoints |
+| Scoring | Survival seconds, catches, survive bonus |
+| Required systems | roles, combat |
 | Dependencies | OneSync; weapons |
 | Difficulty (player) | Medium |
 | Development complexity | Medium |
 | Potential exploits | fake kills, god mode, weapon spawning, aimbot (out of scope: anticheat) |
-| Status | V2 |
+| Status | V1 · mode `hunters` |
 
 ### 48. Assassin Hunt  ·  **V2**
 
@@ -911,23 +916,23 @@
 | Potential exploits | fake kills, god mode, weapon spawning, aimbot (out of scope: anticheat) |
 | Status | V2 |
 
-### 50. Protect the VIP  ·  **V2**
+### 50. Protect the VIP  ·  **V1**
 
 | Field | Value |
 |---|---|
 | Category | Combat / PvP |
-| Players | 6-24 |
+| Players | 2-24 |
 | Teams | 2 teams |
-| Core mechanic | VIP must reach extraction / survive |
-| Win condition | VIP extracted / killed |
+| Core mechanic | Bodyguards escort the VIP to extraction; attackers hunt the VIP; rounds with side swap |
+| Win condition | VIP extracted / killed / timeout |
 | Lose condition | out of lives / lower score at time |
-| Scoring | Objective |
-| Required systems | roles, combat, checkpoints |
+| Scoring | Round wins |
+| Required systems | roles, combat, zones |
 | Dependencies | OneSync; weapons |
 | Difficulty (player) | Hard |
 | Development complexity | Medium |
 | Potential exploits | fake kills, god mode, weapon spawning, aimbot (out of scope: anticheat) |
-| Status | V2 |
+| Status | V1 · mode `vip` |
 
 ## Objective / Team Modes
 
@@ -1731,23 +1736,23 @@
 
 ## Social / Fun
 
-### 95. Musical Chairs  ·  **V2**
+### 95. Musical Chairs  ·  **V1**
 
 | Field | Value |
 |---|---|
 | Category | Social / Fun |
-| Players | 3-32 |
+| Players | 2-32 |
 | Teams | Solo |
-| Core mechanic | Music stops → reach one of N-1 zones (server occupancy) |
+| Core mechanic | Music stops → reach one of N-1 chairs (server occupancy, closest to center keeps it) |
 | Win condition | Last remaining |
-| Lose condition | Not in a zone when round ends |
+| Lose condition | No chair when the round ends |
 | Scoring | Placement by elimination order |
 | Required systems | zones, rounds |
 | Dependencies | none beyond base |
 | Difficulty (player) | Easy |
 | Development complexity | Medium |
 | Potential exploits | answer sniffing, auto-clickers, timing spoofing |
-| Status | V2 |
+| Status | V1 · mode `musical_chairs` |
 
 ### 96. Random Challenge  ·  **V1**
 

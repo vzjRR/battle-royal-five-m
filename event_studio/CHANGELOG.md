@@ -7,6 +7,14 @@ All notable changes to EVENT STUDIO. Uses [Semantic Versioning](https://semver.o
 ### Added
 - `docs/PROTECTION.md`: researched licensing, activation and code-protection plan (Asset Escrow + Tebex approval/subscriptions, server-authoritative design, legal enforcement, rejected approaches, residual risks).
 - `tools/build_release.py`: release builder with protection and compliance checks and escrow-ready zip output.
+- **Roles component** (per-role health, armor, weapons; HUD role badge).
+- **Modes:** `juggernaut`, `vip` (Protect the VIP), `hunters` (Hunters vs Runners, infection), `keep_moving` (server-side speed check), `musical_chairs` (dynamic zones). 5 new presets; catalog V1 coverage 79 → 84 of 119.
+- **Security fuzzing** (`tests/test_fuzz.lua`): every RPC with hostile payloads as player and admin; random actions in every mode.
+- **Offline benchmark** (`tests/bench.lua`).
+- **CI:** GitHub Actions runs the syntax check, all tests and the release guard on every push.
+
+### Changed
+- Publisher branding: Krovix Store.
 
 ## [0.1.0-alpha] — 2026-09-25
 

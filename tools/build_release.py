@@ -26,7 +26,7 @@ EXCLUDE = [
     'web/js/dev.js',
     'docs/RESEARCH.md', 'docs/MASTER_PLAN.md', 'docs/ARCHITECTURE.md', 'docs/EVENT_ENGINE.md',
     'docs/EVENT_CATALOG.md', 'docs/SECURITY.md', 'docs/DATABASE.md', 'docs/DEVELOPMENT.md',
-    'docs/TESTING.md', 'docs/PROTECTION.md',
+    'docs/TESTING.md', 'docs/PROTECTION.md', 'docs/store/*', 'tests/bench.lua',
 ]
 
 # Core code that must always be encrypted by escrow (never escrow_ignore'd).

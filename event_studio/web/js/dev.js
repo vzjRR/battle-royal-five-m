@@ -105,3 +105,8 @@ if (scene === 'tdm') {
     send('scoreboard', { rows: rows.map((r, i) => ({ ...r, team: (i % 2) + 1, extra: `${9 - i} / ${i + 2}` })), teams: [{ index: 1, name: 'Red', color: '#ff4d5e', score: 23 }, { index: 2, name: 'Blue', color: '#3d8bff', score: 19 }] });
     send('mode', { banner: { text: 'RED LIGHT', color: '#ff3d5e' } });
 }
+if (scene === 'jug') {
+    send('state', { ...race, name: 'Juggernaut', mode: 'juggernaut', category: 'combat', objective: 'Take down the Juggernaut — or be it.', hud: { score: 42, target: 150, kills: 6 } });
+    send('scoreboard', { rows: rows.map((r, i) => ({ ...r, extra: i === 1 ? '★ 42' : String(30 - i * 5) })) });
+    send('role', { role: 'juggernaut', label: 'Juggernaut', color: '#ff3d71', health: 800, armor: 100 });
+}

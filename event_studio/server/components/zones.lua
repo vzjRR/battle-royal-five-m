@@ -141,6 +141,19 @@ function Zones:shrinkTo(id, radius, durationMs, center)
     } })
 end
 
+---Replace all zones at runtime (e.g. musical chairs) and resend the client setup.
+function Zones:setZones(list)
+    self.zones, self.order, self.occupants, self.owner, self.progress, self.contested, self.shrink = {}, {}, {}, {}, {}, {}, {}
+    for i, z in ipairs(list or {}) do
+        local id = z.id or tostring(i)
+        local zone = { id = id, x = z.x, y = z.y, z = z.z, radius = z.radius or 15.0, height = z.height or 25.0, label = z.label or id, index = i }
+        self.zones[id] = zone
+        self.order[#self.order + 1] = zone
+        self.occupants[id] = {}
+    end
+    self.inst:broadcast('component', { name = 'zones', setup = self:clientSetup() })
+end
+
 function Zones:occupantsOf(id) return self.occupants[id] or {} end
 function Zones:ownerOf(id) return self.owner[id] end
 function Zones:isContested(id) return self.contested[id] == true end

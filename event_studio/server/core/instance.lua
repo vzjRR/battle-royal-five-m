@@ -171,7 +171,7 @@ function Instance:snapshot(src)
     local rp = (p and p.returnPoint) or (self.spectators[src] and self.spectators[src].returnPoint)
     if rp then snap.returnPoint = { coords = rp.coords, heading = rp.heading } end
     if p then
-        snap.you = { status = p.status, team = p.team, score = p.score, lives = p.lives, stats = p.stats }
+        snap.you = { status = p.status, team = p.team, score = p.score, lives = p.lives, stats = p.stats, role = p.role }
         if self.mode.hud then
             local ok, hud = pcall(self.mode.hud, self, p)
             if ok then snap.hud = hud end

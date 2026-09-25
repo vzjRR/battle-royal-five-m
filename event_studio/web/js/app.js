@@ -60,6 +60,7 @@ const handlers = {
     zoneWarning: (d) => hud.warning('zone', d.outside),
     boundsWarning: (d) => hud.warning('bounds', d.outside),
     spectate: (d) => hud.onSpectate(d),
+    role: (d) => hud.onRole(d),
 };
 
 window.addEventListener('message', (e) => {

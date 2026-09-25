@@ -1,6 +1,6 @@
 # EVENT STUDIO — Licensing, Activation & Code Protection Plan
 
-> Owner: **vzjRR** · Status: approved design for 1.0 packaging · Researched 2026-09-25
+> Owner: **Krovix Store** · Status: approved design for 1.0 packaging · Researched 2026-09-25
 > This document answers the requirement: *"Nobody can copy, edit, modify or alter anything. Activation is only by me, per server, from my backend. It must not be hackable or patchable."*
 
 ---
@@ -59,7 +59,7 @@
   `config/**`, `locales/*.lua`, `integrations/custom/*.lua`, `web/themes/*.css`, `migrations/*.sql`.
 - At runtime the server's license key is checked against the entitlement **before** decryption. An unapproved server can't start the resource.
 
-### Layer 2 — Activation controlled by vzjRR (Tebex)
+### Layer 2 — Activation controlled by Krovix Store (Tebex)
 - **Public sales:** Tebex checkout. Every sale is logged and tied to the buyer's Cfx account.
 - **Hand-picked activation ("only me"):** keep the package hidden or unlisted and issue access yourself with **Tebex → Payments → Create Payment → Manual Payment** (the customer's Cfx-linked account plus the package). Nobody gets the asset without you.
 - **Revocable activation:** sell as a **subscription** (monthly or yearly). Cancel or refund it, or stop renewals, and access ends (PLA §6.3(ii)).
@@ -94,7 +94,7 @@ If you want something that only exists on **your** backend, build **online featu
 
 ---
 
-## 5. Activation workflow (step by step, for vzjRR)
+## 5. Activation workflow (step by step, for Krovix Store)
 
 1. `python3 tools/build_release.py` produces `dist/event_studio-<ver>.zip`.
 2. Cfx Portal → *Created Assets* → upload the zip → wait for "escrowed".

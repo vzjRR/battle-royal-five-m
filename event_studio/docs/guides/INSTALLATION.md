@@ -39,7 +39,7 @@ ESX/QBCore groups can also grant roles; see `config/permissions.lua`.
 ```
 [event_studio:info] Storage adapter: oxmysql
 [event_studio:info] Framework adapter: qbcore (items: ox_inventory)
-[event_studio:info] Event Studio 0.1.0-alpha ready — 12 modes, 36 definitions, 12 arenas (by vzjRR)
+[event_studio:info] Event Studio 0.1.0-alpha ready — 17 modes, 41 definitions, 12 arenas (Krovix Store)
 ```
 
 With oxmysql, the tables are created automatically (`migrations/001_initial.sql`). To create them by hand, set `Config.Database.runMigrations = false` and import the SQL file yourself.

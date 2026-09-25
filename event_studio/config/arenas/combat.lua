@@ -39,6 +39,7 @@ ES.Arena({
         { 1530.0, 3190.0, 40.5, radius = 15.0, id = 'B', label = 'Bravo' },
         { 1640.0, 3250.0, 40.8, radius = 15.0, id = 'C', label = 'Charlie' },
     },
+    finish = { 1530.0, 3190.0, 40.5, radius = 8.0 },   -- VIP extraction point (Protect the VIP)
     objectives = {
         { 1300.0, 3100.0, 40.4, team = 1, id = 'flag1', label = 'Red base' },
         { 1700.0, 3285.0, 40.8, team = 2, id = 'flag2', label = 'Blue base' },

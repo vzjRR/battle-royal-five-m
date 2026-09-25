@@ -141,6 +141,7 @@ function renderHud() {
         x.instructions ? h('div.hud-clue', x.instructions) : null,
         x.holding ? h('div.hud-clue', `${t('holding')}: ${x.holding}`) : null,
         hintText ? h('div.hud-clue', hintText) : null,
+        role && snap.role === 'participant' ? h('div.hud-clue', { style: { borderColor: role.color || 'var(--accent-line)' } }, `${t('role')}: ${role.label}`) : null,
         progress.length ? progress.map((p) => h('div', h('div.muted', { style: { fontSize: '11px', marginTop: '8px' } }, `${p.id} · ${Math.round(p.value * 100)}%`), h('div.bar', h('i', { style: { width: `${p.value * 100}%` } })))) : null,
     ));
     if (rows.length) cards.push(h('div.hud-card.board', { style: { padding: '6px 0' } }, boardRows(store.ui.scoreboardRows || 5)));
@@ -173,7 +174,7 @@ export function onCheckpoints() { /* checkpoint progress arrives through the sta
 export function onZoneProgress(list) { progress = list || []; renderHud(); }
 
 export function onLeft() {
-    snap = null; rows = []; teams = null; deadline = null; progress = []; expanded = false; hintText = null;
+    snap = null; rows = []; teams = null; deadline = null; progress = []; expanded = false; hintText = null; role = null;
     stopTicker();
     ['hud', 'countdown', 'banner', 'warning', 'modepanel', 'spectate'].forEach((id) => show($(id), false));
     expandBoard(false);
@@ -322,3 +323,11 @@ export function onMode(d) {
 }
 
 export function setSelf(src) { mySrc = src; }
+
+let role = null;
+export function onRole(d) {
+    const changed = !role || role.role !== d.role;
+    role = d;
+    if (changed && !d.silent) banner(d.label.toUpperCase(), d.color || 'var(--accent)', 2500);
+    renderHud();
+}

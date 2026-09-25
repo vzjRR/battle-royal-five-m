@@ -113,6 +113,14 @@ end)
 
 function RPC.clear(src) buckets[src] = nil end
 
+---Registered RPC names and specs (read-only view; used by tests and tooling).
+function RPC.list()
+    local out = {}
+    for name, h in pairs(handlers) do out[#out + 1] = { name = name, perm = h.spec.perm, public = h.spec.public == true, confirm = h.spec.confirm == true } end
+    table.sort(out, function(a, b) return a.name < b.name end)
+    return out
+end
+
 ---Push a topic to one player or a list of players.
 function ES.push(target, topic, data)
     if type(target) == 'table' then

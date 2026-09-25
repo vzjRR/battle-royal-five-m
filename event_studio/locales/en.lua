@@ -52,6 +52,20 @@ ES.RegisterLocale('en', {
     tournament_match_ready = 'Your %s match is starting!',
     redlight_green = 'GREEN LIGHT', redlight_red = 'RED LIGHT', redlight_freeze = 'FREEZE!',
 
+    announce_juggernaut_new = '%s is the Juggernaut!',
+    announce_vip_round = 'Round %d/%d — %s is the VIP for %s.',
+    announce_vip_extracted = 'The VIP was extracted! Round to %s.',
+    announce_vip_killed = 'The VIP is down! Round to %s.',
+    announce_hunters_headstart = 'Runners: you have %d seconds. Run!',
+    announce_hunters_released = 'The hunters are released!',
+    announce_hunters_infected = '%s was caught and joins the hunters.',
+    keep_moving_limit = 'MIN SPEED %d KM/H',
+    keep_moving_warning = 'TOO SLOW!',
+    announce_keep_moving_out = '%s slowed down and is out.',
+    chairs_music = '♪ MUSIC ♪',
+    chairs_stop = 'FIND A CHAIR!',
+    announce_chairs_out = '%s did not find a chair.',
+
     -- objectives (short, shown in HUD) -----------------------------------------
     obj_race = 'Pass every checkpoint and finish first.',
     obj_deathmatch = 'Eliminate opponents.',
@@ -65,6 +79,11 @@ ES.RegisterLocale('en', {
     obj_trivia = 'Answer quickly and correctly.',
     obj_reaction = 'React when you see GO.',
     obj_custom = 'Follow the host\'s instructions.',
+    obj_juggernaut = 'Take down the Juggernaut — or be it.',
+    obj_vip = 'Escort the VIP to extraction, or take the VIP out.',
+    obj_hunters = 'Runners survive. Hunters catch.',
+    obj_keep_moving = 'Stay above the minimum speed.',
+    obj_musical_chairs = 'When the music stops, find a chair.',
 
     -- rules (shown in the browser details) -------------------------------------
     rules_race = 'Vehicles are provided and you cannot leave them. Checkpoints must be passed in order. Stuck? Use the reset key to return to your last checkpoint. After the winner finishes, the others have a short grace period.',
@@ -79,6 +98,11 @@ ES.RegisterLocale('en', {
     rules_trivia = 'One answer per question. Faster correct answers earn a bonus.',
     rules_reaction = 'Pressing before GO costs points. Your ping is compensated.',
     rules_custom = 'Points are awarded by staff.',
+    rules_juggernaut = 'The Juggernaut has extra health, armor and heavy weapons and scores every second alive. Kill the Juggernaut to take the role.',
+    rules_vip = 'Bodyguards win by getting the VIP to extraction. Attackers win by killing the VIP or running out the clock. The VIP does not respawn during a round.',
+    rules_hunters = 'Runners start with a head start and score for every second alive. Caught runners become hunters (if infection is on). Survivors get a bonus.',
+    rules_keep_moving = 'Drop below the minimum speed for too long and you are eliminated. The limit rises over time.',
+    rules_musical_chairs = 'Each chair seats one player (closest to its center). There is one chair fewer than players.',
 
     -- NUI ------------------------------------------------------------------------
     ['ui.events'] = 'Events', ['ui.live'] = 'Live & Open', ['ui.upcoming'] = 'Upcoming', ['ui.leaderboard'] = 'Leaderboard',
@@ -119,7 +143,7 @@ ES.RegisterLocale('en', {
     ['ui.are_you_sure'] = 'Are you sure?', ['ui.dangerous_action'] = 'This action affects players immediately.',
     ['ui.saved'] = 'Saved', ['ui.run_now'] = 'Run now', ['ui.next_run'] = 'Next run', ['ui.rule'] = 'Rule', ['ui.director'] = 'Event Director',
     ['ui.history'] = 'Recent events', ['ui.add_point_here'] = 'Add point at my position', ['ui.storage'] = 'Storage',
-    ['ui.framework'] = 'Framework', ['ui.version'] = 'Version', ['ui.role'] = 'Your role', ['ui.leader'] = 'Leader',
+    ['ui.framework'] = 'Framework', ['ui.version'] = 'Version', ['ui.role'] = 'Role', ['ui.leader'] = 'Leader',
     ['ui.spectators'] = 'Spectators', ['ui.bucket'] = 'Instance', ['ui.new_event'] = 'New event', ['ui.edit'] = 'Edit',
     ['ui.duplicate'] = 'Duplicate', ['ui.id'] = 'ID', ['ui.description'] = 'Description', ['ui.min_players'] = 'Min players',
     ['ui.max_players'] = 'Max players', ['ui.teams'] = 'Teams', ['ui.registration'] = 'Registration (s)', ['ui.event_duration'] = 'Duration (s)',
