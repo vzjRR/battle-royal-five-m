@@ -198,6 +198,18 @@ Risks specific to event systems:
 - **[ORIGINAL]** Design so that *everything a buyer might customise* lives in escrow-ignored paths: `config/`, `locales/`, `web/themes/`, `integrations/custom/`, event presets and arena files, and an `open/` hooks file. Core logic can later be escrowed without harming customisation.
 - No build step for the NUI (plain ES modules) → buyers can theme without Node.js.
 
+### N.1 Protection & licensing research (added 2026-09-25)
+
+**[TECH]** Findings (full detail and sources in `PROTECTION.md §2`):
+- Asset Escrow encrypts Lua and checks the server license key's account entitlement before decrypting; distribution only via Tebex; assets can't be transferred; NUI is not protected.
+- Cfx.re release rules: no third-party encryption/obfuscation, no remote code loading/execution, no requiring license tokens/registration to run a resource; paid releases through Tebex; creators may not roll their own licensing.
+- FiveM blocks resources containing "prohibited logic" (malicious, obfuscated, remote loaders are common triggers).
+- Creator PLA §6.3: marketplace licenses cover one or more servers the admin holds keys for; one-time licenses are irrevocable, subscription licenses end with the subscription. §6.4 prohibits resale, sharing, decompiling and modifying.
+- Tebex manual payments let the seller grant a package to a chosen customer.
+- Escrow had a client-side extraction vulnerability, patched in 2025; Cfx suspended and then banned servers using leaked assets.
+
+**[ORIGINAL]** Conclusion: the most secure design that complies with the rules is escrow + Tebex (approval/subscriptions) + a server-authoritative architecture + a release guard. A custom server-id activation backend is rejected.
+
 ## O. Features worth implementing (V1)
 
 Core engine + lifecycle; instancing via buckets; definitions/arenas/presets from config **and** in-game builder (DB); scheduler with rotation; director (optional); score profiles; leaderboards; payout ledger; framework bridges (standalone/ESX/QBCore/Qbox); ACE + framework-group permissions; Discord webhooks; admin center; player browser + HUD; spectator; single-elim + round-robin tournaments; locales; 9 V1 modes covering ~30 catalog entries.

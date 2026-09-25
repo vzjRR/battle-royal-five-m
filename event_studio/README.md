@@ -49,7 +49,7 @@ In game:
 |---|---|
 | Server owners | [Installation](docs/guides/INSTALLATION.md) · [Configuration](docs/guides/CONFIGURATION.md) · [Frameworks](docs/guides/FRAMEWORKS.md) · [Admin guide](docs/guides/ADMIN_GUIDE.md) · [Creating events](docs/guides/EVENT_CREATION.md) · [Troubleshooting](docs/guides/TROUBLESHOOTING.md) · [FAQ](docs/guides/FAQ.md) |
 | Developers | [API](docs/API.md) · [Architecture](docs/ARCHITECTURE.md) · [Event Engine](docs/EVENT_ENGINE.md) · [Security](docs/SECURITY.md) · [Database](docs/DATABASE.md) · [Development](docs/DEVELOPMENT.md) · [Testing](docs/TESTING.md) |
-| Product | [Master plan](docs/MASTER_PLAN.md) · [Research](docs/RESEARCH.md) · [Event catalog](docs/EVENT_CATALOG.md) · [Changelog](CHANGELOG.md) |
+| Product | [Protection & licensing](docs/PROTECTION.md) · [Master plan](docs/MASTER_PLAN.md) · [Research](docs/RESEARCH.md) · [Event catalog](docs/EVENT_CATALOG.md) · [Changelog](CHANGELOG.md) |
 
 ## License
 

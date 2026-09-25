@@ -85,6 +85,23 @@ Vanilla ES-module NUI (no build step). Views: Browser, HUD, Results, Spectator b
 
 SECURITY.md. Gateway + schema + rate limit + permission + confirm; positional validation; damage-log kill attribution; weapon whitelist; payout ledger; audit logs.
 
+## 12.1 Licensing, activation & code protection
+
+Full plan: [PROTECTION.md](PROTECTION.md). Summary of the researched, platform-compliant design:
+
+| Goal | Mechanism |
+|---|---|
+| Only servers approved by vzjRR can run it | **Cfx Asset Escrow**: the entitlement is checked against the server's license key before decryption. Customers are approved through **Tebex** (checkout or **manual payments**). |
+| Revoke a customer | Sell as a **Tebex subscription**: access ends with the subscription (PLA §6.3(ii)). One-time sales are irrevocable (PLA §6.3(i)). |
+| Core cannot be read or edited | Escrow encrypts all Lua; server code is only decrypted in memory. Editable surface = `config/**`, `locales`, `web/themes`, `integrations/custom`, `migrations`. |
+| Client/NUI copying is worthless | Server-authoritative architecture: no rules, scoring, rewards or admin logic on the client; NUI is a view. |
+| Release can't ship weakened | `tools/build_release.py` blocks: version mismatch, missing `lua54`, over-broad `escrow_ignore`, secrets in config, custom licensing/IP-lock/remote-code/obfuscation patterns, syntax errors, failing tests. |
+| Legal enforcement | EULA + PLA §6.4 (no resale/sharing/decompiling/modifying); Cfx suspends and bans servers using leaked assets. |
+
+**Deliberately not done:** a custom activation server keyed by server id / IP, obfuscation, remote code loading, a kill switch in one-time sales. The Cfx.re release rules forbid custom licensing, license tokens and remote code checks for released resources; FiveM blocks "prohibited logic"; and such checks would be *weaker* than escrow because they run unencrypted-equivalent logic on the customer's server. Escrow **is** per-server, server-side activation, run by the platform and tied to accounts you approve.
+
+**Honest limits:** no software is unhackable. NUI and client Lua can be copied from players' machines (they hold no value here); escrow had an exploit in 2025 that Cfx patched; one purchase runs on all servers of the buyer's Cfx account, so per-server pricing is a commercial/subscription term.
+
 ## 13. API architecture
 
 API.md. Exports for definitions, arenas, instances, participants, scoring, objectives, eliminations, teams, state, leaderboards, rewards; non-networked server events for lifecycle hooks.
@@ -138,7 +155,7 @@ TESTING.md. Three layers:
 | 11 Performance | resmon profiling, tuning | 0.5.0 |
 | 12 Testing | full in-game matrix | 0.5.0 → 1.0.0 |
 | 13 Documentation | guides complete | 1.0.0 |
-| 14 Commercial Packaging | escrow_ignore list, Tebex, license | 1.0.0 |
+| 14 Commercial Packaging & Protection | escrow build (`tools/build_release.py`), Cfx Portal upload, Tebex one-time/subscription packages, manual-payment activation, EULA (PROTECTION.md) | 1.0.0 |
 
 ## 19. Dependencies
 
@@ -165,6 +182,10 @@ No ox_lib dependency (kept optional to avoid version coupling).
 | Voice chat across buckets (pma-voice) | Medium | document: pma-voice follows buckets? — configurable voice channel hook |
 | Scope creep (119 events) | High | modes + presets; Tier 2/Future discipline |
 | Escrow constraints later | Medium | keep editable surfaces in ignored paths from day one |
+| Piracy / leaks | High | escrow + server-authoritative design + subscriptions + legal enforcement (PROTECTION.md §4) |
+| Building custom DRM against platform rules | High | explicitly rejected (PROTECTION.md §6); release build blocks such patterns |
+| Escrow vulnerability in the future | Medium | nothing depends on client secrets; re-upload each release; Cfx enforcement |
+| Buyer runs one purchase on several servers | Medium | allowed by escrow/PLA per account; handled with tiers/subscriptions in the EULA |
 | Lack of in-game CI | Medium | simulation mock runtime; manual test matrix |
 
 ## 21. Technical decisions
@@ -181,6 +202,9 @@ No ox_lib dependency (kept optional to avoid version coupling).
 | D8 | Server tick 500 ms | Enough for zones/bounds; negligible cost |
 | D9 | Match score ≠ season points | Modes rank naturally; points uniform across modes |
 | D10 | Ledger-guarded payouts | Idempotent rewards |
+| D11 | Asset Escrow + Tebex is the only licensing/activation mechanism | Strongest available protection and the only compliant one |
+| D12 | Revocable licensing via Tebex subscriptions; hand-picked activation via manual payments | One-time licenses are irrevocable under the PLA |
+| D13 | Release build enforces protection rules | A mistake can't ship an exposed or non-compliant build |
 
 ## 22. Alternatives considered
 
@@ -194,6 +218,10 @@ No ox_lib dependency (kept optional to avoid version coupling).
 | Modes registered via exports from other resources | Functions/metatables don't survive export boundary cleanly |
 | Separate SQL table per entity type | Unnecessary complexity for rarely-changed config data |
 
+| Custom activation server (server-id/IP lock, phone-home) | Forbidden by Cfx release rules; risk of prohibited-logic blocks; weaker than escrow |
+| Obfuscators / third-party encryption layers | Forbidden; blocked by FiveM; unnecessary with escrow |
+| Running the core on the vendor's backend | Remote code loading is forbidden; natives must run on the game server |
+
 ## 23. Future expansion
 
 Roles component (Juggernaut, VIP, Hunter/Runner), NPC wave spawner, carriable-objective generalisation (delivery, bomb), in-game arena editor with gizmos and prop placement, double elimination & Swiss, championships, web dashboard, phone app adapters (npwd/lb-phone), additional locales, content packs (Seasonal, Halloween …).
@@ -201,7 +229,7 @@ Roles component (Juggernaut, VIP, Hunter/Runner), NPC wave spawner, carriable-ob
 ## 24. Definition of Done (V1)
 
 Mirrors the product brief §46. Tracked in `CHANGELOG.md` and `docs/TESTING.md`:
-resource starts clean · standalone works · ≥1 framework adapter works · admin can create & schedule · players discover, register, participate · server-side scores · results · safe rewards · cleanup · spectators · simultaneous instances · persistence · security validation · permissions · logs · docs (install, config, API) · no server-specific branding.
+resource starts clean · escrowed build starts only on entitled servers ("You lack the required entitlement" elsewhere) · release build passes all protection checks · standalone works · ≥1 framework adapter works · admin can create & schedule · players discover, register, participate · server-side scores · results · safe rewards · cleanup · spectators · simultaneous instances · persistence · security validation · permissions · logs · docs (install, config, API) · no server-specific branding.
 
 ---
 
@@ -210,6 +238,7 @@ resource starts clean · standalone works · ≥1 framework adapter works · adm
 | Question | Answer | Change made |
 |---|---|---|
 | Commercially viable? | Yes — unified platform, secure, framework-agnostic, themeable. | Added escrow-ignore surface design from day one. |
+| Can it be protected and activated only by the creator? | Yes, within platform limits: escrow + Tebex approval/subscriptions; not "unhackable" | Added §12.1, PROTECTION.md and the release build guard. |
 | Scalable architecture? | Engine + components + modes; tick cost O(players). | Tick loop only runs while instances exist. |
 | New event types without core rewrite? | Yes — new preset (data) or new mode folder (code). | Changed mode registration from exports to drop-in folders (object access). |
 | Simultaneous events? | Yes — bucket pool, per-instance state, player→instance index. | Bucket range configurable to avoid clashing with other scripts. |
@@ -250,6 +279,6 @@ Contradictions found and resolved during review:
 | 11 Performance | 🟡 | design targets met by construction; resmon profiling pending (needs live server) |
 | 12 Testing | 🟡 | 64 automated tests pass; in-game matrix (TESTING.md §2) pending |
 | 13 Documentation | ✅ | guides, API, architecture, testing |
-| 14 Commercial Packaging | 🟡 | escrow_ignore prepared; final license text pending (creator) |
+| 14 Commercial Packaging | 🟡 | protection plan (PROTECTION.md) + release builder with compliance checks done; Cfx Portal upload, Tebex packages and final EULA pending (creator) |
 
 Definition-of-Done items that can only be confirmed on a real FXServer (rendering, vehicles, framework money calls, ambulance interplay) are listed in `docs/TESTING.md §2` and are the gate for `0.5.0`.

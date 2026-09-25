@@ -47,7 +47,15 @@ find . -name '*.lua' -print0 | xargs -0 -n1 luac5.4 -p
 3. server: server config → `integrations/framework/*/server.lua` → `server/core/*` in dependency order → `server/components/*` → `modes/*/server.lua` → `integrations/custom/hooks.lua` → `server/main.lua`
 4. client: `integrations/framework/*/client.lua` → `client/core/*` → `client/components/*` → `modes/*/client.lua` → `integrations/custom/client_hooks.lua` → `client/main.lua`
 
-## 6. Versioning & changelog
+## 6. Release build (escrow)
+
+```
+python3 tools/build_release.py        # checks + tests + dist/event_studio-<version>.zip
+```
+
+The build fails on version mismatch, missing `lua54`, over-broad `escrow_ignore`, secrets in config, forbidden licensing/remote-code/obfuscation patterns, syntax errors or failing tests. Upload the zip in the Cfx.re Portal (Created Assets), then attach it to a Tebex package. See PROTECTION.md §5.
+
+## 7. Versioning & changelog
 
 Semantic versioning starting at `0.1.0-alpha`. Update `CHANGELOG.md` and `fxmanifest.lua` `version` together.
 

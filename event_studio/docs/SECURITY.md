@@ -71,7 +71,11 @@ Score, kills, placement, completion, rewards, money, objective state, event stat
 - Security violations: `security` level, include src, identifier, RPC, reason. Throttled.
 - Admin actions: `audit` level with actor and target.
 
-## 10. Checklist for contributors
+## 10. Code protection & licensing
+
+Covered in [PROTECTION.md](PROTECTION.md): Asset Escrow (encryption plus per-account/server entitlement), Tebex-controlled activation (manual payments, subscriptions for revocation), thin client/NUI, and `tools/build_release.py` as a release gate. Never add custom license checks, IP locks, obfuscation or remote code loading.
+
+## 11. Checklist for contributors
 
 - [ ] No new `RegisterNetEvent` on the server — add an RPC.
 - [ ] Every RPC has `perm` (or explicit `public = true`), `schema`, `rate`.
@@ -79,3 +83,5 @@ Score, kills, placement, completion, rewards, money, objective state, event stat
 - [ ] Never use client-provided numbers for score/rewards.
 - [ ] Positional claims verified with server coords.
 - [ ] Nothing secret in shared config.
+- [ ] No custom licensing, remote code or obfuscation (the release build enforces this).
+- [ ] New gameplay value lives on the server, not in client Lua or NUI.

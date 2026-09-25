@@ -12,6 +12,10 @@ Until then:
 
 ## Licensing architecture (for the final license)
 
+- **Activation:** the resource only runs on servers whose Cfx.re license key belongs to an account granted the asset via Tebex (checkout or manual payment by vzjRR).
+- **License types:** one-time (irrevocable under the Cfx Creator PLA §6.3) or subscription (ends with the subscription).
+- **Per-server tiers:** escrow entitlement follows the buyer's Cfx account; server-count limits are contractual terms of this license.
+- **Restrictions (to include in the final EULA, consistent with PLA §6.4):** no resale, sharing, redistribution, decompiling, reverse-engineering, or modification beyond the provided configuration surface.
 - Distribution is planned via the Cfx.re Asset Escrow system (Tebex). `fxmanifest.lua` already declares `escrow_ignore` for all licensee-editable files.
 - The resource does not contact any licensing server and collects no telemetry.
 - Third-party names (FiveM, Cfx.re, GTA V, Rockstar Games, ESX, QBCore, Qbox, overextended) belong to their respective owners; EVENT STUDIO is not affiliated with them.

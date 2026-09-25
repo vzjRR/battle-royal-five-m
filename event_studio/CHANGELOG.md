@@ -2,6 +2,12 @@
 
 All notable changes to EVENT STUDIO. Uses [Semantic Versioning](https://semver.org/).
 
+## [Unreleased]
+
+### Added
+- `docs/PROTECTION.md`: researched licensing, activation and code-protection plan (Asset Escrow + Tebex approval/subscriptions, server-authoritative design, legal enforcement, rejected approaches, residual risks).
+- `tools/build_release.py`: release builder with protection and compliance checks and escrow-ready zip output.
+
 ## [0.1.0-alpha] — 2026-09-25
 
 First alpha. Feature complete for the V1 scope; not yet tested on a live server.
