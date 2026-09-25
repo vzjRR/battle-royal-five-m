@@ -1,0 +1,46 @@
+/* EVENT STUDIO — default theme. Copy this file to web/themes/<name>.css and set Config.UI.theme = '<name>'. */
+:root {
+    --font: "Inter", "Segoe UI", system-ui, -apple-system, sans-serif;
+    --font-mono: "JetBrains Mono", "Consolas", monospace;
+
+    --bg: rgba(12, 14, 20, 0.92);
+    --bg-solid: #0c0e14;
+    --panel: rgba(22, 25, 34, 0.96);
+    --panel-2: rgba(32, 36, 48, 0.96);
+    --panel-3: rgba(44, 49, 64, 0.96);
+    --line: rgba(255, 255, 255, 0.08);
+    --line-strong: rgba(255, 255, 255, 0.16);
+
+    --text: #eef1f7;
+    --text-dim: #a4abbd;
+    --text-faint: #6b7287;
+
+    --accent: #7c5cff;
+    --accent-2: #3dd6ff;
+    --accent-text: #ffffff;
+
+    --good: #3ddc84;
+    --warn: #ffb020;
+    --bad: #ff4d5e;
+    --info: #3d8bff;
+
+    --gold: #ffd23d;
+    --silver: #cfd6e4;
+    --bronze: #e0955a;
+
+    --radius: 12px;
+    --radius-sm: 8px;
+    --shadow: 0 18px 48px rgba(0, 0, 0, 0.45);
+    --hud-bg: rgba(10, 12, 18, 0.72);
+    --blur: blur(10px);
+    --good-soft: rgba(61, 220, 132, 0.13);
+    --good-line: rgba(61, 220, 132, 0.45);
+    --warn-soft: rgba(255, 176, 32, 0.13);
+    --warn-line: rgba(255, 176, 32, 0.45);
+    --bad-soft: rgba(255, 77, 94, 0.13);
+    --bad-line: rgba(255, 77, 94, 0.45);
+    --info-soft: rgba(61, 139, 255, 0.13);
+    --info-line: rgba(61, 139, 255, 0.45);
+    --accent-soft: rgba(124, 92, 255, 0.13);
+    --accent-line: rgba(124, 92, 255, 0.45);
+}

@@ -159,7 +159,7 @@ end
 function Instance:snapshot(src)
     local p = self.participants[src]
     local snap = {
-        id = self.id, name = self.def.name, mode = self.def.mode, category = self.def.category,
+        id = self.id, name = self.def.name, mode = self.def.mode, category = self.def.category, selfSrc = src,
         state = self.state, remainingMs = self:remainingMs(), elapsedMs = self:elapsedMs(),
         role = p and 'participant' or (self.spectators[src] and 'spectator' or nil),
         teams = #self.teams > 0 and self:publicTeams() or nil,

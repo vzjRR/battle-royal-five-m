@@ -27,6 +27,7 @@ end)
 -- Browser ----------------------------------------------------------------------
 
 function ES.openBrowser()
+    ES.NUI.panelOpen = true
     ES.NUI.setFocus(true)
     ES.NUI.send('open', { view = 'browser' })
 end
@@ -37,6 +38,7 @@ function ES.openAdmin()
             ES.NUI.send('toast', { text = res == 'forbidden' and 'No permission.' or tostring(res), kind = 'error' })
             return
         end
+        ES.NUI.panelOpen = true
         ES.NUI.setFocus(true)
         ES.NUI.send('open', { view = 'admin', data = res })
     end)

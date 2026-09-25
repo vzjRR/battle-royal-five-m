@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Event Studio</title>
+    <link rel="stylesheet" href="themes/default.css" id="theme">
+    <link rel="stylesheet" href="css/base.css">
+    <link rel="stylesheet" href="css/hud.css">
+    <link rel="stylesheet" href="css/panels.css">
+</head>
+<body>
+    <!-- In-game overlay (never takes focus) -->
+    <div id="hud" class="hud hidden"></div>
+    <div id="countdown" class="countdown hidden"></div>
+    <div id="banner" class="banner hidden"></div>
+    <div id="warning" class="warning hidden"></div>
+    <div id="modepanel" class="modepanel hidden"></div>
+    <div id="spectate" class="spectate hidden"></div>
+    <div id="results" class="results hidden"></div>
+    <div id="toasts" class="toasts"></div>
+
+    <!-- Focused panels -->
+    <div id="browser" class="modal hidden"></div>
+    <div id="admin" class="modal hidden"></div>
+    <div id="confirm" class="confirm hidden"></div>
+
+    <script type="module" src="js/app.js"></script>
+</body>
+</html>

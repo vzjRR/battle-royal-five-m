@@ -25,6 +25,7 @@ RegisterNUICallback('ready', function(_, cb)
 end)
 
 RegisterNUICallback('close', function(_, cb)
+    NUI.panelOpen = false
     NUI.setFocus(false)
     cb({ ok = true })
 end)
@@ -33,6 +34,16 @@ end)
 RegisterNUICallback('rpc', function(data, cb)
     if type(data) ~= 'table' or type(data.name) ~= 'string' then return cb({ ok = false, res = 'bad_request' }) end
     ES.rpc(data.name, data.payload, function(ok, res) cb({ ok = ok, res = res }) end)
+end)
+
+-- Temporary focus for interactive mode panels (trivia / reaction). Keeps game input when requested.
+RegisterNUICallback('focus', function(data, cb)
+    if data and data.on then
+        if ES.Client.current then NUI.setFocus(true, data.keepInput == true) end
+    elseif not NUI.panelOpen then
+        NUI.setFocus(false)
+    end
+    cb({ ok = true })
 end)
 
 RegisterNUICallback('action', function(data, cb)

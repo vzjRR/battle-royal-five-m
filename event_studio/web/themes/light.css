@@ -1,0 +1,40 @@
+/* EVENT STUDIO — light theme example (Config.UI.theme = 'light') */
+:root {
+    --font: "Inter", "Segoe UI", system-ui, -apple-system, sans-serif;
+    --font-mono: "JetBrains Mono", "Consolas", monospace;
+    --bg: rgba(240, 242, 247, 0.96);
+    --bg-solid: #f0f2f7;
+    --panel: rgba(255, 255, 255, 0.98);
+    --panel-2: rgba(244, 246, 250, 0.98);
+    --panel-3: rgba(230, 234, 242, 0.98);
+    --line: rgba(10, 20, 40, 0.08);
+    --line-strong: rgba(10, 20, 40, 0.18);
+    --text: #141824;
+    --text-dim: #525a70;
+    --text-faint: #8a92a6;
+    --accent: #5b3dff;
+    --accent-2: #0096c7;
+    --accent-text: #ffffff;
+    --good: #12a150;
+    --warn: #c77800;
+    --bad: #d62839;
+    --info: #1f6fe0;
+    --gold: #c99a00;
+    --silver: #8c96a8;
+    --bronze: #b0652f;
+    --radius: 12px;
+    --radius-sm: 8px;
+    --shadow: 0 18px 48px rgba(20, 30, 60, 0.18);
+    --hud-bg: rgba(255, 255, 255, 0.85);
+    --blur: blur(10px);
+    --good-soft: rgba(18, 161, 80, 0.13);
+    --good-line: rgba(18, 161, 80, 0.45);
+    --warn-soft: rgba(199, 120, 0, 0.13);
+    --warn-line: rgba(199, 120, 0, 0.45);
+    --bad-soft: rgba(214, 40, 57, 0.13);
+    --bad-line: rgba(214, 40, 57, 0.45);
+    --info-soft: rgba(31, 111, 224, 0.13);
+    --info-line: rgba(31, 111, 224, 0.45);
+    --accent-soft: rgba(91, 61, 255, 0.13);
+    --accent-line: rgba(91, 61, 255, 0.45);
+}
