@@ -87,24 +87,26 @@ const themes = [...themesLua.matchAll(/\{ id = '([\w-]+)', name = '([^']+)', fil
     .map((m) => ({ id: m[1], name: m[2], file: m[3], shape: m[4], title: m[5], logo: m[6] === 'false' ? false : m[6].slice(1, -1),
         art: m[7] === 'false' ? false : m[7].slice(1, -1), preview: m[8].split(',').map((c) => c.trim().slice(1, -1)) }));
 const params = new URLSearchParams(location.search);
+const scene = location.hash.slice(1) || 'browser';
 const baseUI = {
     theme: params.get('theme') || 'krovix-gilded', browserLayout: params.get('layout') || 'compact', browserKeepMoving: false, artwork: 'auto',
     brand: { title: 'Event Studio', subtitle: 'Community Events', logo: 'auto' }, colors: {}, hudPosition: 'top-right', scoreboardRows: 5, dateFormat: 'en-GB',
     categories: { racing: { icon: 'flag', color: '#ff6b3d' }, vehicle: { icon: 'car', color: '#ffb020' }, combat: { icon: 'crosshair', color: '#ff3d71' }, objective: { icon: 'target', color: '#3dd6ff' },
-        survival: { icon: 'shield', color: '#7cff6b' }, hunt: { icon: 'compass', color: '#c36bff' }, obstacle: { icon: 'mountain', color: '#6b8cff' }, social: { icon: 'dice', color: '#ff6bd6' }, tournament: { icon: 'trophy', color: '#ffd23d' } } };
+        survival: { icon: 'shield', color: '#7cff6b' }, hunt: { icon: 'compass', color: '#c36bff' }, obstacle: { icon: 'mountain', color: '#6b8cff' }, social: { icon: 'dice', color: '#ff6bd6' }, tournament: { icon: 'trophy', color: '#ffd23d' } },
+    keys: { browser: params.get('key') || 'F7', scoreboard: 'U', reset: 'F9' } };
 if (params.get('accent')) baseUI.colors.accent = '#' + params.get('accent');
-responses['admin:ui:get'] = { effective: { ...baseUI, themes }, overrides: { theme: baseUI.theme, browserLayout: baseUI.browserLayout }, base: baseUI };
+responses['admin:ui:get'] = { effective: { ...baseUI, themes }, overrides: { theme: baseUI.theme, browserLayout: baseUI.browserLayout, ...(scene === 'controls' ? { keys: { browser: 'F6' } } : {}) },
+    base: baseUI, baseKeys: { browser: 'F7', scoreboard: 'U', reset: 'F9' } };
 send('init', { strings, locale: { code: lang, dir: ['ar', 'he', 'fa', 'ur'].includes(lang) ? 'rtl' : 'ltr' }, staff: true, role: 'admin', ui: { ...baseUI, themes } });
 
 document.body.style.background = 'linear-gradient(180deg, #1b2a44 0%, #3b3a52 42%, #7a5238 60%, #151a24 61%, #0b0e14 100%)';
-const scene = location.hash.slice(1) || 'browser';
 responses['admin:arena:get'] = { id: 'alamo_sea', name: 'Alamo Sea Course', route: 'water', radius: 900, center: { x: 1200, y: 4000, z: 30 },
     vehicleSpawns: [{ x: 1300, y: 3850, z: 30.4, w: 300 }, { x: 1306, y: 3858, z: 30.4, w: 300 }, { x: 1312, y: 3866, z: 30.4, w: 300 }, { x: 1318, y: 3874, z: 30.4, w: 300 }],
     checkpoints: [{ x: 1100, y: 3950, z: 30.4, radius: 18 }, { x: 800, y: 4000, z: 30.4, radius: 18 }, { x: 600, y: 4150, z: 30.4, radius: 18 },
         { x: 900, y: 4300, z: 30.4, radius: 18 }, { x: 1250, y: 4200, z: 30.4, radius: 18 }, { x: 1320, y: 3900, z: 30.4, radius: 20, label: 'Finish' }] };
 responses['admin:definition:get'] = { ...adminData.definitions[0] };
 const adminSection = { dashboard: 'dashboard', events: 'definitions', builder: 'builder', arenas: 'arenas', 'arena-edit': 'arenas', 'arena-check': 'arenas',
-    scheduler: 'scheduler', live: 'live', tournaments: 'tournaments', 'admin-board': 'leaderboard', logs: 'logs', appearance: 'appearance', settings: 'settings' }[scene];
+    scheduler: 'scheduler', live: 'live', tournaments: 'tournaments', 'admin-board': 'leaderboard', logs: 'logs', appearance: 'appearance', controls: 'appearance', settings: 'settings' }[scene];
 if (adminSection) {
     send('open', { view: 'admin', data: adminData });
     const adm = await import('./admin/admin.js');
@@ -141,7 +143,7 @@ const rows = [{ src: 2, name: 'Rook', placement: 1, status: 'active', score: 0, 
     { src: 6, name: 'Juno', placement: 5, status: 'eliminated', score: 0, extra: 'L1 · 4/8' }];
 if (scene === 'browser') send('open', { view: 'browser' });
 if (scene === 'admin') send('open', { view: 'admin', data: adminData });
-if (scene === 'hud') { send('state', race); send('scoreboard', { rows }); send('toast', { text: 'Registration open: Trivia Night (#1003). Use /events to join!', kind: 'global' }); }
+if (scene === 'hud') { send('state', race); send('scoreboard', { rows }); send('toast', { text: 'Registration open: Trivia Night (#1003). Press F7 to join!', kind: 'global' }); }
 if (scene === 'results') send('results', { name: 'Downtown Street Circuit', winner: 'Rook', remainingMs: 60000, rows: [
     { src: 2, name: 'Rook', placement: 1, status: 'finished', score: 0, kills: 0, finishMs: 187432, points: 110 },
     { src: 3, name: 'Nova', placement: 2, status: 'finished', score: 0, kills: 0, finishMs: 189001, points: 85 },

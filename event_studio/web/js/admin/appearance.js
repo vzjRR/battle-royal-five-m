@@ -7,14 +7,18 @@ import { can, call, render, danger } from './admin.js';
 
 const COLOR_KEYS = ['accent', 'accent2', 'background', 'panel', 'text', 'good', 'warn', 'bad'];
 const LAYOUTS = ['compact', 'docked', 'full'];
+// Same list as server/core/ui.lua (F8 is the console and is never offered).
+const KEYS = [...[1, 2, 3, 4, 5, 6, 7, 9, 10, 11, 12].map((n) => 'F' + n), ...'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'.split(''),
+    ...[0, 1, 2, 3, 4, 5, 6, 7, 8, 9].map((n) => 'NUMPAD' + n), 'HOME', 'END', 'INSERT', 'DELETE', 'PAGEUP', 'PAGEDOWN'];
+const KEY_ACTIONS = ['browser', 'scoreboard', 'reset'];
 
-const S = { loaded: false, loading: false, base: null, draft: null, dirty: false };
+const S = { loaded: false, loading: false, base: null, baseKeys: {}, draft: null, dirty: false };
 
 const clone = (v) => JSON.parse(JSON.stringify(v ?? null));
 
 function blankDraft(overrides) {
     const o = clone(overrides) || {};
-    return { ...o, brand: { ...(o.brand || {}) }, colors: { ...(o.colors || {}) }, categories: { ...(o.categories || {}) } };
+    return { ...o, brand: { ...(o.brand || {}) }, colors: { ...(o.colors || {}) }, categories: { ...(o.categories || {}) }, keys: { ...(o.keys || {}) } };
 }
 
 async function load() {
@@ -24,6 +28,7 @@ async function load() {
     S.loading = false;
     if (!res) return;
     S.base = res.base;
+    S.baseKeys = res.baseKeys || {};
     S.draft = blankDraft(res.overrides);
     S.loaded = true;
     S.dirty = false;
@@ -37,6 +42,7 @@ function effective() {
     const out = { ...base, ...d, brand: { ...(base.brand || {}), ...d.brand }, colors: { ...(base.colors || {}) }, categories: clone(base.categories) || {} };
     for (const [k, v] of Object.entries(d.colors)) if (v) out.colors[k] = v;
     for (const [cat, v] of Object.entries(d.categories)) out.categories[cat] = { ...(out.categories[cat] || {}), ...v };
+    out.keys = keysOf();
     out.themes = store.ui.themes;
     return out;
 }
@@ -79,6 +85,38 @@ function layoutPicker(eff) {
                 ['top-right', 'top-left'].map((p) => h('option', { value: p, selected: eff.hudPosition === p ? 'selected' : null }, t('hud_' + p.replace('-', '_')))))));
 }
 
+function keysOf() {
+    const out = {};
+    for (const a of KEY_ACTIONS) out[a] = S.draft.keys[a] !== undefined ? S.draft.keys[a] : (S.baseKeys[a] ?? false);
+    if (!out.browser) out.browser = 'F7';
+    return out;
+}
+
+function duplicateKeys(keys) {
+    const seen = new Set(), dup = new Set();
+    for (const k of Object.values(keys)) if (k) { if (seen.has(k)) dup.add(k); seen.add(k); }
+    return dup;
+}
+
+function playerControls() {
+    const keys = keysOf();
+    const dup = duplicateKeys(keys);
+    return h('div.col', { style: { gap: '10px' } },
+        h('div.key-grid', KEY_ACTIONS.map((a) => {
+            const id = `ap-key-${a}`;
+            const own = S.draft.keys[a] !== undefined;
+            return h(`div.key-row${keys[a] && dup.has(keys[a]) ? '.bad' : ''}`,
+                h('label', { for: id }, h('b', t('key_' + a)), h('small', t('key_' + a + '_help'))),
+                h('select', { id, onchange: (e) => change((d) => { d.keys[a] = e.target.value === 'off' ? false : e.target.value; }) },
+                    a === 'browser' ? null : h('option', { value: 'off', selected: keys[a] ? null : 'selected' }, t('key_off')),
+                    KEYS.map((k) => h('option', { value: k, selected: keys[a] === k ? 'selected' : null }, k))),
+                h('span.faint', { style: { fontSize: '12px' } }, own ? t('key_config', S.baseKeys[a] || t('key_off')) : t('key_default')),
+                own ? h('button.btn.sm.ghost', { onclick: () => change((d) => { delete d.keys[a]; }), 'aria-label': t('reset') }, ico('refresh', 14)) : h('span'));
+        })),
+        dup.size ? h('div.chip.cancelled', t('err_duplicate_key')) : null,
+        h('div.help', t('keys_help')));
+}
+
 function colorRow(key, eff) {
     const own = S.draft.colors[key];
     const shown = own || (S.base.colors || {})[key] || '';
@@ -87,7 +125,7 @@ function colorRow(key, eff) {
         h('label', { for: id }, t('color_' + key)),
         h('input', { type: 'color', id, value: /^#[0-9a-f]{6}$/i.test(shown) ? shown : '#888888',
             oninput: (e) => change((d) => { d.colors[key] = e.target.value; }) }),
-        h('span.mono.faint', own || t('theme_default')),
+        own ? h('span.mono.faint', own) : h('span.faint', { style: { fontSize: '12px' } }, t('theme_default')),
         own ? h('button.btn.sm.ghost', { onclick: () => change((d) => { delete d.colors[key]; }), 'aria-label': t('reset') }, ico('refresh', 14)) : h('span'));
 }
 
@@ -130,6 +168,7 @@ function categories(eff) {
 }
 
 async function save() {
+    if (duplicateKeys(keysOf()).size) return;
     const res = await call('admin:ui:save', { settings: S.draft }, t('saved'));
     if (res) { S.dirty = false; S.loaded = false; }
 }
@@ -150,6 +189,7 @@ export function appearanceView() {
             editable ? null : h('div.chip.starting', t('read_only')),
             section(t('theme'), themeGallery(eff)),
             section(t('player_window'), layoutPicker(eff)),
+            section(t('player_controls'), playerControls()),
             section(t('colors'), h('div.color-grid', COLOR_KEYS.map((k) => colorRow(k, eff))), h('div.help', t('colors_help'))),
             section(t('branding'), branding(eff)),
             section(t('categories'), categories(eff))),

@@ -10,6 +10,22 @@ local COLOR_KEYS = { 'accent', 'accent2', 'background', 'panel', 'text', 'good',
 local LAYOUTS = { compact = true, docked = true, full = true }
 local HUD_POS = { ['top-right'] = true, ['top-left'] = true }
 
+-- Keys players may be given (FiveM keyboard mapping names). F8 (console), Esc and Enter are never offered.
+local KEYS = {}
+for i = 1, 12 do if i ~= 8 then KEYS['F' .. i] = true end end
+for c in ('ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'):gmatch('.') do KEYS[c] = true end
+for i = 0, 9 do KEYS['NUMPAD' .. i] = true end
+for _, k in ipairs({ 'HOME', 'END', 'INSERT', 'DELETE', 'PAGEUP', 'PAGEDOWN' }) do KEYS[k] = true end
+UI.KEYS = KEYS
+local KEY_ACTIONS = { browser = true, scoreboard = true, reset = true }
+
+---Normalise a key name ('f7' -> 'F7'); nil if it is not allowed.
+function UI.cleanKey(v)
+    if type(v) ~= 'string' then return nil end
+    v = v:upper():gsub('%s', '')
+    return KEYS[v] and v or nil
+end
+
 local function isHex(v)
     return type(v) == 'string' and (v:match('^#%x%x%x$') or v:match('^#%x%x%x%x%x%x$') or v:match('^#%x%x%x%x%x%x%x%x$')) ~= nil
 end
@@ -77,6 +93,27 @@ function UI.validate(s)
             end
         end
     end
+    if s.keys ~= nil then
+        if type(s.keys) ~= 'table' then return nil, 'invalid' end
+        out.keys = {}
+        for action, v in pairs(s.keys) do
+            if not KEY_ACTIONS[action] then return nil, 'invalid' end
+            if v == false and action ~= 'browser' then
+                out.keys[action] = false            -- turned off (the events window key cannot be)
+            elseif v ~= nil and v ~= '' then
+                local key = UI.cleanKey(v)
+                if not key then return nil, 'invalid_key' end
+                out.keys[action] = key
+            end
+        end
+        local used = {}
+        for _, key in pairs(UI.keys(out.keys)) do
+            if key then
+                if used[key] then return nil, 'duplicate_key' end
+                used[key] = true
+            end
+        end
+    end
     if s.categories ~= nil then
         if type(s.categories) ~= 'table' then return nil, 'invalid' end
         out.categories = {}
@@ -110,11 +147,30 @@ function UI.effective()
     if UI.cache then return UI.cache end
     local ui = merge(Config.UI, UI.overrides)
     if not ES.theme(ui.theme) then ui.theme = 'krovix-gilded' end
+    ui.keys = UI.keys()
     ui.themes = ES.allThemes()
     ui.extraThemes = nil
     UI.cache = ui
     return ui
 end
+
+---Player keys in effect: Config.Commands.keys with the saved overrides (or `over`) on top.
+---The events window always has a key.
+function UI.keys(over)
+    local base = (Config.Commands and Config.Commands.keys) or {}
+    over = over or UI.overrides.keys or {}
+    local out = {}
+    for action in pairs(KEY_ACTIONS) do
+        local v = over[action]
+        if v == nil then v = base[action] end
+        if v == false then out[action] = false else out[action] = UI.cleanKey(v) or false end
+    end
+    if not out.browser then out.browser = 'F7' end
+    return out
+end
+
+---The key that opens the events window, for messages such as "press F7 to join".
+function UI.menuKey() return UI.keys().browser end
 
 function UI.load()
     local docs = ES.Storage.loadDocuments('setting') or {}
@@ -143,7 +199,7 @@ function UI.reset(actor)
 end
 
 RPC.register('admin:ui:get', { perm = 'admin.open', rate = { burst = 5, per = 10 } }, function()
-    return { effective = UI.effective(), overrides = UI.overrides, base = Config.UI }
+    return { effective = UI.effective(), overrides = UI.overrides, base = Config.UI, baseKeys = UI.keys({}) }
 end)
 
 RPC.register('admin:ui:save', { perm = 'ui.edit', schema = { settings = 'table' }, rate = { burst = 4, per = 10 } }, function(src, data)

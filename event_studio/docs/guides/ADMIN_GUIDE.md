@@ -25,11 +25,13 @@ Open the Admin Center with `/event`. What you see depends on your role; the serv
   - Per player: Teleport to spawn, Reset (respawn plus vehicle and loadout), +10 points, Remove, Disqualify
   - Add player, Announce to the instance, Announce to everyone (optionally in chat too)
   - Spectate (enters the instance invisibly)
-- **Tournaments:** create one (event definition, format, best-of, seeding, registration time), let players sign up in `/events → Tournaments`, then *Begin*. Matches start on their own, and players who don't show up forfeit.
+- **Tournaments:** create one (event definition, format, best-of, seeding, registration time), let players sign up in the events window (F7) → Tournaments, then *Begin*. Matches start on their own, and players who don't show up forfeit.
 - **Leaderboard:** season points per category.
 - **Logs:** audit, security and lifecycle entries.
-- **Appearance:** choose the design from the gallery, the player window layout (compact, docked or full, and whether players can keep moving with the docked panel), the HUD side, every color, the title, logo and background artwork, and each category's icon and color. Changes preview on your screen immediately; **Save** applies them for every player right away, **Discard** throws them away, **Reset to config** returns to `config/ui.lua`.
-- **Settings:** version, framework, storage and your permissions.
+- **Appearance:** choose the design from the gallery, the player window layout (compact, docked or full, and whether players can keep moving with the docked panel), the HUD side, every color, the title, logo and background artwork, and each category's icon and color. **Player controls** sets the key that opens the events window (default F7), the scoreboard key and the race reset key; pick another key when one clashes with a resource on your server. The saved keys reach every player at once. Changes preview on your screen immediately; **Save** applies them for every player right away, **Discard** throws them away, **Reset to config** returns to `config/ui.lua`.
+- **Settings:** product, developer and rights.
+
+Normal players have no typed commands: they use the events window key (F7 by default) to see events and register, join, leave or spectate. Only staff get `/event`, `/events`, `/eventjoin`, `/eventleave`, `/eventspectate` and `/eventarenafix`.
 
 ## Console commands
 

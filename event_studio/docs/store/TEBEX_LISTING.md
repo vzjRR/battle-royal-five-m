@@ -59,7 +59,7 @@ Pricing (to fill in): monthly price ______ · optional "network" tier for severa
 
 - [ ] 60–90 s trailer: race start countdown → TDM scoreboard → sumo → admin panel → results screen
 - [ ] Screenshots: event browser, HUD in a race, admin live view, event builder, tournament bracket, results
-- [ ] Short install GIF: `ensure event_studio` → `/events`
+- [ ] Short install GIF: `ensure event_studio` → F7
 
 ## Pre-publish checklist
 

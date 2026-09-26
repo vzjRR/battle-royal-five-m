@@ -305,7 +305,7 @@ enter[S.REGISTRATION] = function(self)
     self.deadline = secs(self.def.timing.registration)
     self.flags.startingSoon = false
     if self.def.visibility == 'public' and not self.invite then
-        ES.Announce.global('registrationOpen', 'announce_registration_open', self.def.name, self.id)
+        ES.Announce.global('registrationOpen', 'announce_registration_open', self.def.name, self.id, ES.UI.menuKey())
     end
 end
 

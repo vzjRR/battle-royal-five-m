@@ -41,9 +41,9 @@ add_ace group.admin eventstudio.admin allow
 
 In game:
 
-- `/events` (F7) opens the event browser
-- `/event` opens the Admin Center (needs a staff role)
-- `/eventjoin [id]`, `/eventleave`, `/eventspectate [id]`, `/eventreset` (F9, races), hold `U` for the full scoreboard
+- **Players:** press **F7** to open the events window, where they see every event and register, join, leave or spectate. Players have no typed commands. Other keys: `F9` (races, back to the last checkpoint), hold `U` (full scoreboard).
+- **Staff** (host and above): `/event` opens the Admin Center. `/events`, `/eventjoin [id]`, `/eventleave`, `/eventspectate [id]` and `/eventarenafix` exist only for staff.
+- If F7 (or another key) clashes with a resource on your server, change it in **Admin Center → Appearance → Player controls**. The change reaches every player at once.
 
 ## Documentation
 

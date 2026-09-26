@@ -119,4 +119,4 @@ RegisterCommand('eventstudio', function(src, args)
     local fn = subs[sub]
     if not fn then return reply(src, 'Usage: eventstudio status|selftest|perms [playerId]|list|defs|create <def> [regSeconds]|start <id> [force]|stop <id>|cancel <id>|director on|off') end
     fn(src, args)
-end, false)
+end, true) -- restricted: server console always; in game only with `add_ace group.admin command.eventstudio allow`

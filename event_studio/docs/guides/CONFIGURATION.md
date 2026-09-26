@@ -5,7 +5,7 @@ All settings live in `config/`. Files marked **shared** are also sent to players
 | File | Scope | What it controls |
 |---|---|---|
 | `general.lua` | shared | locale, engine tick, bucket range, default definition values, exit behaviour, join cooldown, anti-cheat tolerances |
-| `commands.lua` | shared | command names and default keys (set a command to `false` to disable it) |
+| `commands.lua` | shared | staff command names (set one to `false` to disable it) and the default player keys (F7 events window, U scoreboard, F9 race reset; Admin Center → Appearance → Player controls overrides them) |
 | `ui.lua` | shared | design (theme), player window layout, colors, branding, artwork, HUD position, scoreboard, category icons/colors |
 | `scoring.lua` | shared | season period and scoring profiles |
 | `framework.lua` | shared | framework adapter, inventory, identifier strategy |

@@ -45,7 +45,7 @@ Run before each release on a test server with 2+ clients.
 | # | Scenario | Expected |
 |---|---|---|
 | 1 | Start resource standalone / ESX / QBCore / Qbox | ready log, correct adapter |
-| 2 | `/events` → join open race | registered, card shows ✓ |
+| 2 | F7 → join open race | registered, card shows ✓ |
 | 3 | Registration ends | teleported into vehicle at grid, frozen, countdown, GO |
 | 4 | Drive checkpoints | markers, blips/route, lap toasts, HUD position |
 | 5 | Stuck → F9 | back at last checkpoint in a new vehicle |

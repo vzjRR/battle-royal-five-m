@@ -414,7 +414,7 @@ function T.create(cfg, actor)
     save(t)
     Log.audit('tournament.created', actor, nil, { id = id, name = t.name })
     if t.registrationEndsAt > os.time() then
-        ES.Announce.global('registrationOpen', 'announce_tournament_open', t.name)
+        ES.Announce.global('registrationOpen', 'announce_tournament_open', t.name, ES.UI.menuKey())
     end
     return true, id
 end

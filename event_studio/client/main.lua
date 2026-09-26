@@ -1,4 +1,4 @@
--- EVENT STUDIO — client boot, commands, key mappings, exports
+-- EVENT STUDIO — client boot, player keys, staff commands, exports
 
 local booted = false
 
@@ -11,6 +11,8 @@ local function boot()
                 ui = res.ui, strings = res.strings, locale = res.locale, version = res.version, staff = res.staff, role = res.role,
                 commands = res.commands, scoring = res.scoring,
             })
+            ES.applyKeys(res.ui and res.ui.keys)
+            if res.staff then ES.registerStaffCommands() end
             booted = true
             return
         end
@@ -65,49 +67,98 @@ function ES.openAdmin()
     end)
 end
 
-local cmds = ES.Config.Commands
-local keys = cmds.keys or {}
+-- Player keys ------------------------------------------------------------------
+-- Players only get keys (default F7 for the events window); typed commands are for staff. Owners change the keys
+-- in Admin Center → Appearance → Player controls, and the change reaches everyone live.
+-- GTA keeps a player's first default for each key-mapping command, so every mapping's internal command carries its
+-- key in the name (es_menu_f7). A new key therefore gets a fresh mapping with the new default; the old one stops acting.
 
-if cmds.browser then
-    RegisterCommand(cmds.browser, ES.openBrowser, false)
-    if keys.browser then RegisterKeyMapping(cmds.browser, 'Events: open browser', 'keyboard', keys.browser) end
+local KEY_ACTIONS = {
+    browser = { cmd = 'es_menu', label = 'Events: open the events window', press = function() ES.openBrowser() end },
+    scoreboard = { cmd = 'es_board', label = 'Events: expanded scoreboard (hold)', hold = true,
+        press = function() if ES.Client.current then ES.NUI.send('scoreboardExpand', { open = true }) end end,
+        release = function() ES.NUI.send('scoreboardExpand', { open = false }) end },
+    reset = { cmd = 'es_reset', label = 'Event: back to the last checkpoint',
+        press = function() if ES.resetToCheckpoint then ES.resetToCheckpoint() end end },
+}
+
+local activeKey = {}     -- action -> key in effect ('F7'), nil when off
+local mapped = {}        -- internal command -> true
+local hidden = {}        -- chat suggestions to hide
+
+local function hideSuggestions()
+    for _, name in ipairs(hidden) do TriggerEvent('chat:removeSuggestion', '/' .. name) end
 end
 
-if cmds.admin then
-    RegisterCommand(cmds.admin, ES.openAdmin, false)
+local function mapKey(action, key)
+    local a = KEY_ACTIONS[action]
+    local name = ('%s_%s'):format(a.cmd, key:lower())
+    if mapped[name] then return end
+    mapped[name] = true
+    local function live() return activeKey[action] == key end
+    if a.hold then
+        RegisterCommand('+' .. name, function() if live() then a.press() end end, false)
+        RegisterCommand('-' .. name, function() a.release() end, false)
+        RegisterKeyMapping('+' .. name, a.label, 'keyboard', key)
+        hidden[#hidden + 1] = '+' .. name
+        hidden[#hidden + 1] = '-' .. name
+    else
+        RegisterCommand(name, function() if live() then a.press() end end, false)
+        RegisterKeyMapping(name, a.label, 'keyboard', key)
+        hidden[#hidden + 1] = name
+    end
 end
+
+---Apply the player keys sent by the server (ui.keys); called on boot and on every appearance change.
+function ES.applyKeys(keys)
+    keys = type(keys) == 'table' and keys or (ES.Config.Commands.keys or {})
+    for action in pairs(KEY_ACTIONS) do
+        local key = type(keys[action]) == 'string' and keys[action]:upper() or nil
+        if action == 'browser' and not key then key = 'F7' end
+        activeKey[action] = key
+        if key then mapKey(action, key) end
+    end
+    hideSuggestions()
+end
+
+-- The chat resource rebuilds its suggestion list whenever a resource starts; hide the internal names again.
+AddEventHandler('onClientResourceStart', function()
+    SetTimeout(1500, hideSuggestions)
+end)
+
+-- Staff commands -----------------------------------------------------------------
+-- Registered only for staff (host and above, decided by the server in client:ready), so normal players do not have
+-- them at all: they open the events window with the key and join, leave or spectate from there.
+
+local staffRegistered = false
 
 local function toast(ok, res, okText)
     ES.NUI.send('toast', { text = ok and okText or ('err_' .. tostring(res)), kind = ok and 'success' or 'error', key = not ok })
 end
 
-if cmds.join then
-    RegisterCommand(cmds.join, function(_, args)
-        ES.rpc('event:join', { id = tonumber(args[1]) }, function(ok, res) toast(ok, res, 'joined') end)
-    end, false)
-end
-
-if cmds.leave then
-    RegisterCommand(cmds.leave, function()
-        if ES.Spectator and ES.Spectator.active then ES.rpc('spectate:stop', {}) return end
-        ES.rpc('event:leave', {}, function(ok, res) if not ok then toast(ok, res) end end)
-    end, false)
-end
-
-if cmds.spectate then
-    RegisterCommand(cmds.spectate, function(_, args)
-        ES.rpc('event:spectate', { id = tonumber(args[1]) }, function(ok, res) if not ok then toast(ok, res) end end)
-    end, false)
-end
-
-if cmds.scoreboard then
-    RegisterCommand('+' .. cmds.scoreboard, function()
-        if ES.Client.current then ES.NUI.send('scoreboardExpand', { open = true }) end
-    end, false)
-    RegisterCommand('-' .. cmds.scoreboard, function()
-        ES.NUI.send('scoreboardExpand', { open = false })
-    end, false)
-    if keys.scoreboard then RegisterKeyMapping('+' .. cmds.scoreboard, 'Events: expanded scoreboard', 'keyboard', keys.scoreboard) end
+function ES.registerStaffCommands()
+    if staffRegistered then return end
+    staffRegistered = true
+    local cmds = ES.Config.Commands
+    if cmds.admin then RegisterCommand(cmds.admin, ES.openAdmin, false) end
+    if cmds.browser then RegisterCommand(cmds.browser, ES.openBrowser, false) end
+    if cmds.join then
+        RegisterCommand(cmds.join, function(_, args)
+            ES.rpc('event:join', { id = tonumber(args[1]) }, function(ok, res) toast(ok, res, 'joined') end)
+        end, false)
+    end
+    if cmds.leave then
+        RegisterCommand(cmds.leave, function()
+            if ES.Spectator and ES.Spectator.active then ES.rpc('spectate:stop', {}) return end
+            ES.rpc('event:leave', {}, function(ok, res) if not ok then toast(ok, res) end end)
+        end, false)
+    end
+    if cmds.spectate then
+        RegisterCommand(cmds.spectate, function(_, args)
+            ES.rpc('event:spectate', { id = tonumber(args[1]) }, function(ok, res) if not ok then toast(ok, res) end end)
+        end, false)
+    end
+    if ES.registerArenaFixCommand then ES.registerArenaFixCommand() end
 end
 
 -- Exports ----------------------------------------------------------------------

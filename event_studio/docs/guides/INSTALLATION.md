@@ -34,6 +34,8 @@ add_principal identifier.license:xxxxxxxx group.eventhost
 
 ESX/QBCore groups can also grant roles; see `config/permissions.lua`.
 
+Typed commands (`/event`, `/events`, `/eventjoin`, …) are registered only for players with a role, so normal players never get them. The console command `eventstudio` (status, selftest, perms…) always works in the server console; to use it in game as well, add `add_ace group.admin command.eventstudio allow`.
+
 4. Start the server. The console should show:
 
 ```
@@ -48,7 +50,7 @@ With oxmysql, the tables are created automatically (`migrations/001_initial.sql`
 
 1. In game, type `/event` to open the Admin Center.
 2. **Routes:** the sample routes use approximate coordinates. Open **Routes & arenas**, press **Check route** on each one and **Apply fixes**; re-place any point marked Problem, or record the route again by driving it.
-3. **Events:** press *Run now* on "Downtown Street Circuit". Players open `/events` (F7) and press *Join*.
+3. **Events:** press *Run now* on "Downtown Street Circuit". Players press **F7** to open the events window and press *Join* (players have no typed commands; if F7 clashes with another resource, change it in **Appearance → Player controls**).
 4. **Scheduler:** turn the example weekly schedules on or off, or create your own.
 
 ## 4. Updating

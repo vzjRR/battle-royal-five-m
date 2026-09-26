@@ -252,7 +252,7 @@ function LoadResourceFile(_, path)
 end
 function PerformHttpRequest(url, cb) Sim.http = Sim.http or {} table.insert(Sim.http, url) if cb then cb(204, '', {}) end end
 function ExecuteCommand(cmd) Sim.executed = Sim.executed or {} table.insert(Sim.executed, cmd) end
-function RegisterCommand(name, fn) Sim.commands[name] = fn end
+function RegisterCommand(name, fn, restricted) Sim.commands[name] = fn Sim.restricted = Sim.restricted or {} Sim.restricted[name] = restricted == true end
 
 function GetHashKey(s)
     s = tostring(s):lower()

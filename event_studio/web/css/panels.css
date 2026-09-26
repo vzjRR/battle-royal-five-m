@@ -131,6 +131,14 @@ button.erow:hover { background: var(--panel); border-color: var(--line-strong); 
 .color-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px 18px; }
 .color-row { display: grid; grid-template-columns: 1fr 44px 90px 30px; align-items: center; gap: 8px; font-size: 13px; }
 .color-row input[type="color"], .tbl input[type="color"] { width: 44px; height: 30px; padding: 2px; cursor: pointer; }
+.key-grid { display: flex; flex-direction: column; gap: 8px; }
+.key-row { display: grid; grid-template-columns: minmax(0, 1fr) 130px 110px 30px; align-items: center; gap: 10px; padding: 8px 10px;
+  border: 1px solid var(--line); border-radius: var(--radius-sm); background: var(--panel-2); }
+.key-row label { display: flex; flex-direction: column; gap: 2px; font-size: 13px; }
+.key-row small { color: var(--text-faint); font-size: 11px; }
+.key-row select { font-family: var(--font-mono); font-weight: 700; }
+.key-row.bad { border-color: var(--bad-line); background: var(--bad-soft); }
+@media (max-width: 720px) { .key-row { grid-template-columns: minmax(0, 1fr) 110px 30px; } .key-row > .faint { display: none; } }
 
 /* Cut-corner themes ------------------------------------------------------------------------ */
 [data-shape="cut"] .shell { clip-path: polygon(var(--cut) 0, 100% 0, 100% calc(100% - var(--cut)), calc(100% - var(--cut)) 100%, 0 100%, 0 var(--cut)); }

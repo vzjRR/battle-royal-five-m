@@ -4,6 +4,10 @@ All notable changes to EVENT STUDIO. Uses [Semantic Versioning](https://semver.o
 
 ## [Unreleased]
 
+### Changed
+- **Typed commands are staff only.** `/event`, `/events`, `/eventjoin`, `/eventleave`, `/eventspectate` and `/eventarenafix` are registered only for players with a staff role; the console command `eventstudio` is restricted (console, or `command.eventstudio` ACE). Players use the events window key (F7) to see events and register, join, leave or spectate.
+- **Player keys can be changed live** in Admin Center → Appearance → Player controls (events window, scoreboard, race reset), with checks for allowed and duplicate keys; announcements name the current key.
+
 ### Added
 - **Route check & repair** (Admin Center → Routes & arenas → Check route, or `/eventarenafix <arena> [apply]`): road routes snap to drivable roads with every leg checked for a road path; boat routes stay on deep open water with legs checked for land; on-foot points move to safe ground outside buildings. Report with per-point and per-leg status; fixes validated by the server (`admin:arena:applyFix`, max 300 m move) and the route marked as checked. Arenas carry a `route` type.
 - **Route editor:** record a route by driving it, road route from the map waypoint (beta), start grid behind you, go-to / move-here / insert / reorder / radius per point, in-world preview. Event builder route picker with Edit route / New route.

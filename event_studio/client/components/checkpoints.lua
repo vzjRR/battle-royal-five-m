@@ -130,9 +130,4 @@ local function reset()
     if not C.data or C.data.allowReset == false then return end
     ES.rpc('event:action', { action = 'reset', data = {} })
 end
-local cmd = ES.Config.Commands and ES.Config.Commands.reset
-if cmd then
-    RegisterCommand(cmd, reset, false)
-    local key = ES.Config.Commands.keys and ES.Config.Commands.keys.reset
-    if key then RegisterKeyMapping(cmd, 'Event: reset to last checkpoint', 'keyboard', key) end
-end
+ES.resetToCheckpoint = reset   -- bound to the player's reset key in client/main.lua

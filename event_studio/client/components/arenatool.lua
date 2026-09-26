@@ -253,8 +253,10 @@ RegisterNUICallback('arena:check', function(data, cb)
     cb({ ok = true })
 end)
 
-local cmd = ES.Config.Commands and ES.Config.Commands.arenaFix
-if cmd then
+-- Staff only: registered from ES.registerStaffCommands (client/main.lua) when the server says the player is staff.
+function ES.registerArenaFixCommand()
+    local cmd = ES.Config.Commands and ES.Config.Commands.arenaFix
+    if not cmd then return end
     RegisterCommand(cmd, function(_, args)
         if not args[1] then return ES.NUI.send('toast', { text = 'Usage: /' .. cmd .. ' <arenaId> [apply]', kind = 'info' }) end
         ES.checkArena(args[1], args[2] == 'apply')

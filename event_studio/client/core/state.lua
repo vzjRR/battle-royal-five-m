@@ -56,6 +56,7 @@ end)
 -- Staff changed the appearance in the Admin Center: apply it live.
 ES.on('ui', function(d)
     if ES.ServerInfo then ES.ServerInfo.ui = d end
+    if ES.applyKeys and type(d) == 'table' then ES.applyKeys(d.keys) end
     ES.NUI.send('ui', d)
 end)
 

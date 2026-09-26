@@ -156,7 +156,7 @@ function listView() {
     const openCount = live.filter((c) => c.status === 'open').length;
     return [
         h('div.scroll.grow.elist', live.length ? live.map(listRow) : h('div.empty', t('no_events'))),
-        h('div.efoot', h('span', t('events_summary', live.length, openCount)), h('span', t('close_hint')))];
+        h('div.efoot', h('span', t('events_summary', live.length, openCount)), h('span', t('close_hint', (store.ui.keys && store.ui.keys.browser) || 'F7')))];
 }
 
 function liveView() {
