@@ -2,6 +2,7 @@
 
 ES.Arena({
     id = 'docks_yard',
+    route = 'foot',
     name = 'Docks Container Yard',
     description = 'Container maze at the port — close to mid-range combat.',
     center = { 1000.0, -3100.0, 5.9 },
@@ -25,6 +26,7 @@ ES.Arena({
 
 ES.Arena({
     id = 'sandy_airfield',
+    route = 'open',
     name = 'Sandy Shores Airfield',
     description = 'Open airfield with hangars: KOTH, domination and CTF.',
     center = { 1530.0, 3190.0, 40.5 },
@@ -53,6 +55,7 @@ ES.Arena({
 
 ES.Arena({
     id = 'senora_desert',
+    route = 'open',
     name = 'Grand Senora Desert',
     description = 'Wide desert for shrinking-zone survival.',
     center = { 2000.0, 3050.0, 47.0 },
@@ -67,6 +70,7 @@ ES.Arena({
 
 ES.Arena({
     id = 'alamo_sea',
+    route = 'water',
     name = 'Alamo Sea Course',
     description = 'Boat race loop on the Alamo Sea.',
     center = { 1200.0, 4000.0, 30.0 },

@@ -25,7 +25,20 @@ local schema = {
     bounds = { type = 'table', optional = true },
     finish = { type = 'table', optional = true },
     tags = { type = 'list', item = 'string', optional = true },
+    -- what the route runs on, used by the route checker: road | water | open (tarmac, off-road) | foot | air
+    route = { type = 'enum', values = { 'road', 'water', 'open', 'foot', 'air' }, optional = true },
+    checked = { type = 'table', optional = true },   -- last route check: { at, by, problems }
 }
+
+---Route type of an arena: explicit `route`, else inferred from its points.
+function Arenas.routeType(a)
+    if a.route then return a.route end
+    if a.checkpoints and #a.checkpoints > 0 then
+        if a.vehicleSpawns and #a.vehicleSpawns > 0 then return 'road' end
+        return 'foot'
+    end
+    return 'open'
+end
 
 local function normPoints(list)
     if not list then return nil end

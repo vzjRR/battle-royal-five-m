@@ -42,8 +42,12 @@ const adminData = {
           options: [{ key: 'weapons', type: 'list', item: 'string', label: 'Weapons', default: ['WEAPON_PISTOL', 'WEAPON_SMG'] }, { key: 'killTarget', type: 'integer', label: 'Kill target', default: 30 }] },
     ],
     definitions: cards.map((c) => ({ id: `def_${c.id}`, name: c.name, mode: c.mode, category: c.category, minPlayers: c.minPlayers, maxPlayers: c.maxPlayers, visibility: 'public', enabled: true, status: 'published', source: 'config' })),
-    arenas: [{ id: 'downtown_circuit', name: 'Downtown Circuit', source: 'config', counts: { spawns: 0, checkpoints: 8, zones: 0, targets: 0, vehicleSpawns: 8 } },
-             { id: 'docks_yard', name: 'Docks Container Yard', source: 'config', counts: { spawns: 8, checkpoints: 0, zones: 1, targets: 0, vehicleSpawns: 0 } }],
+    arenas: [
+        { id: 'downtown_circuit', name: 'Downtown Circuit', source: 'config', route: 'road', checked: { at: now - 7200, problems: 0 }, counts: { spawns: 0, checkpoints: 8, zones: 0, targets: 0, vehicleSpawns: 8 } },
+        { id: 'alamo_sea', name: 'Alamo Sea Course', source: 'storage', route: 'water', checked: { at: now - 3600, problems: 1 }, counts: { spawns: 0, checkpoints: 6, zones: 0, targets: 0, vehicleSpawns: 4 } },
+        { id: 'legion_obstacle', name: 'Legion Square Obstacle Run', source: 'config', route: 'foot', counts: { spawns: 6, checkpoints: 7, zones: 0, targets: 0, vehicleSpawns: 0 } },
+        { id: 'docks_yard', name: 'Docks Container Yard', source: 'config', route: 'foot', counts: { spawns: 8, checkpoints: 0, zones: 1, targets: 4, vehicleSpawns: 0 } },
+        { id: 'sandy_airfield', name: 'Sandy Shores Airfield', source: 'config', route: 'open', counts: { spawns: 6, checkpoints: 0, zones: 3, targets: 0, vehicleSpawns: 4 } }],
     instances: cards, schedules: [{ id: 'friday_street_race', definition: 'street_circuit', rule: { type: 'weekly', days: [5], time: '21:00' }, enabled: true, source: 'config', nextAt: now + 3600 * 5 }],
     upcoming: responses['browser:list'].upcoming, scoringProfiles: ['standard', 'casual', 'competitive'],
     categories: ['racing', 'vehicle', 'combat', 'objective', 'survival', 'hunt', 'obstacle', 'social', 'tournament'],
@@ -94,17 +98,49 @@ send('init', { strings, locale: { code: lang, dir: ['ar', 'he', 'fa', 'ur'].incl
 
 document.body.style.background = 'linear-gradient(180deg, #1b2a44 0%, #3b3a52 42%, #7a5238 60%, #151a24 61%, #0b0e14 100%)';
 const scene = location.hash.slice(1) || 'browser';
+responses['admin:arena:get'] = { id: 'alamo_sea', name: 'Alamo Sea Course', route: 'water', radius: 900, center: { x: 1200, y: 4000, z: 30 },
+    vehicleSpawns: [{ x: 1300, y: 3850, z: 30.4, w: 300 }, { x: 1306, y: 3858, z: 30.4, w: 300 }, { x: 1312, y: 3866, z: 30.4, w: 300 }, { x: 1318, y: 3874, z: 30.4, w: 300 }],
+    checkpoints: [{ x: 1100, y: 3950, z: 30.4, radius: 18 }, { x: 800, y: 4000, z: 30.4, radius: 18 }, { x: 600, y: 4150, z: 30.4, radius: 18 },
+        { x: 900, y: 4300, z: 30.4, radius: 18 }, { x: 1250, y: 4200, z: 30.4, radius: 18 }, { x: 1320, y: 3900, z: 30.4, radius: 20, label: 'Finish' }] };
+responses['admin:definition:get'] = { ...adminData.definitions[0] };
+const adminSection = { dashboard: 'dashboard', events: 'definitions', builder: 'builder', arenas: 'arenas', 'arena-edit': 'arenas', 'arena-check': 'arenas',
+    scheduler: 'scheduler', live: 'live', tournaments: 'tournaments', 'admin-board': 'leaderboard', logs: 'logs', appearance: 'appearance', settings: 'settings' }[scene];
+if (adminSection) {
+    send('open', { view: 'admin', data: adminData });
+    const adm = await import('./admin/admin.js');
+    adm.go(adminSection);
+    if (scene === 'arena-edit') { adm.A.arenaEdit = responses['admin:arena:get']; adm.render(); }
+    if (scene === 'builder') {
+        adm.A.editing = { id: 'alamo_boat_race', name: 'Alamo Sea Boat Race', description: 'Six buoys around the Alamo Sea.', mode: 'race', arena: 'alamo_sea',
+            visibility: 'public', status: 'published', enabled: true, difficulty: 'easy', players: { min: 2, max: 8 }, timing: { registration: 120, duration: 480 }, gameplay: {},
+            options: { laps: 1, vehicle: { model: 'seashark', type: 'boat' } }, scoring: 'standard',
+            rewards: { placement: { 1: [{ type: 'cash', amount: 7500 }, { type: 'item', name: 'trophy_gold', count: 1 }], 2: [{ type: 'cash', amount: 4000 }], 3: [{ type: 'bank', amount: 2000 }] },
+                participation: [{ type: 'cash', amount: 500 }] } };
+        adm.render();
+    }
+    if (scene === 'arena-check') {
+        send('arenaCheck', { id: 'alamo_sea', name: 'Alamo Sea Course', route: 'water', done: true, problems: 1, fixes: [{}, {}, {}], points: [
+            { label: 'center', status: 'kept', note: 'no ground found here, kept as is' },
+            { label: 'vehicleSpawns #1', status: 'ok', note: 'on open water' }, { label: 'vehicleSpawns #2', status: 'fixed', note: 'height set to the water surface' },
+            { label: 'checkpoints #1', status: 'ok', note: 'on open water' }, { label: 'checkpoints #2', status: 'fixed', note: 'moved 42 m onto open water' },
+            { label: 'checkpoints #3', status: 'fixed', note: 'moved 18 m onto open water' }, { label: 'checkpoints #4', status: 'problem', note: 'on land or shallow water and no open water within 200 m' },
+            { label: 'checkpoints #5', status: 'ok', note: 'on open water' }, { label: 'checkpoints #6', status: 'ok', note: 'on open water' }],
+            legs: [{ from: 1, to: 2, status: 'ok', note: '302 m of open water' }, { from: 3, to: 4, status: 'problem', note: 'the straight line crosses land or shallows (4 of 13 samples): move or add a checkpoint' },
+                { from: 5, to: 6, status: 'ok', note: '310 m of open water' }] });
+    }
+}
+if (scene.startsWith('player-')) {
+    send('open', { view: 'browser' });
+    const want = { 'player-upcoming': 1, 'player-board': 2, 'player-cups': 3 }[scene];
+    setTimeout(() => { const tabs = document.querySelectorAll('.tab'); if (tabs[want]) tabs[want].click(); }, 80);
+}
 const race = { id: 1001, name: 'Downtown Street Circuit', mode: 'race', category: 'racing', state: 'ACTIVE', remainingMs: 402000, role: 'participant', selfSrc: 3,
     objective: 'Pass every checkpoint and finish first.', you: { status: 'active', score: 0 }, hud: { lap: 2, laps: 3, checkpoint: 5, checkpoints: 8, position: 2, racers: 6 } };
 const rows = [{ src: 2, name: 'Rook', placement: 1, status: 'active', score: 0, extra: 'L2 · 6/8' }, { src: 3, name: 'Nova', placement: 2, status: 'active', score: 0, extra: 'L2 · 5/8' },
     { src: 4, name: 'Kai', placement: 3, status: 'active', score: 0, extra: 'L2 · 3/8' }, { src: 5, name: 'Vega', placement: 4, status: 'active', score: 0, extra: 'L1 · 8/8' },
     { src: 6, name: 'Juno', placement: 5, status: 'eliminated', score: 0, extra: 'L1 · 4/8' }];
 if (scene === 'browser') send('open', { view: 'browser' });
-if (scene === 'admin' || scene === 'live' || scene === 'builder' || scene === 'tournaments' || scene === 'appearance') {
-    send('open', { view: 'admin', data: adminData });
-    const navWord = { live: 'live', builder: 'builder', tournaments: 'tournament', appearance: 'appearance' }[scene];
-    if (navWord) setTimeout(() => document.querySelectorAll('.nav').forEach((b) => { if (b.textContent.toLowerCase().includes(navWord)) b.click(); }), 50);
-}
+if (scene === 'admin') send('open', { view: 'admin', data: adminData });
 if (scene === 'hud') { send('state', race); send('scoreboard', { rows }); send('toast', { text: 'Registration open: Trivia Night (#1003). Use /events to join!', kind: 'global' }); }
 if (scene === 'results') send('results', { name: 'Downtown Street Circuit', winner: 'Rook', remainingMs: 60000, rows: [
     { src: 2, name: 'Rook', placement: 1, status: 'finished', score: 0, kills: 0, finishMs: 187432, points: 110 },

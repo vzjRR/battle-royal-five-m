@@ -48,7 +48,8 @@ RPC.register('admin:bootstrap', { perm = 'admin.open', rate = { burst = 4, per =
     for _, d in ipairs(ES.Definitions.all()) do defs[#defs + 1] = ES.Definitions.summary(d) end
     local arenas = {}
     for _, a in ipairs(ES.Arenas.all()) do
-        arenas[#arenas + 1] = { id = a.id, name = a.name, source = ES.Arenas.source[a.id],
+        arenas[#arenas + 1] = { id = a.id, name = a.name, source = ES.Arenas.source[a.id], route = ES.Arenas.routeType(a),
+            checked = a.checked and { at = a.checked.at, problems = a.checked.problems } or nil,
             counts = { spawns = a.spawns and #a.spawns or 0, checkpoints = a.checkpoints and #a.checkpoints or 0,
                        zones = a.zones and #a.zones or 0, targets = a.targets and #a.targets or 0,
                        vehicleSpawns = a.vehicleSpawns and #a.vehicleSpawns or 0, objectives = a.objectives and #a.objectives or 0,
@@ -456,7 +457,66 @@ end
 RPC.register('admin:arena:probe', { perm = 'arena.edit', schema = { id = 'id' } }, function(_, data)
     local a = ES.Arenas.get(data.id)
     if not a then return false, 'not_found' end
-    return { id = a.id, name = a.name, points = ES.arenaPoints(a) }
+    local points = ES.arenaPoints(a)
+    for _, p in ipairs(points) do
+        local src = p.key == 'center' and a.center or p.key == 'finish' and a.finish
+            or p.key == 'teamSpawns' and a.teamSpawns[p.team][p.index] or a[p.key][p.index]
+        p.w = src and src.w or nil
+    end
+    return { id = a.id, name = a.name, route = ES.Arenas.routeType(a), points = points }
+end)
+
+local MAX_MOVE, MAX_RISE = 300.0, 120.0
+
+---Apply validated position fixes (x, y, z and optional heading) to an arena copy.
+---Each point may move at most MAX_MOVE metres sideways and MAX_RISE metres up or down.
+function ES.applyArenaFix(a, fixes)
+    local copy = U.deepCopy(a)
+    local applied = 0
+    for _, f in ipairs(fixes) do
+        local target
+        if f.key == 'center' or f.key == 'finish' then
+            target = copy[f.key]
+        elseif f.key == 'teamSpawns' then
+            target = copy.teamSpawns and copy.teamSpawns[f.team or 0] and copy.teamSpawns[f.team][f.index or 0]
+        elseif U.contains(pointKeys, f.key) then
+            target = copy[f.key] and copy[f.key][f.index or 0]
+        end
+        if not target then return false, ('unknown point %s[%s]'):format(tostring(f.key), tostring(f.index)) end
+        for _, k in ipairs({ 'x', 'y', 'z' }) do
+            if type(f[k]) ~= 'number' or f[k] ~= f[k] or math.abs(f[k]) > 20000 then
+                return false, ('fix for %s[%s] has an invalid %s'):format(f.key, tostring(f.index), k)
+            end
+        end
+        local dx, dy = f.x - target.x, f.y - target.y
+        if math.sqrt(dx * dx + dy * dy) > MAX_MOVE or math.abs(f.z - target.z) > MAX_RISE then
+            return false, ('fix for %s[%s] moves the point too far'):format(f.key, tostring(f.index))
+        end
+        target.x, target.y, target.z = U.round(f.x, 2), U.round(f.y, 2), U.round(f.z, 2)
+        if type(f.w) == 'number' and f.w == f.w then target.w = U.round(f.w % 360, 1) end
+        applied = applied + 1
+    end
+    return true, copy, applied
+end
+
+RPC.register('admin:arena:applyFix', {
+    perm = 'arena.edit',
+    schema = { id = 'id', problems = { type = 'integer', min = 0, max = 10000, default = 0 },
+        fixes = { type = 'list', maxItems = 512, item = { type = 'object', fields = {
+            key = { type = 'string', maxLen = 16 }, index = 'integer?', team = 'integer?', x = 'number', y = 'number', z = 'number', w = 'number?',
+        } } } },
+    rate = { burst = 3, per = 10 },
+}, function(src, data)
+    local a = ES.Arenas.get(data.id)
+    if not a then return false, 'not_found' end
+    local ok, res, applied = ES.applyArenaFix(a, data.fixes)
+    if not ok then return false, res end
+    res.checked = { at = os.time(), by = Log.actorLabel(src), problems = data.problems }
+    local okR, err = ES.Arenas.register(res, 'storage')
+    if not okR then return false, err end
+    ES.Storage.saveDocument('arena', a.id, ES.Arenas.get(a.id), Log.actorLabel(src))
+    Log.audit('arena.routefix', src, nil, { id = a.id, applied = applied, problems = data.problems })
+    return true, { applied = applied }
 end)
 
 RPC.register('admin:arena:applyZ', {

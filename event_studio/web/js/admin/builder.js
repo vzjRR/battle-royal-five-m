@@ -85,20 +85,60 @@ function jsonField(def, path, label, value) {
     } }, value !== undefined ? JSON.stringify(value, null, 1) : ''), { full: true, help: 'JSON' });
 }
 
-function rewardRow(def, label, key, place) {
-    const path = place ? `rewards.placement.${place}` : `rewards.${key}`;
-    const list = getPath(def, path);
-    const first = (Array.isArray(list) && list[0]) || {};
-    const update = (patch) => {
-        const e = { ...first, ...patch };
-        if (!e.type || e.type === 'none' || (!e.amount && !e.name)) { setPath(def, path, undefined); return; }
-        setPath(def, path, [e, ...((Array.isArray(list) && list.slice(1)) || [])]);
+const REWARD_TYPES = ['cash', 'bank', 'item', 'xp'];
+
+/** Editable list of reward entries (several per place: e.g. cash + an item). */
+function rewardList(def, path, label) {
+    const list = Array.isArray(getPath(def, path)) ? getPath(def, path) : [];
+    const commit = (next) => setPath(def, path, next.length ? next : undefined);
+    const rows = list.map((e, i) => {
+        const upd = (patch) => { list[i] = { ...e, ...patch }; if (list[i].type !== 'item') { delete list[i].name; delete list[i].count; } else delete list[i].amount; commit(list); render(); };
+        return h(`div.reward-entry${e.type === 'item' ? '.item' : ''}`,
+            h('select', { 'aria-label': t('type'), onchange: (ev) => upd({ type: ev.target.value }) },
+                REWARD_TYPES.map((v) => h('option', { value: v, selected: e.type === v ? 'selected' : null }, t('reward_' + v)))),
+            e.type === 'item'
+                ? [h('input', { placeholder: t('item_name'), value: e.name ?? '', 'aria-label': t('item_name'), oninput: (ev) => { e.name = ev.target.value.trim() || undefined; commit(list); } }),
+                   h('input', { type: 'number', min: 1, placeholder: t('amount'), value: e.count ?? 1, 'aria-label': t('amount'), oninput: (ev) => { e.count = Number(ev.target.value) || 1; commit(list); } })]
+                : h('input', { type: 'number', min: 0, placeholder: t('amount'), value: e.amount ?? '', 'aria-label': t('amount'), oninput: (ev) => { e.amount = Number(ev.target.value) || 0; commit(list); } }),
+            h('button.btn.sm.danger', { 'aria-label': t('remove'), onclick: () => { list.splice(i, 1); commit(list); render(); } }, ico('close', 13)));
+    });
+    return h('div.reward-place',
+        h('div.reward-head', h('b', label), h('div.spacer'),
+            h('button.btn.sm', { onclick: () => { list.push({ type: 'cash', amount: 1000 }); commit(list); render(); } }, ico('plus', 13), t('add_reward'))),
+        rows.length ? rows : h('div.faint.reward-none', t('no_reward')));
+}
+
+function rewardsEditor(def, mode) {
+    const placement = def.rewards.placement || {};
+    const places = Math.max(3, ...Object.keys(placement).map(Number).filter((n) => n > 0));
+    const ordinal = (n) => (n <= 3 ? t(['first_place', 'second_place', 'third_place'][n - 1]) : t('nth_place', n));
+    return h('div.field.full', h('div.rewards-grid',
+        Array.from({ length: places }, (_, i) => rewardList(def, `rewards.placement.${i + 1}`, ordinal(i + 1))),
+        rewardList(def, 'rewards.participation', t('participation')),
+        mode.teams !== 'none' ? rewardList(def, 'rewards.winnerTeam', t('winner_team_reward')) : null),
+        h('div.row', { style: { marginTop: '8px' } },
+            h('button.btn.sm', { onclick: () => { def.rewards.placement = { ...placement, [places + 1]: [] }; render(); } }, ico('plus', 13), t('add_place')),
+            h('span.faint', { style: { fontSize: '12px' } }, t('rewards_help'))));
+}
+
+/** Route / location picker with shortcuts into the route editor. */
+function routePicker(def, arenas, mode) {
+    const cur = A.data.arenas.find((a) => a.id === def.arena);
+    const openEditor = async (id) => {
+        A.returnTo = 'builder';
+        if (id) { const full = await call('admin:arena:get', { id }); if (!full) return; A.arenaEdit = full; }
+        else A.arenaEdit = { id: '', name: def.name ? `${def.name} route` : '', radius: 300, route: (mode.requires || []).includes('checkpoints') ? 'road' : 'open' };
+        go('arenas');
     };
-    return h('div.field', h('label', label), h('div.row',
-        h('select', { style: { width: '110px' }, onchange: (e) => update({ type: e.target.value }) },
-            ['none', 'cash', 'bank', 'item', 'xp'].map((v) => h('option', { value: v, selected: (first.type || 'none') === v ? 'selected' : null }, v))),
-        h('input', { type: 'number', placeholder: t('amount'), value: first.amount ?? first.count ?? '', oninput: (e) => update(first.type === 'item' ? { count: Number(e.target.value) } : { amount: Number(e.target.value) }) }),
-        h('input', { placeholder: 'item name', value: first.name ?? '', oninput: (e) => update({ name: e.target.value || undefined }) })));
+    return field(t('route'), h('div.col', { style: { gap: '6px' } },
+        h('select', { onchange: (e) => { setPath(def, 'arena', e.target.value); render(); } },
+            h('option', { value: '' }, '—'),
+            arenas.map((a) => h('option', { value: a.id, selected: a.id === def.arena ? 'selected' : null },
+                `${a.name} · ${t('route_' + (a.route || 'open'))}${a.checked ? (a.checked.problems ? ` · ${t('check_problems', a.checked.problems)}` : ` · ${t('check_ok')}`) : ` · ${t('not_checked')}`}`))),
+        h('div.row',
+            cur && can('arena.edit') ? h('button.btn.sm', { onclick: () => openEditor(cur.id) }, ico('pencil', 13), t('edit_route')) : null,
+            can('arena.edit') ? h('button.btn.sm', { onclick: () => openEditor(null) }, ico('plus', 13), t('new_route')) : null)),
+        { help: (mode.requires || []).length ? `${t('route_needs')}: ${mode.requires.map((r) => t('list_' + r.replace(/([A-Z])/g, '_$1').toLowerCase() + '_short')).join(', ')}` : '' });
 }
 
 export function builderView() {
@@ -118,6 +158,14 @@ export function builderView() {
         if (payload.players && !payload.players.teamsEnabled) delete payload.players.teams;
         else if (payload.players && !payload.players.teams) payload.players.teams = { count: 2 };
         if (payload.players) delete payload.players.teamsEnabled;
+        // drop empty reward rows and places so the server stores only what pays something
+        const cleanList = (l) => (Array.isArray(l) ? l.filter((e) => e && (e.type === 'item' ? e.name : Number(e.amount) > 0)) : []);
+        if (payload.rewards) {
+            const pl = {};
+            for (const [k, v] of Object.entries(payload.rewards.placement || {})) { const c = cleanList(v); if (c.length) pl[k] = c; }
+            payload.rewards.placement = Object.keys(pl).length ? pl : undefined;
+            for (const k of ['participation', 'winnerTeam']) { const c = cleanList(payload.rewards[k]); payload.rewards[k] = c.length ? c : undefined; }
+        }
         const res = await call('admin:definition:save', { def: payload }, t('saved'));
         if (res) { A.editing = null; await refresh(); go('definitions'); }
     };
@@ -129,7 +177,7 @@ export function builderView() {
         field(t('id'), textIn(def, 'id', { placeholder: 'auto from name', maxlength: 64 })),
         field(t('description'), h('textarea', { rows: 2, oninput: (e) => setPath(def, 'description', e.target.value) }, def.description || ''), { full: true }),
         field(t('mode'), selectIn(def, 'mode', A.data.modes.map((m) => [m.id, m.label]), () => { def.options = {}; render(); }), { help: mode.description }),
-        mode.needsArena ? field(t('arena'), selectIn(def, 'arena', [['', '—'], ...arenas.map((a) => [a.id, a.name])]), { help: (mode.requires || []).length ? `requires: ${mode.requires.join(', ')}` : '' }) : field(t('arena'), h('div.faint', '—')),
+        mode.needsArena ? routePicker(def, arenas, mode) : field(t('route'), h('div.faint', t('no_route_needed'))),
         field(t('category'), selectIn(def, 'category', [['', `(${mode.category})`], ...A.data.categories.map((c) => [c, c])])),
         field(t('visibility'), selectIn(def, 'visibility', [['public', 'public'], ['hidden', 'hidden'], ['staff', 'staff']])),
         field(t('difficulty'), selectIn(def, 'difficulty', ['easy', 'medium', 'hard', 'extreme'].map((d) => [d, t('diff_' + d)]))),
@@ -160,70 +208,10 @@ export function builderView() {
         h('div.fieldset', `${t('scoring')} & ${t('rewards')}`),
         field(t('scoring_profile'), selectIn(def, 'scoring', A.data.scoringProfiles.map((p) => [p, p]))),
         h('div'),
-        rewardRow(def, t('first_place'), null, 1), rewardRow(def, t('second_place'), null, 2),
-        rewardRow(def, t('third_place'), null, 3), rewardRow(def, t('participation'), 'participation'),
+        rewardsEditor(def, mode),
 
         h('div.field.full', h('div.row', h('div.spacer'),
             h('button.btn', { onclick: () => { A.editing = null; go('definitions'); } }, t('cancel')),
             can('definition.edit') ? h('button.btn.primary', { onclick: save }, t('save')) : null))));
 }
 
-// ---------------------------------------------------------------------------------
-// Arena editor
-// ---------------------------------------------------------------------------------
-
-const pointLists = [
-    ['spawns', 'Spawns'], ['vehicleSpawns', 'Vehicle spawns'], ['checkpoints', 'Checkpoints (ordered)'], ['zones', 'Zones'],
-    ['targets', 'Hunt targets'], ['objectives', 'Objectives (flag bases: team 1 / 2)'], ['spectator', 'Spectator points'],
-];
-
-async function myPosition() {
-    const r = await post('admin:position');
-    if (!r || !r.ok) { toast({ text: 'forbidden', kind: 'error' }); return null; }
-    return r.res;
-}
-
-export function arenaView() {
-    const ar = A.arenaEdit;
-    if (!ar) {
-        return h('div.scroll.pad',
-            h('div.row', { style: { marginBottom: '12px' } }, h('div.spacer'), can('arena.edit') ? h('button.btn.primary', { onclick: () => { A.arenaEdit = { id: '', name: '', radius: 150, spawns: [] }; render(); } }, t('new_arena')) : null),
-            h('table.tbl', h('tr', h('th', t('name')), h('th', 'spawns'), h('th', 'checkpoints'), h('th', 'zones'), h('th', 'targets'), h('th', 'source'), h('th', '')),
-                A.data.arenas.map((a) => h('tr', h('td', h('b', a.name), h('div.faint.mono', a.id)), h('td', String(a.counts.spawns)), h('td', String(a.counts.checkpoints)),
-                    h('td', String(a.counts.zones)), h('td', String(a.counts.targets)), h('td', a.source),
-                    h('td', can('arena.edit') ? h('button.btn.sm', { onclick: async () => { const full = await call('admin:arena:get', { id: a.id }); if (full) { A.arenaEdit = full; render(); } } }, t('edit')) : null)))));
-    }
-    const addPoint = async (key, extra = {}) => {
-        const p = await myPosition();
-        if (!p) return;
-        ar[key] = ar[key] || [];
-        ar[key].push({ x: p.x, y: p.y, z: p.z, w: p.w, ...extra });
-        render();
-    };
-    const save = async () => {
-        const payload = JSON.parse(JSON.stringify(ar));
-        for (const k of Object.keys(payload)) if (Array.isArray(payload[k]) && payload[k].length === 0) delete payload[k];
-        const res = await call('admin:arena:save', { arena: payload }, t('saved'));
-        if (res) { A.arenaEdit = null; refresh(); }
-    };
-    const list = (key, label) => h('div.box', { style: { marginBottom: '10px' } },
-        h('div.box-head', label, h('span.faint', `(${(ar[key] || []).length})`), h('div.spacer'),
-            h('button.btn.sm', { onclick: () => addPoint(key, key === 'checkpoints' ? { radius: 12 } : key === 'zones' ? { radius: 15, id: String.fromCharCode(65 + (ar.zones || []).length) } : key === 'targets' ? { radius: 10, label: `Target ${(ar.targets || []).length + 1}` } : key === 'objectives' ? { team: (ar.objectives || []).length + 1 } : {}) }, `＋ ${t('add_point_here')}`)),
-        h('div.point-list', (ar[key] || []).map((p, i) => h('div.row', { style: { padding: '4px 14px' } },
-            h('span.grow', `#${i + 1}  ${p.x.toFixed(1)}, ${p.y.toFixed(1)}, ${p.z.toFixed(1)}${p.w !== undefined ? `  h${Math.round(p.w)}` : ''}${p.radius ? `  r${p.radius}` : ''}${p.team ? `  team ${p.team}` : ''}${p.label ? `  ${p.label}` : ''}`),
-            h('button.btn.sm.ghost', { onclick: () => post('waypoint', p) }, '⌖'),
-            h('button.btn.sm.danger', { onclick: () => { ar[key].splice(i, 1); render(); }, 'aria-label': t('remove') }, ico('close', 14))))));
-    return h('div.scroll.pad',
-        h('div.form', { style: { marginBottom: '14px' } },
-            h('div.field', h('label', t('name')), h('input', { value: ar.name || '', oninput: (e) => { ar.name = e.target.value; } })),
-            h('div.field', h('label', t('id')), h('input', { value: ar.id || '', oninput: (e) => { ar.id = e.target.value; } })),
-            h('div.field', h('label', 'Center'), h('div.row', h('span.mono.grow', ar.center ? `${Number(ar.center.x).toFixed(1)}, ${Number(ar.center.y).toFixed(1)}, ${Number(ar.center.z).toFixed(1)}` : '—'),
-                h('button.btn.sm', { onclick: async () => { const p = await myPosition(); if (p) { ar.center = { x: p.x, y: p.y, z: p.z }; render(); } } }, t('add_point_here')))),
-            h('div.field', h('label', 'Radius / bounds'), h('div.row',
-                h('input', { type: 'number', value: ar.radius || 150, oninput: (e) => { ar.radius = Number(e.target.value); } }),
-                h('label.row', h('input', { type: 'checkbox', checked: !!ar.bounds, onchange: (e) => { ar.bounds = e.target.checked ? { radius: ar.radius } : undefined; } }), 'bounds'))),
-            h('div.field', h('label', 'Finish line (red light)'), h('div.row', h('span.mono.grow', ar.finish ? `${Number(ar.finish.x).toFixed(1)}, ${Number(ar.finish.y).toFixed(1)}` : '—'),
-                h('button.btn.sm', { onclick: async () => { const p = await myPosition(); if (p) { ar.finish = { x: p.x, y: p.y, z: p.z, radius: 10 }; render(); } } }, t('add_point_here'))))),
-        pointLists.map(([k, label]) => list(k, label)),
-        h('div.row', h('div.spacer'), h('button.btn', { onclick: () => { A.arenaEdit = null; render(); } }, t('cancel')), h('button.btn.primary', { onclick: save }, t('save'))));
-}

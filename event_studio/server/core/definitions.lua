@@ -86,10 +86,16 @@ local function validateRewards(r)
         return true
     end
     if r.placement then
+        -- places arrive as numbers (config) or strings (JSON from the Admin Center): store them as numbers
+        local norm = {}
         for place, list in pairs(r.placement) do
-            local ok, err = checkList(list, 'rewards.placement[' .. tostring(place) .. ']')
+            local n = math.tointeger(tonumber(place))
+            if not n or n < 1 or n > 64 then return false, 'rewards.placement: invalid place ' .. tostring(place) end
+            local ok, err = checkList(list, 'rewards.placement[' .. n .. ']')
             if not ok then return false, err end
+            norm[n] = list
         end
+        r.placement = norm
     end
     for _, key in ipairs({ 'participation', 'winnerTeam' }) do
         if r[key] then

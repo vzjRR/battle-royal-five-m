@@ -13,8 +13,10 @@ Open the Admin Center with `/event`. What you see depends on your role; the serv
 
 - **Dashboard:** live/open counts, upcoming schedule, recent events.
 - **Events:** every definition. *Run now* opens registration straight away; *Edit* / *Duplicate* open the builder; toggle to enable or disable.
-- **Event Builder:** basics, players, teams, timing, gameplay, mode options (generated from the selected mode) and rewards per placement.
-- **Arenas:** edit or create locations. Stand where you want a point and press **Add point at my position**. ⌖ sets a waypoint to an existing point.
+- **Event Builder:** basics, players, teams, timing, gameplay, mode options (generated from the selected mode) and rewards. **Route** picks the route or location the event runs on (with its check status); **Edit route** / **New route** open the route editor and come back to the builder. Rewards: any number of rewards per place (cash, bank, item, XP), as many places as you like, a participation reward and, for team modes, a reward for each member of the winning team. Built-in events can be edited too; your version is saved on top of the config.
+- **Routes & arenas:** every route and location with its type (road, water, open ground, on foot, air) and check status.
+  - **Check route** moves you invisibly to every point and uses the game map: road routes are snapped to drivable roads and every leg is checked for a road path; boat routes are kept on open water deep enough for boats and every leg is checked for land; on-foot points are moved to safe ground outside buildings. The report lists each point (OK, Fixed, Problem, Kept) and each leg; **Apply fixes** saves the corrections and marks the route as checked. Points marked Problem need a new position.
+  - **Editor:** **Record by driving** (drive the route; a checkpoint is added every *spacing* metres and at sharp turns, G adds one now, F2 finishes), **From map waypoint** (road routes, beta: checkpoints along the GPS line to your waypoint), **Start grid behind me** (8 start places), and per point: go there, move to my position, insert my position after it, move up/down, radius, remove. **Show in world** draws the points and the route line in the game while you edit.
 - **Scheduler:** turn schedules on or off, create weekly/daily/monthly/one-off/interval schedules, toggle the Event Director.
 - **Live Events:** full control of each instance. The actions marked in red ask for confirmation.
   - Start (needs the minimum player count) / Force start (ignores it)
@@ -44,7 +46,7 @@ eventstudio director on|off
 
 ## Good practice
 
-- Walk each arena once and fix its points before running it publicly.
+- Run **Check route** on every route before using it publicly, and record your own routes by driving them.
 - For races, keep the start/finish checkpoint as the **last** point in the list.
 - Keep `visibility = 'hidden'` for tournament match definitions.
 - Point the Discord `security` webhook at a staff-only channel.

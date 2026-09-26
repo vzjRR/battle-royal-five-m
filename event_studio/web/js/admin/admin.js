@@ -3,9 +3,12 @@
 import { h, $, mount, show, t, errText, fmtClock, fmtDate, fmtRace, categoryOf, placeBadge, statusChip, store, badge, ico } from '../ui.js';
 import { rpc, closePanels } from '../app.js';
 import { toast } from '../hud.js';
-import { builderView, arenaView } from './builder.js';
+import { builderView } from './builder.js';
+import { arenaView, onArenaCheck, onArenaRecorded } from './arenas.js';
+export { onArenaCheck, onArenaRecorded };
 import { appearanceView, onAppearanceUI, discardPreview } from './appearance.js';
 import { logoOf } from '../theme.js';
+import { flagOman } from '../icons.js';
 
 export const A = { data: null, section: 'dashboard', liveId: null, liveTimer: null, logs: [], history: [], players: [], editing: null, board: [] };
 
@@ -325,14 +328,15 @@ function logs() {
 }
 
 function settings() {
-    const d = A.data;
-    return h('div.scroll.pad', h('div.box', h('div.pad.kv',
-        h('span', t('version')), h('b', d.version), h('span', t('role')), h('b', d.role || '—'), h('span', t('framework')), h('b', `${d.framework} (items: ${d.inventory})`),
-        h('span', t('storage')), h('b', d.storage), h('span', t('season')), h('b', d.season), h('span', t('director')), h('b', d.director ? t('enabled') : t('disabled')),
-        h('span', t('mode')), h('b', d.modes.map((m) => m.id).join(', ')), h('span', 'Publisher'), h('b', 'Krovix Store'))),
-        h('div.box', { style: { marginTop: '14px' } }, h('div.box-head', 'Permissions'), h('div.pad.row', { style: { flexWrap: 'wrap' } },
-            Object.keys(d.perms).sort().map((p) => h('span.chip.open', p)))),
-        h('p.faint', { style: { marginTop: '14px' } }, 'Configuration lives in config/*.lua. Themes: web/themes/*.css. See docs/guides for details.'));
+    return h('div.scroll.pad', h('div.about',
+        h('div.about-card',
+            brandLogo(),
+            h('h2.display', 'EVENT STUDIO'),
+            h('p.muted', t('about_tagline')),
+            h('div.about-rows',
+                h('div.about-row', h('span.faint', t('about_developer')), h('b.row', 'vzjRR', h('span.faint', '·'), 'Krovix Team', flagOman(13))),
+                h('div.about-row', h('span.faint', t('about_publisher')), h('b', 'Krovix Store'))),
+            h('p.about-rights', `© ${new Date().getFullYear()} Krovix Store. ${t('about_rights')}`))));
 }
 
 // Shell --------------------------------------------------------------------------
@@ -359,7 +363,7 @@ export function render() {
             h('button.close-x', { onclick: closePanels, 'aria-label': t('close') }, ico('close'))),
         h('div.shell-body',
             h('div.side', sections.map(([key, icon, label]) => h(`button.nav${A.section === key ? '.active' : ''}`, { onclick: () => go(key) }, h('span.ico', ico(icon, 17)), t(label))),
-                h('div.foot', `v${A.data.version} · ${A.data.role || ''}`)),
+                h('div.foot', '© Krovix Store')),
             h('div.main', h('div.main-head', h('h2', t(titleKey)), h('div.spacer'), h('button.btn.sm', { onclick: refresh }, t('refresh'))),
                 h('div.grow', { style: { display: 'flex', flexDirection: 'column', minHeight: 0 } }, views[A.section]())))));
 }

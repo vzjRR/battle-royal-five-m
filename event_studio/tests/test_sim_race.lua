@@ -129,3 +129,58 @@ H.test('leaving mid-race returns the player and keeps the race running', functio
     H.eq(leaver.placement, nil, 'leaver unplaced')
     H.eq(leaver.points, -10, 'abandon penalty')
 end)
+
+H.test('a winner who disconnects after finishing is paid automatically when they come back', function()
+    H.paid = {}
+    local a, b = table.unpack(H.players(2, 7100))
+    local license = Sim.players[a].license
+    local inst = H.createAndJoin('test_race', { a, b })
+    H.toActive(inst)
+    drive(inst, { a })                 -- only a finishes
+    Sim.removePlayer(a)                -- then crashes before the results
+    H.ok(H.waitState(inst, 'ARCHIVED', 60000), 'archived, state=' .. inst.state)
+    H.eq(inst.results[1].placement, 1)
+    H.eq(inst.results[1].status, 'finished')
+    for _, p in ipairs(H.paid) do H.ok(p.src ~= a, 'nothing paid to an offline player') end
+    local waiting = ES.Rewards.pendingFor(license)
+    H.eq(#waiting, 2, 'win and participation are kept for later')
+    -- a second distribute (e.g. restart) must not queue or pay twice
+    ES.Rewards.distribute(inst)
+    H.eq(#ES.Rewards.pendingFor(license), 2)
+    -- back online with a new server id
+    local a2 = 7150
+    Sim.addPlayer(a2, { license = license })
+    H.ok((H.rpc(a2, 'client:ready', {})))
+    Sim.advance(6000)
+    local got = 0
+    for _, p in ipairs(H.paid) do if p.src == a2 then got = got + p.amount end end
+    H.eq(got, 101, 'winner and participation paid on return')
+    H.eq(#ES.Rewards.pendingFor(license), 0, 'queue cleared')
+    H.ok(H.lastPush(a2, 'announce'), 'player told about the late reward')
+    Sim.advance(61000)
+    local again = 0
+    for _, p in ipairs(H.paid) do if p.src == a2 then again = again + 1 end end
+    H.eq(again, 2, 'retry loop does not pay twice')
+    Sim.players[a2], Sim.players[b] = nil, nil
+end)
+
+H.test('a reward that fails (framework not ready) is retried until it succeeds', function()
+    local fail = true
+    local got = {}
+    ES.Rewards.registerType('flaky', function(src, e) if fail then return false end got[#got + 1] = src return true end)
+    assert(ES.Definitions.register({ id = 'test_race_flaky', name = 'Flaky', mode = 'race', arena = 'downtown_circuit',
+        players = { min = 1, max = 8 }, timing = { registration = 30, lobby = 2, countdown = 2, duration = 600, grace = 5, results = 3 },
+        options = { laps = 1 }, rewards = { placement = { [1] = { { type = 'flaky', amount = 5 } } } } }))
+    local a = H.players(1, 7200)[1]
+    local inst = H.createAndJoin('test_race_flaky', { a })
+    H.toActive(inst)
+    drive(inst, { a })
+    H.ok(H.waitState(inst, 'ARCHIVED', 60000))
+    H.eq(#got, 0)
+    H.eq(#ES.Rewards.pendingFor(Sim.players[a].license), 1, 'failed payout queued')
+    fail = false
+    Sim.advance(61000)                 -- retry loop
+    H.eq(#got, 1, 'paid by the retry loop')
+    H.eq(#ES.Rewards.pendingFor(Sim.players[a].license), 0)
+    Sim.players[a] = nil
+end)

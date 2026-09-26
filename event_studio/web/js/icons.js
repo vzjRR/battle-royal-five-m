@@ -41,6 +41,7 @@ const P = {
     gauge: ['M4 16a8 8 0 1 1 16 0', 'M12 16l4-5'],
     medal: ['c12,15,5', 'M8.5 3L12 10l3.5-7'],
     signin: ['M12 3v12', 'M7 10l5 5 5-5', 'M5 21h14'],
+    plus: ['M12 5v14', 'M5 12h14'],
 };
 
 const NS = 'http://www.w3.org/2000/svg';
@@ -82,3 +83,20 @@ export function glyph(name, size) {
 }
 
 export const ICON_NAMES = Object.keys(P);
+
+/** Flag of Oman (emoji flags do not render in FiveM's browser on Windows). */
+export function flagOman(height = 14) {
+    const svg = document.createElementNS(NS, 'svg');
+    svg.setAttribute('viewBox', '0 0 24 12');
+    svg.setAttribute('height', height);
+    svg.setAttribute('width', height * 2);
+    svg.setAttribute('role', 'img');
+    svg.setAttribute('aria-label', 'Oman');
+    svg.classList.add('flag');
+    for (const [x, y, w, hh, fill] of [[0, 0, 24, 4, '#ffffff'], [0, 4, 24, 4, '#db161b'], [0, 8, 24, 4, '#008000'], [0, 0, 7, 12, '#db161b']]) {
+        const r = document.createElementNS(NS, 'rect');
+        r.setAttribute('x', x); r.setAttribute('y', y); r.setAttribute('width', w); r.setAttribute('height', hh); r.setAttribute('fill', fill);
+        svg.appendChild(r);
+    }
+    return svg;
+}

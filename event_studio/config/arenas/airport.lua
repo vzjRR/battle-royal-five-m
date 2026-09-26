@@ -2,6 +2,7 @@
 
 ES.Arena({
     id = 'lsia_drag',
+    route = 'open',
     name = 'LSIA Drag Strip',
     description = 'Straight-line sprint on the airport runway.',
     center = { -1300.0, -2500.0, 13.9 },
@@ -15,6 +16,7 @@ ES.Arena({
 
 ES.Arena({
     id = 'lsia_time_trial',
+    route = 'open',
     name = 'LSIA Time Trial',
     description = 'Technical loop around taxiways.',
     center = { -1250.0, -2700.0, 13.9 },
@@ -29,6 +31,7 @@ ES.Arena({
 
 ES.Arena({
     id = 'lsia_sumo',
+    route = 'open',
     name = 'LSIA Sumo Ring',
     description = 'Flat tarmac ring — leave the circle and you are out.',
     center = { -1150.0, -2900.0, 13.9 },
@@ -42,6 +45,7 @@ ES.Arena({
 
 ES.Arena({
     id = 'lsia_derby',
+    route = 'open',
     name = 'LSIA Derby Bowl',
     description = 'Larger tarmac area for demolition derby.',
     center = { -1250.0, -3050.0, 13.9 },
@@ -55,6 +59,7 @@ ES.Arena({
 
 ES.Arena({
     id = 'lsia_runway_field',
+    route = 'open',
     name = 'LSIA Runway Field',
     description = 'Start line and finish line 120 m apart for Red Light, Green Light.',
     center = { -1100.0, -2640.0, 13.9 },

@@ -103,6 +103,81 @@ function Rewards.preview(def)
     return table.concat(parts, ' + ')
 end
 
+-- Pending payouts ---------------------------------------------------------
+-- A reward that cannot be paid right now (the player disconnected after finishing, or the framework has not
+-- loaded their character yet) is kept in storage and paid automatically when they are online again.
+
+local PENDING = 'payout_pending'
+local pendingIds = {}
+
+local function docId(identifier) return (tostring(identifier or ''):gsub('[^%w:_%-]', '')):sub(1, 64) end
+
+function Rewards.loadPending()
+    pendingIds = {}
+    for id, doc in pairs(ES.Storage.loadDocuments(PENDING) or {}) do
+        if type(doc) == 'table' and doc.entries and #doc.entries > 0 then pendingIds[id] = true end
+    end
+end
+
+function Rewards.pendingFor(identifier)
+    local doc = (ES.Storage.loadDocuments(PENDING) or {})[docId(identifier)]
+    return doc and doc.entries or {}
+end
+
+local function addPending(identifier, item)
+    local id = docId(identifier)
+    if id == '' then return end
+    local doc = (ES.Storage.loadDocuments(PENDING) or {})[id] or { identifier = identifier, entries = {} }
+    doc.entries[#doc.entries + 1] = item
+    ES.Storage.saveDocument(PENDING, id, doc)
+    pendingIds[id] = true
+end
+
+---Pay everything waiting for this player. Entries that still fail stay queued.
+function Rewards.deliverPending(src)
+    if not next(pendingIds) or not GetPlayerName(tostring(src)) then return 0 end
+    local identifier = ES.Bridge.getIdentifier(src)
+    local id = docId(identifier)
+    if not pendingIds[id] then return 0 end
+    local doc = (ES.Storage.loadDocuments(PENDING) or {})[id]
+    if not doc or not doc.entries then pendingIds[id] = nil return 0 end
+    local keep, received = {}, {}
+    for _, item in ipairs(doc.entries) do
+        local ctx = item.ctx or {}
+        if Rewards.pay(src, item.e, ctx) then
+            ES.Storage.markPayout(item.key, 'paid')
+            received[#received + 1] = Rewards.describe(item.e)
+            TriggerEvent('event_studio:rewarded', ctx.instanceId, src, item.e)
+            Log.record('info', 'reward.paid', src, ctx.instanceId, { reward = item.e, placement = ctx.placement, late = true })
+        else
+            keep[#keep + 1] = item
+        end
+    end
+    if #keep > 0 then
+        doc.entries = keep
+        ES.Storage.saveDocument(PENDING, id, doc)
+    else
+        ES.Storage.deleteDocument(PENDING, id)
+        pendingIds[id] = nil
+    end
+    if #received > 0 then
+        ES.push(src, 'announce', { text = L('reward_received_late', table.concat(received, ', ')), kind = 'success' })
+    end
+    return #received
+end
+
+---Retry loop: every minute, pay online players who have something waiting.
+function Rewards.startRetryLoop()
+    Citizen.CreateThread(function()
+        while true do
+            Citizen.Wait(60000)
+            if next(pendingIds) then
+                for _, s in ipairs(GetPlayers()) do pcall(Rewards.deliverPending, tonumber(s)) end
+            end
+        end
+    end)
+end
+
 ---Rewards for an instance after RESULTS. Idempotent via the storage ledger.
 function Rewards.distribute(inst)
     if not Config.Rewards.enabled then return end
@@ -112,10 +187,13 @@ function Rewards.distribute(inst)
     local paidCount = 0
 
     for _, row in ipairs(inst.results) do
-        local eligible = row.everActive and not row.removed and row.status ~= 'disqualified'
-            and row.status ~= 'left' and row.status ~= 'disconnected'
+        -- players who left on purpose or were disqualified get nothing; a player who finished or placed and then
+        -- lost connection still earns their reward (paid when they are back online)
+        local eligible = row.everActive and not row.removed and row.status ~= 'disqualified' and row.status ~= 'left'
+            and (row.status ~= 'disconnected' or row.placement ~= nil)
         local src = row.src
-        if eligible and src and GetPlayerName(tostring(src)) then
+        local online = src and GetPlayerName(tostring(src)) ~= nil
+        if eligible then
             local entries = {}
             local placeList = row.placement and r.placement and (r.placement[row.placement] or r.placement[tostring(row.placement)])
             if placeList then
@@ -136,21 +214,23 @@ function Rewards.distribute(inst)
             for _, item in ipairs(entries) do
                 local key = ('%d:%s:%s:%d'):format(inst.id, row.identifier, item.kind, item.idx)
                 if ES.Storage.claimPayout(key, inst.id, row.identifier, item.e) then
-                    local ok = Rewards.pay(src, item.e, ctx)
-                    ES.Storage.markPayout(key, ok and 'paid' or 'failed')
+                    local ok = online and Rewards.pay(src, item.e, ctx)
+                    ES.Storage.markPayout(key, ok and 'paid' or 'pending')
+                    if not ok then
+                        addPending(row.identifier, { key = key, e = item.e, ctx = ctx })
+                        Log.record('info', 'reward.pending', src, inst.id, { reward = item.e, name = row.name, online = online })
+                    end
                     if ok then
                         paidCount = paidCount + 1
                         received[#received + 1] = Rewards.describe(item.e)
                         TriggerEvent('event_studio:rewarded', inst.id, src, item.e)
                         Log.record('info', 'reward.paid', src, inst.id, { reward = item.e, placement = row.placement })
-                    else
-                        Log.warn('#%d reward %s for %s failed', inst.id, item.e.type, row.name)
                     end
                 else
                     Log.warn('#%d duplicate payout prevented (%s)', inst.id, key)
                 end
             end
-            if #received > 0 then
+            if online and #received > 0 then
                 ES.push(src, 'announce', { text = L('reward_received', table.concat(received, ', ')), kind = 'success' })
             end
         end

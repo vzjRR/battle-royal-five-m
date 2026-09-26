@@ -5,6 +5,10 @@ All notable changes to EVENT STUDIO. Uses [Semantic Versioning](https://semver.o
 ## [Unreleased]
 
 ### Added
+- **Route check & repair** (Admin Center → Routes & arenas → Check route, or `/eventarenafix <arena> [apply]`): road routes snap to drivable roads with every leg checked for a road path; boat routes stay on deep open water with legs checked for land; on-foot points move to safe ground outside buildings. Report with per-point and per-leg status; fixes validated by the server (`admin:arena:applyFix`, max 300 m move) and the route marked as checked. Arenas carry a `route` type.
+- **Route editor:** record a route by driving it, road route from the map waypoint (beta), start grid behind you, go-to / move-here / insert / reorder / radius per point, in-world preview. Event builder route picker with Edit route / New route.
+- **Rewards:** several rewards per place, any number of places, participation and winning-team rewards in the builder; reward places normalised to numbers. Winners who disconnect after finishing and payouts that fail (character not loaded) are queued and paid automatically when the player is online (retry every minute).
+- **Settings** now shows only the product, developer (vzjRR, Krovix Team) and rights; no technical details.
 - **Krovix design system in the UI:** 8 designs (Krovix Gilded default, Sapphire, Obsidian, Emerald, Crimson, Arctic, Classic, Light), bundled fonts, built-in line icons in place of emoji, panel artwork, cut-corner shapes.
 - **Admin Center → Appearance:** live design, layout, color, branding, artwork and category icon changes, saved on the server and pushed to every player (`admin:ui:get/save/reset`, permission `ui.edit`).
 - **Player window layouts:** compact (default), docked (optionally keep moving while open) and full.

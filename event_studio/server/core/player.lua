@@ -34,6 +34,7 @@ end
 RPC.register('client:ready', { public = true, rate = { burst = 3, per = 30 } }, function(src)
     local level, role = ES.Perm.level(src)
     local recovery = ES.Manager.onClientReady(src)
+    Citizen.CreateThread(function() Citizen.Wait(5000) ES.Rewards.deliverPending(src) end)
     return {
         version = ES.version, ui = ES.UI.effective(), commands = Config.Commands, strings = ES.uiStrings(), locale = ES.localeInfo(),
         framework = ES.Bridge.name, staff = level > 0, role = role, recovery = recovery,

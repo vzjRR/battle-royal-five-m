@@ -136,3 +136,40 @@ button.erow:hover { background: var(--panel); border-color: var(--line-strong); 
 [data-shape="cut"] .shell { clip-path: polygon(var(--cut) 0, 100% 0, 100% calc(100% - var(--cut)), calc(100% - var(--cut)) 100%, 0 100%, 0 var(--cut)); }
 [data-shape="cut"] :is(.card, .erow, .box, .stat, .theme-card, .layout-card, .upcoming-row) { clip-path: polygon(10px 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%, 0 10px); }
 [data-shape="cut"] :is(.btn.primary, .tab.active, .badge, .badge-lg, .card-banner .icon, .brand .logo) { clip-path: polygon(8px 0, 100% 0, 100% calc(100% - 8px), calc(100% - 8px) 100%, 0 100%, 0 8px); }
+
+/* Arenas: route editor rows and route check report ------------------------------------------ */
+.point-box .box-head { flex-wrap: wrap; }
+.point-list { max-height: 260px; }
+.point-row { display: flex; align-items: center; gap: 4px; padding: 5px 12px; border-bottom: 1px solid var(--line); font-size: 12px; }
+.point-row:last-child { border-bottom: 0; }
+.pr-num { width: 26px; color: var(--accent); font-weight: 800; }
+.pr-radius { width: 64px; padding: 4px 6px; font-size: 12px; }
+.point-row .btn.sm { padding: 4px 7px; }
+.empty-box .box-head { border-bottom: 0; }
+.check-box { border-color: var(--edge); }
+.check-grid { display: grid; grid-template-columns: minmax(0, 1fr); gap: 0; max-height: 320px; overflow: auto; }
+.check-grid .tbl + .tbl { border-top: 1px solid var(--line-strong); }
+.check-grid .tbl td { font-size: 12px; padding: 6px 10px; }
+.check-grid .tbl:only-child { grid-column: 1 / -1; }
+
+/* Event builder: rewards ----------------------------------------------------------------------- */
+.rewards-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 10px; }
+.reward-place { display: flex; flex-direction: column; gap: 6px; padding: 10px 12px; border-radius: var(--radius); border: 1px solid var(--line); background: var(--panel-2); }
+.reward-head { display: flex; align-items: center; gap: 8px; font-size: 13px; }
+.reward-entry { display: grid; grid-template-columns: 96px minmax(0, 1fr) auto; gap: 6px; align-items: center; }
+.reward-entry.item { grid-template-columns: 96px minmax(0, 1fr) 64px auto; }
+.reward-entry select, .reward-entry input { padding: 6px 8px; font-size: 12px; }
+.reward-none { font-size: 12px; padding: 4px 0; }
+
+/* Settings: about ------------------------------------------------------------------------------ */
+.about { min-height: 100%; display: grid; place-items: center; padding: 20px 0; }
+.about-card { width: min(460px, 100%); display: flex; flex-direction: column; align-items: center; gap: 12px; text-align: center; padding: 30px 28px;
+    border-radius: var(--radius-lg); border: 1px solid var(--edge); background: var(--panel); box-shadow: var(--glow); }
+.about-card .logo { width: 72px; height: 72px; border-radius: var(--radius); display: grid; place-items: center; overflow: hidden; flex-shrink: 0; }
+.about-card .logo img { width: 100%; height: 100%; object-fit: cover; }
+.about-card h2 { font-size: 22px; letter-spacing: .12em; }
+.about-rows { width: 100%; display: flex; flex-direction: column; margin-top: 6px; border-top: 1px solid var(--line); }
+.about-row { display: flex; justify-content: space-between; align-items: center; gap: 12px; padding: 12px 2px; border-bottom: 1px solid var(--line); font-size: 14px; }
+.about-rights { font-size: 12px; color: var(--text-faint); margin-top: 4px; }
+.flag { border-radius: 2px; box-shadow: 0 0 0 1px rgba(255, 255, 255, .15); }
+.editor-foot { position: sticky; bottom: -20px; margin: 0 -22px -20px; padding: 12px 22px; background: var(--bg-solid); border-top: 1px solid var(--line-strong); z-index: 2; }

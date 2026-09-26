@@ -106,3 +106,73 @@ H.test('after an event ends, "left" is the last message a participant gets (no s
         for _, st in ipairs(H.pushes(s, 'state')) do H.no(st.state == 'ARCHIVED', 'ARCHIVED snapshot sent') end
     end
 end)
+
+H.test('route check: probe reports the route type; applyFix moves points within limits, keeps headings and marks the route checked', function()
+    local admin = H.players(1, 70)[1]
+    H.admin(admin)
+    local ok, probe = H.rpc(admin, 'admin:arena:probe', { id = 'alamo_sea' })
+    H.ok(ok)
+    H.eq(probe.route, 'water')
+    local vs
+    for _, p in ipairs(probe.points) do if p.key == 'vehicleSpawns' and p.index == 1 then vs = p end end
+    H.eq(vs.w, 300.0, 'probe carries headings')
+    local cp1 = ES.Arenas.get('alamo_sea').checkpoints[1]
+    local okA, res = H.rpc(admin, 'admin:arena:applyFix', { id = 'alamo_sea', problems = 1, fixes = {
+        { key = 'checkpoints', index = 1, x = cp1.x + 40.0, y = cp1.y - 30.0, z = 30.4 },
+        { key = 'vehicleSpawns', index = 2, x = 1310.0, y = 3860.0, z = 30.4, w = 295.0 } } })
+    H.ok(okA, tostring(res))
+    H.eq(res.applied, 2)
+    local a = ES.Arenas.get('alamo_sea')
+    H.eq(a.checkpoints[1].x, cp1.x + 40.0)
+    H.eq(a.checkpoints[1].radius, 18.0, 'point metadata kept')
+    H.eq(a.vehicleSpawns[2].w, 295.0)
+    H.eq(a.checked.problems, 1)
+    H.ok(a.checked.at and a.checked.by, 'check recorded')
+    H.ok(ES.Storage.loadDocuments('arena').alamo_sea, 'saved')
+    Sim.advance(4000)
+    -- too far, bad values, unknown points
+    local far = H.rpc(admin, 'admin:arena:applyFix', { id = 'alamo_sea', fixes = { { key = 'checkpoints', index = 2, x = 5000.0, y = 4000.0, z = 30.0 } } })
+    local nan = H.rpc(admin, 'admin:arena:applyFix', { id = 'alamo_sea', fixes = { { key = 'checkpoints', index = 2, x = 0 / 0, y = 4000.0, z = 30.0 } } })
+    Sim.advance(4000)
+    local unk = H.rpc(admin, 'admin:arena:applyFix', { id = 'alamo_sea', fixes = { { key = 'bogus', index = 1, x = 1.0, y = 1.0, z = 1.0 } } })
+    H.no(far) H.no(nan) H.no(unk)
+    -- the admin list shows route type and check status
+    local okB, boot = H.rpc(admin, 'admin:bootstrap', {})
+    H.ok(okB)
+    for _, e in ipairs(boot.arenas) do
+        if e.id == 'alamo_sea' then H.eq(e.route, 'water') H.eq(e.checked.problems, 1) end
+        if e.id == 'downtown_circuit' then H.eq(e.route, 'road') end
+    end
+    -- the boat race still validates on the corrected route
+    H.ok(ES.Definitions.validate(ES.Util.deepCopy(ES.Definitions.get('alamo_boat_race'))))
+    local user = H.players(1, 71)[1]
+    local okU, err = H.rpc(user, 'admin:arena:applyFix', { id = 'alamo_sea', fixes = {} })
+    H.no(okU) H.eq(err, 'forbidden')
+end)
+
+H.test('route type is inferred when an arena does not set one', function()
+    H.eq(ES.Arenas.routeType({ checkpoints = { {} }, vehicleSpawns = { {} } }), 'road')
+    H.eq(ES.Arenas.routeType({ checkpoints = { {} }, spawns = { {} } }), 'foot')
+    H.eq(ES.Arenas.routeType({ spawns = { {} } }), 'open')
+    H.eq(ES.Arenas.routeType({ route = 'air', checkpoints = { {} } }), 'air')
+end)
+
+H.test('staff can change the rewards of a built-in event; the change is validated and saved', function()
+    local admin = H.players(1, 80)[1]
+    H.admin(admin)
+    local d = ES.Util.deepCopy(ES.Definitions.get('street_circuit'))
+    d.rewards = { placement = { ['1'] = { { type = 'cash', amount = 7777 }, { type = 'item', name = 'trophy', count = 1 } }, ['4'] = { { type = 'bank', amount = 500 } } },
+                  participation = { { type = 'cash', amount = 250 } } }
+    local ok, res = H.rpc(admin, 'admin:definition:save', { def = d })
+    H.ok(ok, tostring(res))
+    local saved = ES.Definitions.get('street_circuit')
+    H.eq(saved.rewards.placement[1][1].amount, 7777)
+    H.eq(saved.rewards.placement[1][2].name, 'trophy')
+    H.eq(saved.rewards.participation[1].amount, 250)
+    H.ok(ES.Storage.loadDocuments('definition').street_circuit, 'saved as an override of the config preset')
+    H.eq(ES.Rewards.preview(saved), '$7,777 + 1x trophy', 'browser card shows the new reward')
+    Sim.advance(3000)
+    local bad = ES.Util.deepCopy(saved)
+    bad.rewards = { placement = { ['1'] = { { type = 'cash', amount = 'lots' } } } }
+    H.no((H.rpc(admin, 'admin:definition:save', { def = bad })), 'invalid reward refused')
+end)

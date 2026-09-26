@@ -5,6 +5,7 @@
 
 ES.Arena({
     id = 'downtown_circuit',
+    route = 'road',
     name = 'Downtown Circuit',
     description = 'Street loop around Pillbox Hill and Legion Square.',
     center = { 215.0, -800.0, 30.7 },
@@ -25,6 +26,7 @@ ES.Arena({
 
 ES.Arena({
     id = 'legion_obstacle',
+    route = 'foot',
     name = 'Legion Square Obstacle Run',
     description = 'On-foot checkpoint course around Legion Square.',
     center = { 195.2, -933.8, 30.7 },
@@ -42,6 +44,7 @@ ES.Arena({
 
 ES.Arena({
     id = 'city_landmarks',
+    route = 'foot',
     name = 'Los Santos Landmarks',
     description = 'Scavenger targets at famous landmarks across the city.',
     center = { -300.0, -600.0, 33.0 },

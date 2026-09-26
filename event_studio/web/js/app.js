@@ -58,6 +58,8 @@ const handlers = {
         admin.onUI();
     },
     close: () => closePanels(),
+    arenaCheck: (d) => admin.onArenaCheck(d),
+    arenaRecorded: (d) => admin.onArenaRecorded(d),
     open(d) {
         if (d.view === 'browser') browser.open();
         if (d.view === 'admin') admin.open(d.data);
