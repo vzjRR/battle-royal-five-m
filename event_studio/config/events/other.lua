@@ -174,3 +174,57 @@ ES.Definition({
     players = { min = 3, max = 16 }, timing = { registration = 120, duration = 600 },
     scoring = 'casual', rewards = podium,
 })
+
+-- V2 PACK 2 (hunts, packages, tag, attack/defense, memory) --------------
+
+ES.Definition({
+    id = 'bounty_hunt', name = 'Bounty Hunt', mode = 'bounty', arena = 'docks_yard',
+    description = 'The leader is marked on the map. Claim the bounty for big points.',
+    players = { min = 3, max = 16 }, timing = { registration = 150, duration = 600 },
+    options = { style = 'bounty' }, rewards = podium,
+})
+
+ES.Definition({
+    id = 'assassin_hunt', name = 'Assassin Hunt', mode = 'bounty', arena = 'docks_yard',
+    description = 'Everyone gets one secret target. Kill the wrong person and you pay for it.',
+    difficulty = 'hard', players = { min = 4, max = 16 }, timing = { registration = 150, duration = 600 },
+    options = { style = 'assassin', scoreTarget = 25 }, rewards = podium,
+})
+
+ES.Definition({
+    id = 'deliver_the_package', name = 'Deliver the Package', mode = 'package', arena = 'docks_yard',
+    description = 'Grab packages from the corners of the yard and bring them to the center.',
+    players = { min = 2, max = 16 }, timing = { registration = 150, duration = 600 },
+    options = { style = 'deliver', packages = 3 }, rewards = podium,
+})
+
+ES.Definition({
+    id = 'hold_the_package', name = 'Hold the Package', mode = 'package', arena = 'docks_yard',
+    description = 'One package. Hold it as long as you can — everyone is coming for you.',
+    players = { min = 3, max = 16 }, timing = { registration = 150, duration = 480 },
+    options = { style = 'hold', scoreTarget = 120 }, rewards = podium,
+})
+
+ES.Definition({
+    id = 'vehicle_tag', name = 'Vehicle Tag', mode = 'vehicle_tag', arena = 'lsia_derby',
+    description = 'One car is IT. Bump someone to pass it on.',
+    players = { min = 3, max = 8 }, timing = { registration = 120, duration = 360 },
+    scoring = 'casual', rewards = podium,
+})
+
+ES.Definition({
+    id = 'airfield_assault', name = 'Airfield Assault', mode = 'koth', arena = 'sandy_airfield',
+    description = 'Red attacks Alpha, Bravo, Charlie in order. Blue must hold until time runs out.',
+    players = { min = 4, max = 16, teams = { count = 2, auto = true, names = { 'Attackers', 'Defenders' } } },
+    timing = { registration = 180, duration = 600 },
+    options = { style = 'attack', captureSeconds = 10, scoreTarget = 0 },
+    rewards = { placement = { [1] = { { type = 'cash', amount = 6000 } } }, participation = { { type = 'cash', amount = 500 } } },
+})
+
+ES.Definition({
+    id = 'memory_challenge', name = 'Memory Challenge', mode = 'trivia',
+    description = 'Watch the sequence. Pick the right order.',
+    players = { min = 2, max = 64 }, timing = { registration = 120, lobby = 5 },
+    options = { questionSet = 'memory', count = 5, secondsPerQuestion = 12 },
+    scoring = 'casual', rewards = podium,
+})

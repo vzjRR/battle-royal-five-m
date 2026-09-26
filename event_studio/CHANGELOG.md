@@ -9,6 +9,9 @@ All notable changes to EVENT STUDIO. Uses [Semantic Versioning](https://semver.o
 - `tools/build_release.py`: release builder with protection and compliance checks and escrow-ready zip output.
 - **Roles component** (per-role health, armor, weapons; HUD role badge).
 - **Modes:** `juggernaut`, `vip` (Protect the VIP), `hunters` (Hunters vs Runners, infection), `keep_moving` (server-side speed check), `musical_chairs` (dynamic zones). 5 new presets; catalog V1 coverage 79 → 84 of 119.
+- **V2 pack 2:** `bounty` mode (Bounty Hunt + Assassin Hunt with private target ring), `package` mode (Deliver the Package / Hold the Package), `vehicle_tag` mode, KOTH `style=attack` (Attack vs Defense), trivia memory questions. 7 new presets (48 total); catalog V1 coverage 84 → 92 of 119.
+- **Tournaments:** double elimination (grand final + reset) and Swiss (no rematches, one bye each, Buchholz tie-break).
+- **Self-test** (`eventstudio selftest`) and in-game arena Z-fix tool (`/eventarenafix`).
 - **Security fuzzing** (`tests/test_fuzz.lua`): every RPC with hostile payloads as player and admin; random actions in every mode.
 - **Offline benchmark** (`tests/bench.lua`).
 - **CI:** GitHub Actions runs the syntax check, all tests and the release guard on every push.

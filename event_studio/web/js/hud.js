@@ -247,6 +247,15 @@ function closeModePanel() { show($('modepanel'), false); post('focus', { on: fal
 
 function trivia(q) {
     const el = $('modepanel');
+    if (q.phase === 'memorize') {
+        modeTotal = q.remainingMs; modeDeadline = Date.now() + q.remainingMs;
+        mount(el, h('div.muted', `${t('question')} ${q.index}/${q.total} · ${t('memorize')}`),
+            h('h2', { style: { fontSize: '30px', letterSpacing: '.12em', textAlign: 'center' } }, (q.items || []).join('  ')),
+            h('div.bar', h('i', { style: { width: '100%' } })));
+        show(el, true);
+        startTicker();
+        return;
+    }
     if (q.phase === 'question') {
         picked = null;
         modeTotal = q.remainingMs; modeDeadline = Date.now() + q.remainingMs;

@@ -17,8 +17,8 @@ Run races, PvP, objectives, survival, hunts, social games and tournaments from o
 
 Turn your server into an event destination. **EVENT STUDIO** gives your staff one place to create, schedule, run and reward events, and gives your players a clean event browser, a live HUD and season leaderboards.
 
-**17 game modes, 41 ready-made events**
-Racing (circuits, sprints, time trials, drag, boat, bike, elimination races, parkour) · Deathmatch (FFA, TDM, last man/team standing, duels, weapon-restricted variants) · Gun Game · Sumo & Demolition Derby · King of the Hill & Domination · Capture the Flag · Shrinking-Zone Survival · Scavenger & Hidden Treasure Hunts · Red Light Green Light · Trivia · Reaction · Juggernaut · Protect the VIP · Hunters vs Runners · Keep Moving · Musical Chairs · staff-hosted custom events.
+**20 game modes, 48 ready-made events**
+Racing (circuits, sprints, time trials, drag, boat, bike, elimination races, parkour) · Deathmatch (FFA, TDM, last man/team standing, duels, weapon-restricted variants) · Gun Game · Sumo & Demolition Derby · King of the Hill & Domination · Capture the Flag · Shrinking-Zone Survival · Scavenger & Hidden Treasure Hunts · Red Light Green Light · Trivia · Reaction · Juggernaut · Protect the VIP · Hunters vs Runners · Keep Moving · Musical Chairs · Bounty & Assassin Hunt · Deliver/Hold the Package · Vehicle Tag · Attack vs Defense · Memory Challenge · staff-hosted custom events.
 
 **Built for staff**
 - In-game Admin Center: event builder, arena editor ("add point at my position"), live control (pause, force finish, spectate, teleport, disqualify, announce), logs.

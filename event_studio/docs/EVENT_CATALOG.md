@@ -4,7 +4,7 @@
 
 > Status: **V1** = playable in V1 via the named mode · **V2** = architecture-ready, needs a new component/option · **Future** = later expansion.
 
-**Totals:** 119 events · V1 84 · V2 28 · Future 7
+**Totals:** 119 events · V1 92 · V2 20 · Future 7
 
 ## V1 modes (the reusable engine modes)
 
@@ -14,12 +14,12 @@
 | `sumo` | vehicle | vehicles, bounds, zones(shrink), spawns | 4 |
 | `deathmatch` | combat | combat, spawns, teams, rounds | 14 |
 | `gungame` | combat | combat, spawns | 1 |
-| `koth` | objective / vehicle | zones, teams, combat, spawns | 6 |
+| `koth` | objective / vehicle | zones, teams, combat, spawns | 7 |
 | `ctf` | objective | teams, zones, combat, spawns (carriable flags) | 2 |
 | `zone_survival` | survival | zones(shrink), combat, bounds, spawns | 6 |
 | `hunt` | hunt | checkpoints(unordered/hidden), spawns | 9 |
 | `redlight` | social | zones(finish), server displacement check | 2 |
-| `trivia` | social | server rounds, NUI input | 2 |
+| `trivia` | social | server rounds, NUI input | 3 |
 | `reaction` | social | server rounds, NUI input | 1 |
 | `custom` | social / any | manual scoring by staff, API scoring | 1 |
 | `juggernaut` | combat | roles, combat, spawns | 1 |
@@ -27,6 +27,9 @@
 | `hunters` | combat | roles, combat, spawns | 1 |
 | `keep_moving` | vehicle | vehicles, server velocity, bounds | 1 |
 | `musical_chairs` | social | dynamic zones, rounds | 1 |
+| `bounty` | combat | combat, spawns, secret targets, marked players | 2 |
+| `package` | objective | carriable packages, zones, combat | 3 |
+| `vehicle_tag` | vehicle | vehicles, roles, server proximity | 1 |
 
 ## Racing
 
@@ -554,7 +557,7 @@
 | Potential exploits | god-mode vehicle, handling mods, leaving vehicle, teleport |
 | Status | Future (Hunting-pack inspired) |
 
-### 30. Vehicle Tag  ·  **V2**
+### 30. Vehicle Tag  ·  **V1**
 
 | Field | Value |
 |---|---|
@@ -570,7 +573,7 @@
 | Difficulty (player) | Medium |
 | Development complexity | Medium |
 | Potential exploits | Fake contact reports (use server distance) |
-| Status | V2 |
+| Status | V1 · mode `vehicle_tag` (score per second not-it) |
 
 ## Combat / PvP
 
@@ -880,7 +883,7 @@
 | Potential exploits | fake kills, god mode, weapon spawning, aimbot (out of scope: anticheat) |
 | Status | V1 · mode `hunters` |
 
-### 48. Assassin Hunt  ·  **V2**
+### 48. Assassin Hunt  ·  **V1**
 
 | Field | Value |
 |---|---|
@@ -896,9 +899,9 @@
 | Difficulty (player) | Medium |
 | Development complexity | Medium |
 | Potential exploits | Target leaks (server only sends own target) |
-| Status | V2 |
+| Status | V1 · `bounty` (`style=assassin`) |
 
-### 49. Bounty Hunt  ·  **V2**
+### 49. Bounty Hunt  ·  **V1**
 
 | Field | Value |
 |---|---|
@@ -914,7 +917,7 @@
 | Difficulty (player) | Medium |
 | Development complexity | Medium |
 | Potential exploits | fake kills, god mode, weapon spawning, aimbot (out of scope: anticheat) |
-| Status | V2 |
+| Status | V1 · mode `bounty` |
 
 ### 50. Protect the VIP  ·  **V1**
 
@@ -1044,7 +1047,7 @@
 | Potential exploits | fake captures, teleport into zone, carrier teleport |
 | Status | V1 · mode `hunt` (visible, collect) |
 
-### 57. Deliver the Package  ·  **V2**
+### 57. Deliver the Package  ·  **V1**
 
 | Field | Value |
 |---|---|
@@ -1060,7 +1063,7 @@
 | Difficulty (player) | Medium |
 | Development complexity | Medium |
 | Potential exploits | fake captures, teleport into zone, carrier teleport |
-| Status | V2 · generalised carriable from ctf |
+| Status | V1 · mode `package` (`style=deliver`) |
 
 ### 58. Escort  ·  **Future**
 
@@ -1080,7 +1083,7 @@
 | Potential exploits | fake captures, teleport into zone, carrier teleport |
 | Status | Future |
 
-### 59. Attack vs Defense  ·  **V2**
+### 59. Attack vs Defense  ·  **V1**
 
 | Field | Value |
 |---|---|
@@ -1096,7 +1099,7 @@
 | Difficulty (player) | Medium |
 | Development complexity | Medium |
 | Potential exploits | fake captures, teleport into zone, carrier teleport |
-| Status | V2 · `koth` sequential variant |
+| Status | V1 · `koth` (`style=attack`) |
 
 ### 60. Bomb/Package Delivery  ·  **Future**
 
@@ -1116,7 +1119,7 @@
 | Potential exploits | fake captures, teleport into zone, carrier teleport |
 | Status | Future |
 
-### 61. Hold the Objective  ·  **V2**
+### 61. Hold the Objective  ·  **V1**
 
 | Field | Value |
 |---|---|
@@ -1132,7 +1135,7 @@
 | Difficulty (player) | Medium |
 | Development complexity | Medium |
 | Potential exploits | fake captures, teleport into zone, carrier teleport |
-| Status | V2 |
+| Status | V1 · `package` (`style=hold`) |
 
 ### 62. Multi-Point Control  ·  **V1**
 
@@ -1170,7 +1173,7 @@
 | Potential exploits | fake captures, teleport into zone, carrier teleport |
 | Status | V1 · `ctf` (`flagsPerTeam>1`) partial; full V2 |
 
-### 64. Resource Collection  ·  **V2**
+### 64. Resource Collection  ·  **V1**
 
 | Field | Value |
 |---|---|
@@ -1186,7 +1189,7 @@
 | Difficulty (player) | Medium |
 | Development complexity | Medium |
 | Potential exploits | fake captures, teleport into zone, carrier teleport |
-| Status | V2 |
+| Status | V1 · `package` (`style=deliver`, several packages) |
 
 ### 65. Zone Conquest  ·  **V2**
 
@@ -1880,7 +1883,7 @@
 | Potential exploits | answer sniffing, auto-clickers, timing spoofing |
 | Status | V2 |
 
-### 103. Memory Challenge  ·  **V2**
+### 103. Memory Challenge  ·  **V1**
 
 | Field | Value |
 |---|---|
@@ -1896,7 +1899,7 @@
 | Difficulty (player) | Easy |
 | Development complexity | Low |
 | Potential exploits | answer sniffing, auto-clickers, timing spoofing |
-| Status | V2 · sequence question type for `trivia` |
+| Status | V1 · `trivia` memory questions (`questionSet=memory`) |
 
 ### 104. Guessing Challenge  ·  **V1**
 

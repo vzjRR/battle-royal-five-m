@@ -65,6 +65,18 @@ ES.RegisterLocale('en', {
     chairs_music = '♪ MUSIC ♪',
     chairs_stop = 'FIND A CHAIR!',
     announce_chairs_out = '%s did not find a chair.',
+    announce_bounty_new = '%s has a bounty on their head!',
+    announce_bounty_claimed = '%s claimed the %d-point bounty on %s!',
+    bounty_label = 'Bounty %d',
+    assassin_new_target = 'Target down. New target: %s',
+    assassin_wrong_target = 'Wrong target! Points lost.',
+    announce_package_delivered = '%s delivered a package!',
+    package_picked = 'You picked up the package — go!',
+    package_label = 'Package',
+    tag_it_label = 'IT',
+    announce_tag = '%s tagged %s — they are IT!',
+    announce_attack_complete = '%s captured every point!',
+    announce_attack_defended = '%s held the line!',
 
     -- objectives (short, shown in HUD) -----------------------------------------
     obj_race = 'Pass every checkpoint and finish first.',
@@ -84,6 +96,9 @@ ES.RegisterLocale('en', {
     obj_hunters = 'Runners survive. Hunters catch.',
     obj_keep_moving = 'Stay above the minimum speed.',
     obj_musical_chairs = 'When the music stops, find a chair.',
+    obj_bounty = 'Hunt your target. Watch your back.',
+    obj_package = 'Grab the package and score with it.',
+    obj_vehicle_tag = 'Don\'t be IT.',
 
     -- rules (shown in the browser details) -------------------------------------
     rules_race = 'Vehicles are provided and you cannot leave them. Checkpoints must be passed in order. Stuck? Use the reset key to return to your last checkpoint. After the winner finishes, the others have a short grace period.',
@@ -103,6 +118,9 @@ ES.RegisterLocale('en', {
     rules_hunters = 'Runners start with a head start and score for every second alive. Caught runners become hunters (if infection is on). Survivors get a bonus.',
     rules_keep_moving = 'Drop below the minimum speed for too long and you are eliminated. The limit rises over time.',
     rules_musical_chairs = 'Each chair seats one player (closest to its center). There is one chair fewer than players.',
+    rules_bounty = 'Bounty: the leader is marked on the map and worth extra points. Assassin: you only see your own target; killing anyone else costs points.',
+    rules_package = 'Walk over a package to pick it up. Deliver it to the drop zone, or hold it to score. Dying drops it.',
+    rules_vehicle_tag = 'The IT car passes the tag by touching another car. Everyone else scores every second. No tag-backs right away.',
 
     -- NUI ------------------------------------------------------------------------
     ['ui.events'] = 'Events', ['ui.live'] = 'Live & Open', ['ui.upcoming'] = 'Upcoming', ['ui.leaderboard'] = 'Leaderboard',
@@ -124,7 +142,7 @@ ES.RegisterLocale('en', {
     ['ui.countdown_go'] = 'GO!', ['ui.paused'] = 'PAUSED', ['ui.lobby'] = 'Get ready', ['ui.eliminated'] = 'Eliminated',
     ['ui.finished'] = 'Finished', ['ui.answer_sent'] = 'Answer locked in', ['ui.correct'] = 'Correct!', ['ui.wrong'] = 'Wrong',
     ['ui.correct_was'] = 'Correct answer:', ['ui.react_wait'] = 'Wait for it…', ['ui.react_go'] = 'GO! Click / press Enter', ['ui.react_early'] = 'Too early!',
-    ['ui.submit'] = 'Submit', ['ui.your_answer'] = 'Your answer', ['ui.season'] = 'Season', ['ui.all_categories'] = 'All categories',
+    ['ui.submit'] = 'Submit', ['ui.memorize'] = 'Memorize!', ['ui.your_answer'] = 'Your answer', ['ui.season'] = 'Season', ['ui.all_categories'] = 'All categories',
     ['ui.wins'] = 'Wins', ['ui.podiums'] = 'Podiums', ['ui.events_joined'] = 'Events', ['ui.hint_hot'] = 'Hot!', ['ui.hint_warm'] = 'Warm',
     ['ui.hint_cool'] = 'Cool', ['ui.hint_cold'] = 'Cold', ['ui.reset_hint'] = 'Stuck? Press your reset key',
     ['ui.register'] = 'Sign up', ['ui.entrants'] = 'Entrants', ['ui.format_single_elimination'] = 'Knockout', ['ui.format_round_robin'] = 'League', ['ui.format_double_elimination'] = 'Double elimination', ['ui.format_swiss'] = 'Swiss',

@@ -12,7 +12,7 @@ There are three levels, from easiest to most powerful:
 ES.Definition({
     id = 'pier_pistol_duel',            -- unique, [a-z0-9_-]
     name = 'Pier Pistol Duel',
-    mode = 'deathmatch',                -- race | deathmatch | gungame | sumo | koth | ctf | zone_survival | hunt | redlight | trivia | reaction | custom | juggernaut | vip | hunters | keep_moving | musical_chairs
+    mode = 'deathmatch',                -- race | deathmatch | gungame | sumo | koth | ctf | zone_survival | hunt | redlight | trivia | reaction | custom | juggernaut | vip | hunters | keep_moving | musical_chairs | bounty | package | vehicle_tag
     arena = 'docks_yard',               -- arena id (not needed for trivia/reaction/custom)
     description = '1v1, first to three rounds.',
     category = 'combat',                -- optional (defaults to the mode's category)
@@ -42,12 +42,12 @@ Anything you leave out comes from `Config.General.definitionDefaults`. Definitio
 | deathmatch | weapons, ammo, randomWeapons, rotateEvery, killTarget, lives, respawnDelay, rounds |
 | gungame | ladder, killsPerLevel, respawnDelay, meleeDemotes |
 | sumo | vehicle, pool, random, eliminateOnWreck, scoreKnockouts, graceMs, suddenDeathAfter, suddenDeathRatio |
-| koth | style (hill/domination), pointsPerSecond, captureSeconds, scoreTarget, rotateEvery, requireVehicle, vehicle, weapons |
+| koth | style (hill/domination/attack — attack needs 2 teams, team 1 captures the zones in order), pointsPerSecond, captureSeconds, scoreTarget, rotateEvery, requireVehicle, vehicle, weapons |
 | ctf | capturesToWin, pickupRadius, captureRadius, dropReturnSeconds, weapons |
 | zone_survival | phases, moving, eliminateOutsideSeconds, damagePerSecond, weapons, ammo, requireVehicle |
 | hunt | ordered, hidden, hints, pointsPerFind, radius, vehicle |
 | redlight | freezeOnly, greenMin/Max, redMin/Max, tolerance, reactionMs |
-| trivia | questionSet, questions, count, secondsPerQuestion, pointsCorrect, speedBonus, shuffle |
+| trivia | questionSet (`memory` = sequence questions), questions, count, secondsPerQuestion, pointsCorrect, speedBonus, shuffle |
 | reaction | rounds, minDelay, maxDelay, earlyPenalty, points, windowMs |
 | custom | teleport, weapons, vehicle, instructions |
 | juggernaut | juggernautHealth, juggernautArmor, juggernautWeapons, attackerWeapons, passOnKill, pointsPerSecond, juggernautKillPoints, takedownPoints, scoreTarget, respawnDelay |
@@ -55,6 +55,9 @@ Anything you leave out comes from `Config.General.definitionDefaults`. Definitio
 | hunters | hunterRatio, infect, hunterWeapons, runnerWeapons, runnerPointsPerSecond, catchPoints, surviveBonus, hunterReleaseSeconds |
 | keep_moving | vehicle, minKmh, increaseKmh, increaseEvery, graceSeconds, startGrace, eliminateOnWreck (arena needs `vehicleSpawns`) |
 | musical_chairs | musicMin, musicMax, seatSeconds, chairRadius, spread |
+| bounty | style (bounty/assassin), weapons, bountyBase, bountyGrowth, targetPoints, wrongKillPenalty, scoreTarget, respawnDelay |
+| package | style (deliver/hold), packages, pickupRadius, pointsPerDelivery, pointsPerSecond, resetSeconds, scoreTarget, weapons, respawnDelay (deliver needs arena `finish`; packages spawn at `targets`) |
+| vehicle_tag | vehicle, tagDistance, noTagBackSeconds (arena needs `vehicleSpawns`) |
 
 ## 2. Arena
 
@@ -73,7 +76,7 @@ ES.Arena({
 })
 ```
 
-What each mode needs: race → `checkpoints`; deathmatch/gungame/zone_survival/redlight → `spawns`; sumo → `bounds`; koth → `zones`; ctf → `objectives` and `teamSpawns`; hunt → `targets`.
+What each mode needs: race → `checkpoints`; deathmatch/gungame/zone_survival/redlight → `spawns`; sumo → `bounds`; koth → `zones`; ctf → `objectives` and `teamSpawns`; hunt → `targets`; package → `spawns` + `finish` (+ `targets`); vehicle_tag/keep_moving → `vehicleSpawns`; vip → `teamSpawns` + `finish`.
 
 ## 3. A new mode
 

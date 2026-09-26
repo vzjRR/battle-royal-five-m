@@ -10,7 +10,8 @@ end)
 
 H.test('all modes registered', function()
     for _, m in ipairs({ 'race', 'deathmatch', 'gungame', 'sumo', 'koth', 'ctf', 'zone_survival', 'hunt', 'redlight', 'trivia', 'reaction', 'custom',
-                         'juggernaut', 'vip', 'hunters', 'keep_moving', 'musical_chairs' }) do
+                         'juggernaut', 'vip', 'hunters', 'keep_moving', 'musical_chairs',
+                         'bounty', 'package', 'vehicle_tag' }) do
         H.ok(ES.Modes[m], 'mode missing: ' .. m)
     end
 end)

@@ -273,11 +273,11 @@ Contradictions found and resolved during review:
 | 5 Scheduler | ✅ | recurrence rules, rotations, director |
 | 6 Scoring / Leaderboards | ✅ | profiles, season points, stats, personal bests |
 | 7 First Event Pack | ✅ | race, deathmatch, sumo, koth, hunt |
-| 8 Additional Packs | ✅ | gungame, ctf, zone_survival, redlight, trivia, reaction, custom; V2 pack: roles component + juggernaut, vip, hunters, keep_moving, musical_chairs |
+| 8 Additional Packs | ✅ | gungame, ctf, zone_survival, redlight, trivia, reaction, custom; V2 pack: roles component + juggernaut, vip, hunters, keep_moving, musical_chairs; V2 pack 2: bounty/assassin, package deliver/hold, vehicle_tag, koth attack style, trivia memory questions |
 | 9 Tournament System | ✅ engine + admin UI | single elimination, round robin, best-of-N |
 | 10 Security Hardening | 🟡 | gateway/validation/ledger done; offline fuzzing of every RPC and every mode (test_fuzz.lua) passes; live-server checks pending |
 | 11 Performance | 🟡 | offline benchmark (tests/bench.lua): ≤ 0.17 ms Lua per 500 ms tick at 64 players / 3 events, 0 when idle; resmon on a live server pending |
-| 12 Testing | 🟡 | 90 automated tests pass (unit, simulation, fuzzing) + offline tick benchmark; in-game matrix (TESTING.md §2) pending |
+| 12 Testing | 🟡 | 115 automated tests pass (unit, simulation, fuzzing) + offline tick benchmark; in-game matrix (TESTING.md §2) pending |
 | 13 Documentation | ✅ | guides, API, architecture, testing |
 | 14 Commercial Packaging | 🟡 | protection plan (PROTECTION.md) + release builder with compliance checks done; Cfx Portal upload, Tebex packages and final EULA pending (creator) |
 

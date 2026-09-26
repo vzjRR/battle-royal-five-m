@@ -13,7 +13,7 @@ ES.RegisterMode('koth', {
     objectiveKey = 'obj_koth',
     rulesKey = 'rules_koth',
     options = {
-        style = { type = 'enum', values = { 'hill', 'domination' }, default = 'hill', label = 'Style', order = 1 },
+        style = { type = 'enum', values = { 'hill', 'domination', 'attack' }, default = 'hill', label = 'Style (attack = attackers capture zones in order)', order = 1 },
         pointsPerSecond = { type = 'integer', min = 1, max = 100, default = 1, label = 'Points per second', order = 2 },
         captureSeconds = { type = 'integer', min = 1, max = 60, default = 6, label = 'Capture time (domination)', order = 3 },
         scoreTarget = { type = 'integer', min = 0, max = 100000, default = 250, label = 'Score target (0 = none)', order = 4 },
@@ -25,13 +25,28 @@ ES.RegisterMode('koth', {
         respawnDelay = { type = 'integer', min = 1, max = 30, default = 5, label = 'Respawn delay (s)', order = 9 },
     },
 
+    validate = function(def)
+        if def.options.style == 'attack' and not (def.players.teams and def.players.teams.count == 2) then
+            return false, 'attack style needs exactly 2 teams (team 1 attacks)'
+        end
+        return true
+    end,
+
+    onTimeUp = function(inst)
+        if inst.def.options.style == 'attack' then
+            inst:addTeamScore(2, 1)
+            inst:announce('announce_attack_defended', 'success', inst.teams[2].name)
+        end
+        inst:finishNow('time')
+    end,
+
     setup = function(inst)
         local o = inst.def.options
         local teams = #inst.teams > 0
         inst:use('spawns', { strategy = teams and 'sequential' or 'farthest' }):placeAll()
         inst:use('zones', {
             teamBased = teams, requireVehicle = o.requireVehicle,
-            captureSeconds = o.style == 'domination' and o.captureSeconds or nil,
+            captureSeconds = (o.style == 'domination' or o.style == 'attack') and o.captureSeconds or nil,
             onCapture = function(zone, key)
                 local label = teams and inst.teams[key] and inst.teams[key].name
                 if not label then
@@ -47,11 +62,19 @@ ES.RegisterMode('koth', {
                                    points = inst.arena.vehicleSpawns or inst.arena.spawns }):provisionAll()
         end
         inst.data.acc = 0
-        inst.data.active = (o.rotateEvery > 0) and 1 or nil
+        inst.data.active = (o.rotateEvery > 0 or o.style == 'attack') and 1 or nil
+        if o.style == 'attack' then
+            local zones = inst:component('zones')
+            for _, z in ipairs(zones.order) do zones.owner[z.id] = 2 end -- defenders start owning every point
+        end
     end,
 
     start = function(inst)
         local o = inst.def.options
+        if o.style == 'attack' then
+            inst:broadcast('mode', { activeZone = inst:component('zones').order[1].id })
+            return
+        end
         if o.rotateEvery > 0 then
             inst.data.nextRotate = ES.now() + o.rotateEvery * 1000
             inst:broadcast('mode', { activeZone = inst:component('zones').order[1].id })
@@ -62,6 +85,23 @@ ES.RegisterMode('koth', {
         local o = inst.def.options
         local zones = inst:component('zones')
         local teams = #inst.teams > 0
+        if o.style == 'attack' then
+            local z = zones.order[inst.data.active]
+            if z and zones:ownerOf(z.id) == 1 then
+                for _, p in ipairs(zones:occupantsOf(z.id)) do inst:addStat(p, 'objectives', 1) inst:addScore(p, 10, 'capture', true) end
+                inst.data.active = inst.data.active + 1
+                local nextZone = zones.order[inst.data.active]
+                if not nextZone then
+                    inst:addTeamScore(1, 1)
+                    inst:announce('announce_attack_complete', 'success', inst.teams[1].name)
+                    return inst:finishNow('attack_complete')
+                end
+                zones.owner[nextZone.id], zones.progress[nextZone.id] = 2, nil -- early captures don't count
+                inst:broadcast('mode', { activeZone = nextZone.id })
+                inst:announce('announce_zone_moved', 'info', nextZone.label)
+            end
+            return
+        end
         if inst.data.nextRotate and ES.now() >= inst.data.nextRotate then
             inst.data.nextRotate = ES.now() + o.rotateEvery * 1000
             inst.data.active = inst.data.active % #zones.order + 1

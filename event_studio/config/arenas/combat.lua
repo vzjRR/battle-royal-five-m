@@ -16,6 +16,11 @@ ES.Arena({
         { { 1045.0, -3140.0, 5.9, 45.0 }, { 1042.0, -3135.0, 5.9, 45.0 }, { 1039.0, -3130.0, 5.9, 45.0 }, { 1048.0, -3145.0, 5.9, 45.0 } },
     },
     zones = { { 1000.0, -3100.0, 5.9, radius = 12.0, id = 'yard', label = 'Container Hill' } },
+    targets = {   -- package spawn points (package mode)
+        { 965.0, -3070.0, 5.9, label = 'North-west' }, { 1035.0, -3070.0, 5.9, label = 'North-east' },
+        { 965.0, -3130.0, 5.9, label = 'South-west' }, { 1035.0, -3130.0, 5.9, label = 'South-east' },
+    },
+    finish = { 1000.0, -3100.0, 5.9, radius = 5.0 },   -- package drop zone
 })
 
 ES.Arena({

@@ -17,6 +17,13 @@ Config.Trivia = {
         { q = 'What is the boiling point of water at sea level in °C?', numeric = true, answer = 100 },
         { q = 'Which instrument has 88 keys?', answers = { 'Organ', 'Accordion', 'Piano', 'Harp' }, correct = 3 },
     },
+    memory = {
+        { memory = { '🔴', '🔵', '🟢', '🟡' }, showSeconds = 4, q = 'Which order did you see?' },
+        { memory = { 'CAR', 'BOAT', 'PLANE', 'BIKE' }, showSeconds = 4, q = 'Which order did you see?' },
+        { memory = { '7', '3', '9', '1', '5' }, showSeconds = 5, q = 'Which number sequence was shown?' },
+        { memory = { '▲', '●', '■', '◆', '★' }, showSeconds = 5, q = 'Which order did you see?' },
+        { memory = { 'NORTH', 'EAST', 'SOUTH', 'WEST' }, showSeconds = 3, q = 'Which order did you see?' },
+    },
     cars = {
         { q = 'How many wheels does a standard motorcycle have?', answers = { '1', '2', '3', '4' }, correct = 2 },
         { q = 'What does "RPM" stand for?', answers = { 'Rounds per mile', 'Revolutions per minute', 'Rate per meter', 'Rotations per mile' }, correct = 2 },

@@ -56,7 +56,7 @@ E = [
 ('Escort Vehicle','vehicle','4-16','2 teams','Defenders escort a slow vehicle to destination; attackers stop it','Vehicle reaches destination / destroyed',None,'Objective','vehicles, roles, checkpoints, combat','Hard','High',None,'Future'),
 ('Vehicle Protection','vehicle','4-16','2 teams','Protect a parked vehicle for time','Vehicle survives / destroyed',None,'Objective','vehicles, roles, combat','Medium','Medium',None,'V2'),
 ('Vehicle Interception','vehicle','4-16','2 teams','Runners reach destination; hunters intercept','Runner arrives / all runners stopped',None,'Objective','vehicles, roles, checkpoints','Hard','High',None,'Future (Hunting-pack inspired)'),
-('Vehicle Tag','vehicle','3-16','Solo','"It" vehicle tags others by contact (server proximity)','Least time as "it"',None,'Time not-it','vehicles, roles, proximity','Medium','Medium','Fake contact reports (use server distance)','V2'),
+('Vehicle Tag','vehicle','3-16','Solo','"It" vehicle tags others by contact (server proximity)','Least time as "it"',None,'Time not-it','vehicles, roles, proximity','Medium','Medium','Fake contact reports (use server distance)','V1 · mode `vehicle_tag` (score per second not-it)'),
 # COMBAT
 ('Free For All','combat','2-32','Solo','Everyone vs everyone, respawns','Kill target or most kills at time',None,'Kills ×points; placement',None,'Easy','Low',None,'V1 · mode `deathmatch`'),
 ('Team Deathmatch','combat','4-32','2-4 teams','Team kills, respawns, friendly fire off','Team kill target / most at time',None,'Team kills; individual kills',None,'Easy','Low',None,'V1 · mode `deathmatch` (teams)'),
@@ -75,8 +75,8 @@ E = [
 ('Team Elimination','combat','4-32','2 teams','Elimination rounds, no respawn','Round wins',None,'Round wins',None,'Easy','Low',None,'V1 · `deathmatch` (teams, lives=1)'),
 ('Juggernaut','combat','3-24','Juggernaut vs everyone','One heavily armoured player vs attackers; killer takes the role','Most points (time as Juggernaut + takedowns)',None,'Role-based points','combat, roles','Medium','Medium',None,'V1 · mode `juggernaut`'),
 ('Hunter vs Runners','combat','3-24','2 roles','Runners survive with a head start, hunters catch; optional infection','Runners survive / all caught',None,'Survival seconds, catches, survive bonus','roles, combat','Medium','Medium',None,'V1 · mode `hunters`'),
-('Assassin Hunt','combat','4-32','Solo','Each player assigned a secret target','Most valid assassinations',None,'Valid target kills +, wrong kills −','combat, roles, secret assignment','Medium','Medium','Target leaks (server only sends own target)','V2'),
-('Bounty Hunt','combat','4-32','Solo','Leader carries bounty, visible on map','Most bounty points',None,'Bounty kills','combat, roles, blips','Medium','Medium',None,'V2'),
+('Assassin Hunt','combat','4-32','Solo','Each player assigned a secret target','Most valid assassinations',None,'Valid target kills +, wrong kills −','combat, roles, secret assignment','Medium','Medium','Target leaks (server only sends own target)','V1 · `bounty` (`style=assassin`)'),
+('Bounty Hunt','combat','4-32','Solo','Leader carries bounty, visible on map','Most bounty points',None,'Bounty kills','combat, roles, blips','Medium','Medium',None,'V1 · mode `bounty`'),
 ('Protect the VIP','combat','2-24','2 teams','Bodyguards escort the VIP to extraction; attackers hunt the VIP; rounds with side swap','VIP extracted / killed / timeout',None,'Round wins','roles, combat, zones','Hard','Medium',None,'V1 · mode `vip`'),
 # OBJECTIVE
 ('Capture the Flag','objective','4-32','2 teams','Grab enemy flag at base, return to own base while own flag home','Capture target / most caps',None,'Captures ×points; returns, carrier kills',None,'Medium','Medium',None,'V1 · mode `ctf`'),
@@ -85,14 +85,14 @@ E = [
 ('Territory Control','objective','4-32','2-4 teams','Several zones owned by teams; income per owned zone','Most points',None,'Points per zone per tick',None,'Medium','Low',None,'V1 · mode `koth` (multiple zones, ownership)'),
 ('Domination','objective','4-32','2 teams','3+ capture points with ownership flip','Score target',None,'Points per owned point',None,'Medium','Low',None,'V1 · mode `koth` preset `domination`'),
 ('Search and Collect','objective','2-32','Solo/teams','Collect scattered pickups (server proximity)','Most collected',None,'Objective points','checkpoints (unordered), timer','Easy','Low',None,'V1 · mode `hunt` (visible, collect)'),
-('Deliver the Package','objective','2-16','Solo/teams','Pick up package, deliver to drop zone','Most deliveries',None,'Delivery points','carriable objective, zones','Medium','Medium',None,'V2 · generalised carriable from ctf'),
+('Deliver the Package','objective','2-16','Solo/teams','Pick up package, deliver to drop zone','Most deliveries',None,'Delivery points','carriable objective, zones','Medium','Medium',None,'V1 · mode `package` (`style=deliver`)'),
 ('Escort','objective','4-16','2 teams','Move escort target along path by proximity','Target reaches end',None,'Objective','zones, path progress','Hard','High',None,'Future'),
-('Attack vs Defense','objective','4-32','2 teams','Attackers capture sequence of points, defenders hold','Attackers capture all / time out',None,'Objective','zones (sequential), teams, combat','Medium','Medium',None,'V2 · `koth` sequential variant'),
+('Attack vs Defense','objective','4-32','2 teams','Attackers capture sequence of points, defenders hold','Attackers capture all / time out',None,'Objective','zones (sequential), teams, combat','Medium','Medium',None,'V1 · `koth` (`style=attack`)'),
 ('Bomb/Package Delivery','objective','4-32','2 teams','Carry bomb to site, plant, defend','Detonate / defuse',None,'Round wins','carriable, zones, timer, rounds','Hard','High',None,'Future'),
-('Hold the Objective','objective','2-32','Solo/teams','Carry an item as long as possible (server tracks carrier)','Most carry time',None,'Points per second carried','carriable','Medium','Medium',None,'V2'),
+('Hold the Objective','objective','2-32','Solo/teams','Carry an item as long as possible (server tracks carrier)','Most carry time',None,'Points per second carried','carriable','Medium','Medium',None,'V1 · `package` (`style=hold`)'),
 ('Multi-Point Control','objective','4-32','2-4 teams','Multiple simultaneous points','Most points',None,'Points per owned point',None,'Medium','Low',None,'V1 · `koth` multi-zone'),
 ('Steal and Return','objective','4-16','2 teams','Steal enemy packages to own base (Raid-like)','Most packages',None,'Deliveries',None,'Medium','Medium',None,'V1 · `ctf` (`flagsPerTeam>1`) partial; full V2'),
-('Resource Collection','objective','2-32','Solo/teams','Collect resources, bank at base','Most banked',None,'Banked amount','carriable, zones','Medium','Medium',None,'V2'),
+('Resource Collection','objective','2-32','Solo/teams','Collect resources, bank at base','Most banked',None,'Banked amount','carriable, zones','Medium','Medium',None,'V1 · `package` (`style=deliver`, several packages)'),
 ('Zone Conquest','objective','4-32','2-4 teams','Sequential map-wide zone capture','All zones captured',None,'Zones owned','zones, teams','Medium','Medium',None,'V2'),
 # SURVIVAL
 ('Zombie-style Survival','survival','1-16','Co-op','Waves of hostile melee NPCs','Survive all waves','All dead','Waves survived, kills','NPC wave spawner, combat','Hard','High','NPC ownership desync, god mode','Future (NPC ownership + performance)'),
@@ -135,7 +135,7 @@ E = [
 ('Trivia','social','2-64','Solo','Server-timed multiple choice questions','Most points',None,'Correct × points + speed bonus',None,'Easy','Low',None,'V1 · mode `trivia`'),
 ('Reaction Challenge','social','2-64','Solo','Press when signal appears (server-timed); early = penalty','Fastest average',None,'Reaction points',None,'Easy','Low',None,'V1 · mode `reaction`'),
 ('Quick Draw','social','2-16','Solo','Duel: draw & fire on signal','Fastest valid shot',None,'Round wins','reaction + combat','Medium','Medium',None,'V2'),
-('Memory Challenge','social','2-64','Solo','Remember sequence shown by server','Most correct',None,'Correct answers','trivia engine (sequence questions)','Easy','Low',None,'V2 · sequence question type for `trivia`'),
+('Memory Challenge','social','2-64','Solo','Remember sequence shown by server','Most correct',None,'Correct answers','trivia engine (sequence questions)','Easy','Low',None,'V1 · `trivia` memory questions (`questionSet=memory`)'),
 ('Guessing Challenge','social','2-64','Solo','Guess a number/value, closest wins','Closest answers',None,'Closeness points','trivia engine (numeric)','Easy','Low',None,'V1 · `trivia` (`numeric` question type)'),
 ('Random Mini Challenge','social','2-64','Solo','Rotation of short social modes','Challenge winner',None,'Per challenge','director','Easy','Low',None,'V1 · director'),
 ('Staff Challenge','social','2-64','Solo','Staff-hosted with manual scoring via admin panel','Staff decision',None,'Manual points (audited)','admin manual scoring','Easy','Low','Staff abuse (audit logged)','V1 · mode `custom` (manual)'),
@@ -189,6 +189,9 @@ modes = [
  ('hunters','combat','roles, combat, spawns'),
  ('keep_moving','vehicle','vehicles, server velocity, bounds'),
  ('musical_chairs','social','dynamic zones, rounds'),
+ ('bounty','combat','combat, spawns, secret targets, marked players'),
+ ('package','objective','carriable packages, zones, combat'),
+ ('vehicle_tag','vehicle','vehicles, roles, server proximity'),
 ]
 for m,c,comp in modes:
     served = sum(1 for e in E if f'`{m}`' in e[12] and status_tag(e[12])=='V1')

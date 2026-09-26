@@ -16,11 +16,40 @@ local function questionsFor(inst)
     return out
 end
 
+---Memory questions: { memory = { 'A', 'B', 'C', 'D' }, showSeconds = 4, q = 'Which order did you see?' }
+---Items are shown first; then four orderings are offered (the correct one is kept on the server).
+local function memoryAnswers(items)
+    local correct = table.concat(items, ' ')
+    local answers, seen = { correct }, { [correct] = true }
+    local tries = 0
+    while #answers < 4 and tries < 50 do
+        tries = tries + 1
+        local copy = U.shuffle(U.deepCopy(items))
+        local s = table.concat(copy, ' ')
+        if not seen[s] then seen[s] = true answers[#answers + 1] = s end
+    end
+    U.shuffle(answers)
+    for i, a in ipairs(answers) do if a == correct then return answers, i end end
+end
+
 local function ask(inst)
     local d = inst.data
-    d.index = d.index + 1
+    if not d.memorizing then d.index = d.index + 1 end
     local q = d.questions[d.index]
     if not q then return inst:finishNow('questions_done') end
+    if q.memory and not d.memorizing then
+        d.memorizing = true
+        d.phase = 'memorize'
+        d.closeAt = ES.now() + (q.showSeconds or 4) * 1000
+        inst:broadcast('mode', { trivia = { phase = 'memorize', index = d.index, total = #d.questions, items = q.memory,
+            remainingMs = (q.showSeconds or 4) * 1000 } })
+        return
+    end
+    if q.memory then
+        d.memorizing = false
+        q.answers, q.correct = memoryAnswers(q.memory)
+        q.q = q.q or 'Which order did you see?'
+    end
     d.phase = 'question'
     d.answers = {}
     d.sentAt = ES.now()
@@ -111,7 +140,9 @@ ES.RegisterMode('trivia', {
     tick = function(inst)
         local d = inst.data
         local now = ES.now()
-        if d.phase == 'question' then
+        if d.phase == 'memorize' then
+            if now >= d.closeAt then ask(inst) end
+        elseif d.phase == 'question' then
             local allAnswered = true
             for _, p in ipairs(inst:activeParticipants()) do if not d.answers[p] then allAnswered = false end end
             if now >= d.closeAt or allAnswered then reveal(inst) end

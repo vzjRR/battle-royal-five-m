@@ -91,6 +91,7 @@ local modes = {
     { 'airfield_ctf', teams = true }, { 'shrinking_zone' }, { 'city_scavenger' }, { 'red_light_green_light' },
     { 'trivia_night' }, { 'reaction_test' }, { 'staff_challenge' },
     { 'juggernaut_docks' }, { 'protect_the_vip' }, { 'hunters_vs_runners' }, { 'keep_moving_airport' }, { 'musical_chairs' },
+    { 'bounty_hunt' }, { 'assassin_hunt' }, { 'deliver_the_package' }, { 'hold_the_package' }, { 'vehicle_tag' }, { 'airfield_assault' }, { 'memory_challenge' },
 }
 local actions = { 'checkpoint', 'reset', 'died', 'answer', 'react', 'pickup', 'capture', 'x', '__index', 'finish', 'win' }
 
