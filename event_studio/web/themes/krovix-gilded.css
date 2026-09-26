@@ -2,6 +2,7 @@
 :root {
     --font: "Manrope", "Segoe UI", sans-serif;
     --font-display: "Syncopate", "Manrope", sans-serif;
+    --display-case: uppercase;
 
     --bg: rgba(9, 16, 30, 0.93);
     --bg-solid: #05080f;

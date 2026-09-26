@@ -5,6 +5,7 @@
     /* type */
     --font: "Manrope", "Segoe UI", system-ui, sans-serif;
     --font-display: var(--font);
+    --display-case: none;                /* 'uppercase' for display faces whose lowercase is decorative (Syncopate) */
     --font-mono: "Consolas", "Menlo", monospace;
 
     /* surfaces */

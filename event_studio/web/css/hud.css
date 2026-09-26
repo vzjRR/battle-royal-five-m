@@ -70,7 +70,7 @@
 .results .card { width: 620px; max-height: 80vh; overflow: auto; background: var(--shell-bg); border: 1px solid var(--edge); border-radius: var(--radius-lg); box-shadow: var(--shadow); }
 .results .top { padding: 26px 26px 18px; text-align: center; border-bottom: 1px solid var(--line); }
 .results .top .muted { text-transform: uppercase; letter-spacing: .2em; font-size: 12px; }
-.results .top h1 { font-family: var(--font-display); font-size: 28px; margin: 6px 0 2px; }
+.results .top h1 { font-family: var(--font-display); font-size: 28px; margin: 6px 0 2px; text-transform: var(--display-case); }
 [data-title="metal"] .results .top h1 { background: var(--title-grad); -webkit-background-clip: text; background-clip: text; color: transparent; }
 .results .winner { color: var(--gold); font-weight: 800; font-size: 16px; }
 .results .tbl td, .results .tbl th { padding-inline: 20px; }
