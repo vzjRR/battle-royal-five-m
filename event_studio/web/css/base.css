@@ -43,10 +43,10 @@ select option { background: var(--bg-solid); }
 .empty { padding: 40px 20px; text-align: center; color: var(--text-faint); }
 
 table.tbl { width: 100%; border-collapse: collapse; font-size: 13px; }
-.tbl th { text-align: left; font-size: 11px; text-transform: uppercase; letter-spacing: .06em; color: var(--text-faint); font-weight: 700; padding: 8px 10px; border-bottom: 1px solid var(--line); }
+.tbl th { text-align: start; font-size: 11px; text-transform: uppercase; letter-spacing: .06em; color: var(--text-faint); font-weight: 700; padding: 8px 10px; border-bottom: 1px solid var(--line); }
 .tbl td { padding: 8px 10px; border-bottom: 1px solid var(--line); }
 .tbl tr:hover td { background: rgba(255, 255, 255, .02); }
-.tbl .num { text-align: right; font-variant-numeric: tabular-nums; }
+.tbl .num { text-align: end; font-variant-numeric: tabular-nums; }
 
 .place { display: inline-grid; place-items: center; min-width: 24px; height: 24px; border-radius: 6px; font-weight: 800; font-size: 12px; background: var(--panel-3); color: var(--text-dim); }
 .place.p1 { background: var(--gold); color: #1a1400; }
@@ -58,3 +58,10 @@ table.tbl { width: 100%; border-collapse: collapse; font-size: 13px; }
 .confirm h3 { font-size: 17px; margin-bottom: 6px; }
 .confirm p { color: var(--text-dim); margin-bottom: 18px; }
 .confirm .row { justify-content: flex-end; }
+
+/* right-to-left locales (Arabic, Hebrew, …): letter-spacing and uppercase break connected scripts */
+[dir="rtl"] body { font-family: "Segoe UI", Tahoma, var(--font); }
+[dir="rtl"] * { letter-spacing: normal !important; text-transform: none !important; }
+/* each text block picks its own direction, so owner-written English names and descriptions still read correctly */
+[dir="rtl"] :is(.muted, .hud-objective, .toast, .card-title, .hud-title, .answer, h1, h2, h3) { unicode-bidi: plaintext; }
+[dir="rtl"] .mono, [dir="rtl"] .num, [dir="rtl"] .hud-timer { direction: ltr; unicode-bidi: isolate; }

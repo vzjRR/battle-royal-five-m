@@ -277,7 +277,7 @@ Contradictions found and resolved during review:
 | 9 Tournament System | ✅ engine + admin UI | single elimination, round robin, best-of-N |
 | 10 Security Hardening | 🟡 | gateway/validation/ledger done; offline fuzzing of every RPC and every mode (test_fuzz.lua) passes; live-server checks pending |
 | 11 Performance | 🟡 | offline benchmark (tests/bench.lua): ≤ 0.17 ms Lua per 500 ms tick at 64 players / 3 events, 0 when idle; resmon on a live server pending |
-| 12 Testing | 🟡 | 115 automated tests pass (unit, simulation, fuzzing) + offline tick benchmark; in-game matrix (TESTING.md §2) pending |
+| 12 Testing | 🟡 | 118 automated tests pass (unit, simulation, fuzzing) + offline tick benchmark; in-game matrix (TESTING.md §2) pending |
 | 13 Documentation | ✅ | guides, API, architecture, testing |
 | 14 Commercial Packaging | 🟡 | protection plan (PROTECTION.md) + release builder with compliance checks done; Cfx Portal upload, Tebex packages and final EULA pending (creator) |
 

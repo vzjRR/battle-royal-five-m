@@ -77,7 +77,7 @@ function dashboard() {
             h('div.stat', h('b', String(d.definitions.filter((x) => x.enabled).length)), h('span', t('definitions'))),
             h('div.stat', h('b', String(d.schedules.filter((s) => s.enabled).length)), h('span', t('scheduler')))),
         h('div.grid2',
-            h('div.box', h('div.box-head', t('live_events'), h('div.spacer'), h('button.btn.sm', { onclick: () => go('live') }, '→')),
+            h('div.box', h('div.box-head', t('live_events'), h('div.spacer'), h('button.btn.sm', { onclick: () => go('live') }, document.documentElement.dir === 'rtl' ? '←' : '→')),
                 d.instances.length ? h('table.tbl', d.instances.map((i) => h('tr', { style: { cursor: 'pointer' }, onclick: () => go('live', { liveId: i.id }) },
                     h('td', `${categoryOf(i.category).icon} ${i.name}`), h('td', statusChip(i.status)), h('td.num', `${i.players}/${i.maxPlayers}`)))) : h('div.empty', '—')),
             h('div.box', h('div.box-head', t('upcoming')),
@@ -199,7 +199,7 @@ function liveDetail() {
         onclick: () => dangerous ? danger(name, { id, target, ...extra }, label) : call(name, { id, target, ...extra }, t('saved')),
     }, label) : null;
     return h('div.col', { style: { gap: '14px' } },
-        h('div.box', h('div.box-head', `${categoryOf(d.card.category).icon} ${d.card.name}`, h('span.faint.mono', `#${id}`), h('div.spacer'), statusChip(d.card.status), h('span.mono', { style: { marginLeft: '10px' } }, d.state)),
+        h('div.box', h('div.box-head', `${categoryOf(d.card.category).icon} ${d.card.name}`, h('span.faint.mono', `#${id}`), h('div.spacer'), statusChip(d.card.status), h('span.mono', { style: { marginInlineStart: '10px' } }, d.state)),
             h('div.pad',
                 h('div.kv',
                     h('span', t('time_left')), h('b.mono', fmtClock(d.remainingMs)),

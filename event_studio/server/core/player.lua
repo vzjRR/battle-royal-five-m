@@ -35,7 +35,7 @@ RPC.register('client:ready', { public = true, rate = { burst = 3, per = 30 } }, 
     local level, role = ES.Perm.level(src)
     local recovery = ES.Manager.onClientReady(src)
     return {
-        version = ES.version, ui = Config.UI, commands = Config.Commands, strings = ES.uiStrings(),
+        version = ES.version, ui = Config.UI, commands = Config.Commands, strings = ES.uiStrings(), locale = ES.localeInfo(),
         framework = ES.Bridge.name, staff = level > 0, role = role, recovery = recovery,
         scoring = Config.Scoring.profiles,
     }

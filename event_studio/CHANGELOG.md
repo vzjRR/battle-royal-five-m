@@ -12,6 +12,7 @@ All notable changes to EVENT STUDIO. Uses [Semantic Versioning](https://semver.o
 - **V2 pack 2:** `bounty` mode (Bounty Hunt + Assassin Hunt with private target ring), `package` mode (Deliver the Package / Hold the Package), `vehicle_tag` mode, KOTH `style=attack` (Attack vs Defense), trivia memory questions. 7 new presets (48 total); catalog V1 coverage 84 → 92 of 119.
 - **Tournaments:** double elimination (grand final + reset) and Swiss (no rematches, one bye each, Buchholz tie-break).
 - **Self-test** (`eventstudio selftest`) and in-game arena Z-fix tool (`/eventarenafix`).
+- **Arabic locale** (`locales/ar.lua`) and right-to-left NUI support (mirrored layout, per-paragraph direction for owner-written English text); `tests/test_locales.lua` checks keys and placeholder order for every locale.
 - **Security fuzzing** (`tests/test_fuzz.lua`): every RPC with hostile payloads as player and admin; random actions in every mode.
 - **Offline benchmark** (`tests/bench.lua`).
 - **CI:** GitHub Actions runs the syntax check, all tests and the release guard on every push.

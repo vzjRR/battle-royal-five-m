@@ -32,6 +32,12 @@ export function closePanels() {
     post('close');
 }
 
+function applyLocale(locale) {
+    const l = locale || {};
+    document.documentElement.lang = l.code || 'en';
+    document.documentElement.dir = l.dir === 'rtl' ? 'rtl' : 'ltr';
+}
+
 function applyBranding(ui) {
     if (ui.theme && ui.theme !== 'default') $('theme').setAttribute('href', `themes/${ui.theme}.css`);
     if (ui.brand && ui.brand.accent) document.documentElement.style.setProperty('--accent', ui.brand.accent);
@@ -42,6 +48,7 @@ const handlers = {
     init(d) {
         Object.assign(store, { strings: d.strings || {}, ui: d.ui || {}, staff: d.staff, role: d.role, scoring: d.scoring || {}, commands: d.commands || {} });
         applyBranding(store.ui);
+        applyLocale(d.locale);
     },
     open(d) {
         if (d.view === 'browser') browser.open();

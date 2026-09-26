@@ -69,10 +69,14 @@ window.__devPost = async (name, data) => {
     return { ok: true };
 };
 
-const en = await fetch('../locales/en.lua').then((r) => r.text()).catch(() => '');
-for (const m of en.matchAll(/\['ui\.([\w]+)'\] = '((?:[^'\\]|\\.)*)'/g)) strings[m[1]] = m[2].replace(/\\'/g, "'");
+// ?lang=ar previews another locale (right-to-left for Arabic); missing keys fall back to English
+const lang = new URLSearchParams(location.search).get('lang') || 'en';
+for (const code of lang === 'en' ? ['en'] : ['en', lang]) {
+    const src = await fetch(`../locales/${code}.lua`).then((r) => r.text()).catch(() => '');
+    for (const m of src.matchAll(/\['ui\.([\w]+)'\] = '((?:[^'\\]|\\.)*)'/g)) strings[m[1]] = m[2].replace(/\\'/g, "'");
+}
 
-send('init', { strings, staff: true, role: 'admin', ui: {
+send('init', { strings, locale: { code: lang, dir: ['ar', 'he', 'fa', 'ur'].includes(lang) ? 'rtl' : 'ltr' }, staff: true, role: 'admin', ui: {
     theme: 'default', brand: { title: 'Event Studio', subtitle: 'Community Events' }, hudPosition: 'top-right', scoreboardRows: 5, dateFormat: 'en-GB',
     categories: { racing: { icon: '🏁', color: '#ff6b3d' }, vehicle: { icon: '🚙', color: '#ffb020' }, combat: { icon: '🎯', color: '#ff3d71' }, objective: { icon: '🚩', color: '#3dd6ff' },
         survival: { icon: '🛡️', color: '#7cff6b' }, hunt: { icon: '🧭', color: '#c36bff' }, obstacle: { icon: '🧗', color: '#6b8cff' }, social: { icon: '🎲', color: '#ff6bd6' }, tournament: { icon: '🏆', color: '#ffd23d' } } } });

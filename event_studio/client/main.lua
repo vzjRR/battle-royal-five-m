@@ -8,7 +8,7 @@ local function boot()
         if ok and type(res) == 'table' then
             ES.ServerInfo = res
             ES.NUI.send('init', {
-                ui = res.ui, strings = res.strings, version = res.version, staff = res.staff, role = res.role,
+                ui = res.ui, strings = res.strings, locale = res.locale, version = res.version, staff = res.staff, role = res.role,
                 commands = res.commands, scoring = res.scoring,
             })
             booted = true

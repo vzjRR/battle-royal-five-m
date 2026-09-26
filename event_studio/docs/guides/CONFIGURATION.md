@@ -47,4 +47,6 @@ Each event uses a profile, either by name (`scoring = 'competitive'`) or as an i
 
 ## Localization
 
-Copy `locales/en.lua` to `locales/xx.lua`, change `ES.RegisterLocale('en', …)` to `'xx'`, translate it, then set `Config.General.locale = 'xx'`. Keys starting with `ui.` are the NUI strings.
+Copy `locales/en.lua` to `locales/xx.lua`, change `ES.RegisterLocale('en', …)` to `'xx'`, translate it, then set `Config.General.locale = 'xx'`. Keys starting with `ui.` are the NUI strings. Missing keys fall back to English. Keep every `%s` / `%d` in the same order as the English text (the test suite checks this).
+
+Shipped languages: English (`en`) and Arabic (`ar`). Arabic, Hebrew, Persian and Urdu (`ar`, `he`, `fa`, `ur`) switch the NUI to right-to-left automatically; any other locale can force it with `_dir = 'rtl'` at the top of its table. Mode option labels in the Admin Center builder and the texts you write in your own event definitions (names, descriptions) are not translated.

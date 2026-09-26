@@ -25,6 +25,15 @@ function L(key, ...)
     return s
 end
 
+local RTL = { ar = true, he = true, fa = true, ur = true }
+
+---Active locale code and text direction ('ltr' / 'rtl'). A locale can force a direction with `_dir = 'rtl'`.
+function ES.localeInfo()
+    local code = (ES.Config.General and ES.Config.General.locale) or 'en'
+    local cur = ES.Locales[code] or {}
+    return { code = code, dir = cur._dir or (RTL[code] and 'rtl') or 'ltr' }
+end
+
 ---All strings whose key starts with 'ui.' (sent to the NUI once).
 function ES.uiStrings()
     local cur, en = current()
