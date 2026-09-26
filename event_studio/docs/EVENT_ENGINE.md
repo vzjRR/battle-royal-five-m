@@ -134,7 +134,7 @@ After any leave/elimination the engine calls `inst:checkViability()`:
 
 ## 9. Adding a mode — checklist
 
-1. `modes/<id>/server.lua` with `ES.RegisterMode`.
+1. `modes/<id>/server.lua` with `ES.RegisterMode`, added to `server_scripts` in `fxmanifest.lua` (and `modes/<id>/client.lua` to `client_scripts` if there is one).
 2. Reuse components; write client code only for new rendering needs (`modes/<id>/client.lua`).
 3. Add locale keys to `locales/en.lua`.
 4. Add at least one preset in `config/events/`.

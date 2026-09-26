@@ -313,6 +313,11 @@ Sim.print = realPrint
 
 local function expand(pattern)
     if not pattern:find('*', 1, true) then return { pattern } end
+    -- like FXServer: a single '*' only matches inside the last path segment ('dir/*/file.lua' matches nothing)
+    local dir = pattern:match('^(.*)/[^/]*$') or ''
+    if dir:find('*', 1, true) and not pattern:find('**', 1, true) then
+        error('manifest pattern ' .. pattern .. ' has a wildcard in a folder name; FXServer does not expand it')
+    end
     local out = {}
     local cmd = ("cd '%s' && ls -1 %s 2>/dev/null"):format(Sim.root, pattern)
     local p = io.popen(cmd)

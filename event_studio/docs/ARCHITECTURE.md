@@ -200,7 +200,7 @@ See `DATABASE.md`. Storage is optional; three adapters (oxmysql / kvp / none). K
 
 ## 13. Extensibility
 
-- **Mode packs** are drop-in folders: `modes/<id>/server.lua` (+ optional `client.lua`) are picked up by the manifest glob. Modes run inside EVENT STUDIO's Lua state so they receive the real `Instance` object (functions and metatables cannot cross the export boundary, which is why modes are not registered from other resources).
+- **Mode packs** are drop-in folders: `modes/<id>/server.lua` (+ optional `client.lua`), each listed in `fxmanifest.lua` (FXServer only expands `*` in the file name, not in folder names, so `modes/*/server.lua` would load nothing; `tests/test_boot.lua` fails if a mode file is not listed). Modes run inside EVENT STUDIO's Lua state so they receive the real `Instance` object (functions and metatables cannot cross the export boundary, which is why modes are not registered from other resources).
 - **Data packs** (definitions, arenas) can live in any resource: `exports.event_studio:RegisterArena(arena)`, `RegisterDefinition(def)`.
 - **Gameplay hooks from other resources** use instance IDs: `AddPoints`, `CompleteObjective`, `EliminatePlayer`, `FinishInstance` … (see `API.md`).
 - Server events (non-networked, `AddEventHandler`) are emitted for every lifecycle transition: `event_studio:instanceState`, `event_studio:participantJoined`, `event_studio:participantLeft`, `event_studio:results`, `event_studio:rewarded`.

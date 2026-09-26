@@ -85,7 +85,27 @@ server_scripts {
 
     -- components & modes
     'server/components/*.lua',
-    'modes/*/server.lua',
+    -- FiveM globs only expand '*' in the file name, so every mode is listed (tests/test_boot.lua checks this)
+    'modes/bounty/server.lua',
+    'modes/ctf/server.lua',
+    'modes/custom/server.lua',
+    'modes/deathmatch/server.lua',
+    'modes/gungame/server.lua',
+    'modes/hunt/server.lua',
+    'modes/hunters/server.lua',
+    'modes/juggernaut/server.lua',
+    'modes/keep_moving/server.lua',
+    'modes/koth/server.lua',
+    'modes/musical_chairs/server.lua',
+    'modes/package/server.lua',
+    'modes/race/server.lua',
+    'modes/reaction/server.lua',
+    'modes/redlight/server.lua',
+    'modes/sumo/server.lua',
+    'modes/trivia/server.lua',
+    'modes/vehicle_tag/server.lua',
+    'modes/vip/server.lua',
+    'modes/zone_survival/server.lua',
 
     'integrations/custom/hooks.lua',
     'server/main.lua',
@@ -99,7 +119,8 @@ client_scripts {
     'integrations/custom/client_hooks.lua',
     'integrations/framework/client.lua',
     'client/components/*.lua',
-    'modes/*/client.lua',
+    'modes/ctf/client.lua',
+    'modes/package/client.lua',
     'client/main.lua',
 }
 

@@ -33,3 +33,18 @@ H.test('exports registered', function()
         H.ok(Sim.exports[n], 'export ' .. n)
     end
 end)
+
+H.test('manifest: every mode file is listed and no pattern has a wildcard in a folder name', function()
+    local src = io.open(Sim.root .. '/fxmanifest.lua'):read('a')
+    for pattern in src:gmatch("'([^']*%*[^']*)'") do
+        local dir = pattern:match('^(.*)/[^/]*$') or ''
+        H.no(dir:find('*', 1, true) and not pattern:find('**', 1, true), 'FXServer will not expand ' .. pattern)
+    end
+    local p = io.popen(("cd '%s' && ls -1 modes/*/*.lua"):format(Sim.root))
+    for f in p:lines() do H.ok(src:find("'" .. f .. "'", 1, true), 'not in fxmanifest.lua: ' .. f) end
+    p:close()
+end)
+
+H.test('content loads without errors', function()
+    H.eq(#(ES.LoadErrors or {}), 0, 'load errors: ' .. table.concat(ES.LoadErrors or {}, ' | '))
+end)
