@@ -5,10 +5,11 @@ const send = (action, data) => window.dispatchEvent(new MessageEvent('message', 
 const now = Math.floor(Date.now() / 1000);
 
 const cards = [
-    { id: 1001, name: 'Downtown Street Circuit', category: 'racing', icon: '🏁', color: '#ff6b3d', mode: 'race', modeLabel: 'Race', difficulty: 'medium', status: 'open', state: 'REGISTRATION', players: 5, maxPlayers: 8, minPlayers: 2, remainingMs: 94000, duration: 600, reward: '$10,000', spectators: true },
-    { id: 1002, name: 'Team Deathmatch', category: 'combat', icon: '🎯', color: '#ff3d71', mode: 'deathmatch', modeLabel: 'Deathmatch', difficulty: 'medium', status: 'live', state: 'ACTIVE', players: 12, maxPlayers: 16, minPlayers: 4, remainingMs: 312000, duration: 900, reward: '$5,000', teams: 2, spectators: true },
-    { id: 1003, name: 'Trivia Night', category: 'social', icon: '🎲', color: '#ff6bd6', mode: 'trivia', modeLabel: 'Trivia', difficulty: 'easy', status: 'starting', state: 'COUNTDOWN', players: 22, maxPlayers: 64, minPlayers: 2, remainingMs: 4000, duration: 0, reward: '$7,500' },
-    { id: 1004, name: 'Sumo', category: 'vehicle', icon: '🚙', color: '#ffb020', mode: 'sumo', modeLabel: 'Sumo / Derby', difficulty: 'hard', status: 'full', state: 'REGISTRATION', players: 8, maxPlayers: 8, minPlayers: 2, remainingMs: 40000, duration: 300, reward: '$7,500' },
+    { id: 1001, name: 'Downtown Street Circuit', category: 'racing', icon: 'flag', color: '#ff6b3d', mode: 'race', modeLabel: 'Race', difficulty: 'medium', status: 'open', state: 'REGISTRATION', players: 5, maxPlayers: 8, minPlayers: 2, remainingMs: 94000, duration: 600, reward: '$10,000', spectators: true },
+    { id: 1002, name: 'Team Deathmatch', category: 'combat', icon: 'crosshair', color: '#ff3d71', mode: 'deathmatch', modeLabel: 'Deathmatch', difficulty: 'medium', status: 'live', state: 'ACTIVE', players: 12, maxPlayers: 16, minPlayers: 4, remainingMs: 312000, duration: 900, reward: '$5,000', teams: 2, spectators: true },
+    { id: 1003, name: 'Trivia Night', category: 'social', icon: 'question', color: '#ff6bd6', mode: 'trivia', modeLabel: 'Trivia', difficulty: 'easy', status: 'starting', state: 'COUNTDOWN', players: 22, maxPlayers: 64, minPlayers: 2, remainingMs: 4000, duration: 0, reward: '$7,500' },
+    { id: 1005, name: 'Alamo Sea Boat Race', category: 'racing', icon: 'anchor', color: '#3dd6ff', mode: 'race', modeLabel: 'Race', difficulty: 'easy', status: 'starting', state: 'LOBBY', players: 6, maxPlayers: 8, minPlayers: 2, remainingMs: 8000, duration: 480, reward: '$7,500' },
+    { id: 1004, name: 'Sumo', category: 'vehicle', icon: 'car', color: '#ffb020', mode: 'sumo', modeLabel: 'Sumo / Derby', difficulty: 'hard', status: 'full', state: 'REGISTRATION', players: 8, maxPlayers: 8, minPlayers: 2, remainingMs: 40000, duration: 300, reward: '$7,500' },
 ];
 
 const responses = {
@@ -31,7 +32,7 @@ const adminData = {
     version: '0.1.0-alpha', role: 'admin', level: 40, framework: 'standalone', inventory: 'standalone', storage: 'kvp', season: '2026-09', director: false,
     perms: Object.fromEntries(['admin.open', 'logs.view', 'definition.view', 'definition.edit', 'definition.delete', 'arena.edit', 'schedule.view', 'schedule.edit', 'director.toggle',
         'instance.create', 'instance.start', 'instance.pause', 'instance.stop', 'instance.cancel', 'instance.restart', 'instance.announce', 'instance.manualScore',
-        'player.add', 'player.remove', 'player.teleport', 'player.reset', 'player.disqualify', 'player.reward', 'spectate.any', 'tournament.edit'].map((k) => [k, true])),
+        'player.add', 'player.remove', 'player.teleport', 'player.reset', 'player.disqualify', 'player.reward', 'spectate.any', 'tournament.edit', 'ui.edit'].map((k) => [k, true])),
     modes: [
         { id: 'race', label: 'Race', category: 'racing', teams: 'none', needsArena: true, requires: ['checkpoints'], description: 'Ordered checkpoints with laps.',
           options: [{ key: 'laps', type: 'integer', label: 'Laps', min: 1, max: 50, default: 1 }, { key: 'onFoot', type: 'boolean', label: 'On foot', default: false },
@@ -76,12 +77,22 @@ for (const code of lang === 'en' ? ['en'] : ['en', lang]) {
     for (const m of src.matchAll(/\['ui\.([\w]+)'\] = '((?:[^'\\]|\\.)*)'/g)) strings[m[1]] = m[2].replace(/\\'/g, "'");
 }
 
-send('init', { strings, locale: { code: lang, dir: ['ar', 'he', 'fa', 'ur'].includes(lang) ? 'rtl' : 'ltr' }, staff: true, role: 'admin', ui: {
-    theme: 'default', brand: { title: 'Event Studio', subtitle: 'Community Events' }, hudPosition: 'top-right', scoreboardRows: 5, dateFormat: 'en-GB',
-    categories: { racing: { icon: '🏁', color: '#ff6b3d' }, vehicle: { icon: '🚙', color: '#ffb020' }, combat: { icon: '🎯', color: '#ff3d71' }, objective: { icon: '🚩', color: '#3dd6ff' },
-        survival: { icon: '🛡️', color: '#7cff6b' }, hunt: { icon: '🧭', color: '#c36bff' }, obstacle: { icon: '🧗', color: '#6b8cff' }, social: { icon: '🎲', color: '#ff6bd6' }, tournament: { icon: '🏆', color: '#ffd23d' } } } });
+// theme list straight from the Lua registry, so the preview always matches the resource
+const themesLua = await fetch('../shared/themes.lua').then((r) => r.text()).catch(() => '');
+const themes = [...themesLua.matchAll(/\{ id = '([\w-]+)', name = '([^']+)', file = '([\w-]+)', shape = '(\w+)', title = '(\w+)',\s*logo = ('[^']*'|false), art = ('[^']*'|false), preview = \{ ([^}]+) \} \}/g)]
+    .map((m) => ({ id: m[1], name: m[2], file: m[3], shape: m[4], title: m[5], logo: m[6] === 'false' ? false : m[6].slice(1, -1),
+        art: m[7] === 'false' ? false : m[7].slice(1, -1), preview: m[8].split(',').map((c) => c.trim().slice(1, -1)) }));
+const params = new URLSearchParams(location.search);
+const baseUI = {
+    theme: params.get('theme') || 'krovix-gilded', browserLayout: params.get('layout') || 'compact', browserKeepMoving: false, artwork: 'auto',
+    brand: { title: 'Event Studio', subtitle: 'Community Events', logo: 'auto' }, colors: {}, hudPosition: 'top-right', scoreboardRows: 5, dateFormat: 'en-GB',
+    categories: { racing: { icon: 'flag', color: '#ff6b3d' }, vehicle: { icon: 'car', color: '#ffb020' }, combat: { icon: 'crosshair', color: '#ff3d71' }, objective: { icon: 'target', color: '#3dd6ff' },
+        survival: { icon: 'shield', color: '#7cff6b' }, hunt: { icon: 'compass', color: '#c36bff' }, obstacle: { icon: 'mountain', color: '#6b8cff' }, social: { icon: 'dice', color: '#ff6bd6' }, tournament: { icon: 'trophy', color: '#ffd23d' } } };
+if (params.get('accent')) baseUI.colors.accent = '#' + params.get('accent');
+responses['admin:ui:get'] = { effective: { ...baseUI, themes }, overrides: { theme: baseUI.theme, browserLayout: baseUI.browserLayout }, base: baseUI };
+send('init', { strings, locale: { code: lang, dir: ['ar', 'he', 'fa', 'ur'].includes(lang) ? 'rtl' : 'ltr' }, staff: true, role: 'admin', ui: { ...baseUI, themes } });
 
-document.body.style.background = 'linear-gradient(135deg, #2b3a4a, #1a2230 60%, #3a2b2b)';
+document.body.style.background = 'linear-gradient(180deg, #1b2a44 0%, #3b3a52 42%, #7a5238 60%, #151a24 61%, #0b0e14 100%)';
 const scene = location.hash.slice(1) || 'browser';
 const race = { id: 1001, name: 'Downtown Street Circuit', mode: 'race', category: 'racing', state: 'ACTIVE', remainingMs: 402000, role: 'participant', selfSrc: 3,
     objective: 'Pass every checkpoint and finish first.', you: { status: 'active', score: 0 }, hud: { lap: 2, laps: 3, checkpoint: 5, checkpoints: 8, position: 2, racers: 6 } };
@@ -89,9 +100,10 @@ const rows = [{ src: 2, name: 'Rook', placement: 1, status: 'active', score: 0, 
     { src: 4, name: 'Kai', placement: 3, status: 'active', score: 0, extra: 'L2 · 3/8' }, { src: 5, name: 'Vega', placement: 4, status: 'active', score: 0, extra: 'L1 · 8/8' },
     { src: 6, name: 'Juno', placement: 5, status: 'eliminated', score: 0, extra: 'L1 · 4/8' }];
 if (scene === 'browser') send('open', { view: 'browser' });
-if (scene === 'admin' || scene === 'live' || scene === 'builder' || scene === 'tournaments') {
+if (scene === 'admin' || scene === 'live' || scene === 'builder' || scene === 'tournaments' || scene === 'appearance') {
     send('open', { view: 'admin', data: adminData });
-    if (scene !== 'admin') setTimeout(() => document.querySelectorAll('.nav').forEach((b) => { if (b.textContent.toLowerCase().includes(scene === 'live' ? 'live' : scene === 'builder' ? 'builder' : 'tournament')) b.click(); }), 50);
+    const navWord = { live: 'live', builder: 'builder', tournaments: 'tournament', appearance: 'appearance' }[scene];
+    if (navWord) setTimeout(() => document.querySelectorAll('.nav').forEach((b) => { if (b.textContent.toLowerCase().includes(navWord)) b.click(); }), 50);
 }
 if (scene === 'hud') { send('state', race); send('scoreboard', { rows }); send('toast', { text: 'Registration open: Trivia Night (#1003). Use /events to join!', kind: 'global' }); }
 if (scene === 'results') send('results', { name: 'Downtown Street Circuit', winner: 'Rook', remainingMs: 60000, rows: [

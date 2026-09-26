@@ -1,0 +1,56 @@
+/* EVENT STUDIO — Krovix Gilded (default Krovix design): navy glass, gold hairlines, metallic gold titles. */
+:root {
+    --font: "Manrope", "Segoe UI", sans-serif;
+    --font-display: "Syncopate", "Manrope", sans-serif;
+
+    --bg: rgba(9, 16, 30, 0.93);
+    --bg-solid: #05080f;
+    --shell-bg: linear-gradient(160deg, rgba(14, 26, 46, 0.95) 0%, rgba(6, 10, 19, 0.95) 100%);
+    --panel: rgba(14, 26, 46, 0.92);
+    --panel-2: rgba(20, 34, 58, 0.92);
+    --panel-3: rgba(28, 44, 72, 0.92);
+    --line: rgba(212, 178, 106, 0.14);
+    --line-strong: rgba(212, 178, 106, 0.32);
+    --edge: rgba(212, 178, 106, 0.42);
+    --head-bg: linear-gradient(90deg, rgba(212, 178, 106, 0.12), rgba(212, 178, 106, 0) 55%);
+
+    --text: #e9edf5;
+    --text-dim: #b8c2d6;
+    --text-faint: #8c9ab3;
+
+    --accent: #d4b26a;
+    --accent-2: #f1dda6;
+    --accent-text: #0b1424;
+    --grad-accent: linear-gradient(180deg, #f6e7b8 0%, #d4b26a 55%, #a9823f 100%);
+    --title-grad: linear-gradient(180deg, #f6e7b8 0%, #d4b26a 50%, #9c7a3c 100%);
+    --accent-soft: rgba(212, 178, 106, 0.12);
+    --accent-line: rgba(212, 178, 106, 0.5);
+    --glow: 0 0 0 3px rgba(212, 178, 106, 0.14);
+
+    --icon-bg: #0b1424;
+    --icon-edge: #d4b26a;
+    --icon-ink: #f1dda6;
+
+    --good: #7be3a6;
+    --warn: #f6c66b;
+    --bad: #ff8fa3;
+    --info: #8fb8ff;
+    --good-soft: rgba(123, 227, 166, 0.1);
+    --good-line: rgba(123, 227, 166, 0.5);
+    --warn-soft: rgba(246, 198, 107, 0.1);
+    --warn-line: rgba(246, 198, 107, 0.5);
+    --bad-soft: rgba(255, 143, 163, 0.1);
+    --bad-line: rgba(255, 143, 163, 0.5);
+    --info-soft: rgba(143, 184, 255, 0.1);
+    --info-line: rgba(143, 184, 255, 0.5);
+    --gold: #e6c67f;
+    --silver: #cfd6e4;
+    --bronze: #d49a68;
+
+    --radius: 12px;
+    --radius-sm: 9px;
+    --radius-lg: 18px;
+    --shadow: 0 30px 80px rgba(0, 0, 0, 0.55), inset 0 1px 0 rgba(246, 231, 184, 0.12);
+    --hud-bg: rgba(9, 16, 30, 0.88);
+    --art-opacity: 0.16;
+}

@@ -26,10 +26,30 @@ end)
 
 -- Browser ----------------------------------------------------------------------
 
+-- While the docked window keeps game input, the mouse must not also turn the camera or fire weapons.
+local BLOCKED_WHILE_MOVING = { 1, 2, 24, 25, 37, 68, 69, 70, 91, 92, 106, 140, 141, 142, 199, 200, 257, 263, 264 }
+
+local function keepMovingLoop()
+    CreateThread(function()
+        while ES.NUI.panelOpen and ES.NUI.keepInput do
+            for _, c in ipairs(BLOCKED_WHILE_MOVING) do DisableControlAction(0, c, true) end
+            Wait(0)
+        end
+    end)
+end
+
 function ES.openBrowser()
+    if ES.NUI.panelOpen and ES.NUI.keepInput then -- F7 again closes the docked window
+        ES.NUI.send('close', {})
+        return
+    end
+    local ui = (ES.ServerInfo and ES.ServerInfo.ui) or Config.UI
+    local keep = ui.browserLayout == 'docked' and ui.browserKeepMoving == true
     ES.NUI.panelOpen = true
-    ES.NUI.setFocus(true)
+    ES.NUI.keepInput = keep
+    ES.NUI.setFocus(true, keep)
     ES.NUI.send('open', { view = 'browser' })
+    if keep then keepMovingLoop() end
 end
 
 function ES.openAdmin()
@@ -39,6 +59,7 @@ function ES.openAdmin()
             return
         end
         ES.NUI.panelOpen = true
+        ES.NUI.keepInput = false
         ES.NUI.setFocus(true)
         ES.NUI.send('open', { view = 'admin', data = res })
     end)

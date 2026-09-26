@@ -18,7 +18,8 @@ By **Krovix Store** · Version: **0.1.0-alpha** · Frameworks: **Standalone, ESX
 - **Tournaments:** single elimination with byes, round robin / league, best of 1/3/5. Every match runs as a normal event instance.
 - **Persistence is optional:** oxmysql (migrations run automatically), resource KVP (no database needed), or memory only.
 - **Rewards:** cash, bank, items (ox_inventory or the framework), XP hook, console command, webhook, or custom reward types.
-- **Discord webhooks, announcements** (NUI, chat, framework notify), **localization**, **CSS themes**, and an exports API.
+- **Discord webhooks, announcements** (NUI, chat, framework notify), **localization**, and an exports API.
+- **8 designs, fully recolorable in game.** Krovix Gilded, Sapphire, Obsidian, Emerald, Crimson and Arctic, plus Classic and Light. Staff switch the design, the player window layout (compact, docked or full) and every color live from the Admin Center.
 - **Low overhead.** Nothing runs while no event exists. The server ticks at 500 ms while events run, the scoreboard only sends changes, and timers count down on the client.
 
 ## Requirements

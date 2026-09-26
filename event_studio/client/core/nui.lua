@@ -26,6 +26,7 @@ end)
 
 RegisterNUICallback('close', function(_, cb)
     NUI.panelOpen = false
+    NUI.keepInput = false
     NUI.setFocus(false)
     cb({ ok = true })
 end)

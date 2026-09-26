@@ -53,6 +53,12 @@ ES.on('role', function(d)
     ES.NUI.send('role', d)
 end)
 
+-- Staff changed the appearance in the Admin Center: apply it live.
+ES.on('ui', function(d)
+    if ES.ServerInfo then ES.ServerInfo.ui = d end
+    ES.NUI.send('ui', d)
+end)
+
 ES.on('announce', function(d) ES.NUI.send('toast', d) end)
 ES.on('notify', function(d) ES.NUI.send('toast', d) end)
 ES.on('results', function(d) ES.NUI.send('results', d) end)

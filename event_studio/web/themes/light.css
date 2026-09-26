@@ -1,7 +1,7 @@
-/* EVENT STUDIO — light theme example (Config.UI.theme = 'light') */
+/* EVENT STUDIO — Light theme (Config.UI.theme = 'light') */
 :root {
-    --font: "Inter", "Segoe UI", system-ui, -apple-system, sans-serif;
-    --font-mono: "JetBrains Mono", "Consolas", monospace;
+    --font: "Manrope", "Segoe UI", system-ui, sans-serif;
+    --font-mono: "Consolas", "Menlo", monospace;
     --bg: rgba(240, 242, 247, 0.96);
     --bg-solid: #f0f2f7;
     --panel: rgba(255, 255, 255, 0.98);

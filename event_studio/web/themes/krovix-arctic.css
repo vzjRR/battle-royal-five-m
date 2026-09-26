@@ -1,0 +1,53 @@
+/* EVENT STUDIO — Krovix Arctic: light frosted glass with navy text and a gold accent line. */
+:root {
+    --font: "Manrope", "Segoe UI", sans-serif;
+    --font-display: "Chakra Petch", "Manrope", sans-serif;
+
+    --bg: rgba(238, 243, 248, 0.95);
+    --bg-solid: #eef3f8;
+    --shell-bg: linear-gradient(170deg, rgba(248, 251, 254, 0.97) 0%, rgba(228, 236, 245, 0.97) 100%);
+    --panel: rgba(255, 255, 255, 0.96);
+    --panel-2: rgba(242, 246, 251, 0.96);
+    --panel-3: rgba(226, 234, 244, 0.96);
+    --line: rgba(29, 78, 137, 0.12);
+    --line-strong: rgba(29, 78, 137, 0.24);
+    --edge: rgba(184, 145, 63, 0.55);
+    --head-bg: linear-gradient(90deg, rgba(184, 145, 63, 0.14), rgba(184, 145, 63, 0) 55%);
+
+    --text: #0f2440;
+    --text-dim: #3f5775;
+    --text-faint: #6f84a0;
+
+    --accent: #1d4e89;
+    --accent-2: #b8913f;
+    --accent-text: #ffffff;
+    --grad-accent: linear-gradient(180deg, #2c67ad 0%, #173f70 100%);
+    --accent-soft: rgba(29, 78, 137, 0.1);
+    --accent-line: rgba(29, 78, 137, 0.4);
+    --glow: 0 0 0 3px rgba(184, 145, 63, 0.22);
+
+    --icon-bg: #ffffff;
+    --icon-edge: #b8913f;
+    --icon-ink: #1d4e89;
+
+    --good: #12915a;
+    --warn: #b87400;
+    --bad: #c8283a;
+    --info: #1f6fe0;
+    --good-soft: rgba(18, 145, 90, 0.1);
+    --good-line: rgba(18, 145, 90, 0.4);
+    --warn-soft: rgba(184, 116, 0, 0.1);
+    --warn-line: rgba(184, 116, 0, 0.4);
+    --bad-soft: rgba(200, 40, 58, 0.1);
+    --bad-line: rgba(200, 40, 58, 0.4);
+    --gold: #c99a2e;
+    --silver: #93a0b4;
+    --bronze: #b0652f;
+
+    --radius: 12px;
+    --radius-sm: 9px;
+    --radius-lg: 18px;
+    --shadow: 0 24px 60px rgba(15, 36, 64, 0.22);
+    --hud-bg: rgba(248, 251, 254, 0.9);
+    --art-opacity: 0.12;
+}

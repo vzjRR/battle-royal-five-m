@@ -1,0 +1,53 @@
+/* EVENT STUDIO — Krovix Obsidian: near-black, cut corners, gold used sparingly, big readable numbers. */
+:root {
+    --font: "Barlow Semi Condensed", "Segoe UI", sans-serif;
+    --font-display: "Oxanium", "Barlow Semi Condensed", sans-serif;
+
+    --bg: rgba(11, 15, 22, 0.96);
+    --bg-solid: #05070a;
+    --shell-bg: rgba(11, 15, 22, 0.97);
+    --panel: rgba(18, 24, 34, 0.95);
+    --panel-2: rgba(24, 31, 43, 0.95);
+    --panel-3: rgba(35, 42, 54, 0.95);
+    --line: #1c222d;
+    --line-strong: #2a3240;
+    --edge: rgba(201, 169, 106, 0.55);
+    --head-bg: transparent;
+
+    --text: #e6e8ec;
+    --text-dim: #9097a3;
+    --text-faint: #6c7483;
+
+    --accent: #c9a96a;
+    --accent-2: #e3c98f;
+    --accent-text: #0b0f16;
+    --grad-accent: linear-gradient(180deg, #e8d3a0 0%, #c9a96a 100%);
+    --accent-soft: rgba(201, 169, 106, 0.14);
+    --accent-line: rgba(201, 169, 106, 0.5);
+    --glow: 0 0 0 1px #c9a96a;
+
+    --icon-bg: #121822;
+    --icon-edge: #3a3226;
+    --icon-ink: #c9a96a;
+
+    --good: #7be3a6;
+    --warn: #f6c66b;
+    --bad: #ff8fa3;
+    --good-soft: rgba(123, 227, 166, 0.1);
+    --good-line: rgba(123, 227, 166, 0.45);
+    --warn-soft: rgba(246, 198, 107, 0.1);
+    --warn-line: rgba(246, 198, 107, 0.45);
+    --bad-soft: rgba(255, 143, 163, 0.1);
+    --bad-line: rgba(255, 143, 163, 0.45);
+    --gold: #e3c98f;
+    --silver: #c4c9d2;
+    --bronze: #b07a48;
+
+    --radius: 4px;
+    --radius-sm: 3px;
+    --radius-lg: 4px;
+    --cut: 18px;
+    --shadow: 0 24px 70px rgba(0, 0, 0, 0.6);
+    --hud-bg: rgba(11, 15, 22, 0.92);
+    --art-opacity: 0.08;
+}

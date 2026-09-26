@@ -172,6 +172,28 @@ ES.RegisterLocale('en', {
     ['ui.everyone'] = 'Everyone', ['ui.also_chat'] = 'Also in chat', ['ui.level_filter'] = 'Level', ['ui.refresh'] = 'Refresh',
     ['ui.new_arena'] = 'New arena', ['ui.points_list'] = 'Points',
 
+    -- NUI appearance (Admin Center → Appearance) and compact player window
+    ['ui.appearance'] = 'Appearance', ['ui.theme'] = 'Design', ['ui.player_window'] = 'Player event window (F7)',
+    ['ui.layout_compact'] = 'Compact', ['ui.layout_compact_help'] = 'Small window in the middle of the screen',
+    ['ui.layout_docked'] = 'Docked', ['ui.layout_docked_help'] = 'Panel on the right edge, the game stays visible',
+    ['ui.layout_full'] = 'Full', ['ui.layout_full_help'] = 'Large window with cards and a details panel',
+    ['ui.keep_moving'] = 'Players can keep moving', ['ui.keep_moving_help'] = 'Docked layout only: drive or walk while the window is open. F7 closes it.',
+    ['ui.hud_position'] = 'HUD position', ['ui.hud_top_right'] = 'Top right', ['ui.hud_top_left'] = 'Top left',
+    ['ui.colors'] = 'Colors', ['ui.colors_help'] = 'Leave a color on the design default to follow the selected design.',
+    ['ui.color_accent'] = 'Accent', ['ui.color_accent2'] = 'Accent 2', ['ui.color_background'] = 'Background', ['ui.color_panel'] = 'Panels',
+    ['ui.color_text'] = 'Text', ['ui.color_good'] = 'Open / live', ['ui.color_warn'] = 'Starting', ['ui.color_bad'] = 'Full / errors',
+    ['ui.theme_default'] = 'Design default', ['ui.none'] = 'None', ['ui.custom'] = 'Custom',
+    ['ui.image_help'] = 'A file in web/img/ (for example img/logo.png) or an https:// link.',
+    ['ui.branding'] = 'Branding', ['ui.brand_title'] = 'Title', ['ui.brand_subtitle'] = 'Subtitle', ['ui.logo'] = 'Logo', ['ui.artwork'] = 'Background artwork',
+    ['ui.categories'] = 'Categories', ['ui.icon'] = 'Icon', ['ui.color'] = 'Color',
+    ['ui.shape_cut'] = 'Cut corners', ['ui.shape_round'] = 'Rounded', ['ui.selected'] = 'selected',
+    ['ui.read_only'] = 'View only: your role cannot change the appearance.', ['ui.unsaved'] = 'Unsaved changes',
+    ['ui.reset_config'] = 'Reset to config', ['ui.discard'] = 'Discard',
+    ['ui.events_summary'] = '%d events · %d open to join', ['ui.close_hint'] = 'F7 or Esc to close',
+    ['ui.err_unknown_theme'] = 'That design does not exist.', ['ui.err_invalid_layout'] = 'Unknown window layout.',
+    ['ui.err_invalid_color'] = 'Colors must be hex values like #d4b26a.', ['ui.err_invalid_image'] = 'Images must be a file in web/img/ or an https:// link.',
+    ['ui.err_invalid'] = 'Some values are not valid.',
+
     -- errors (NUI shows 'err_<code>')
     ['ui.err_not_found'] = 'Event not found.', ['ui.err_full'] = 'The event is full.', ['ui.err_invalid_state'] = 'Not possible right now.',
     ['ui.err_already_joined'] = 'You are already registered.', ['ui.err_in_other_event'] = 'You are already in another event.',

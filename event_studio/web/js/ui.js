@@ -1,4 +1,5 @@
 // EVENT STUDIO — tiny DOM + i18n helpers. All user-provided text is inserted as text nodes (never innerHTML).
+import { glyph, icon } from './icons.js';
 
 export const store = { strings: {}, ui: {}, staff: false, role: null, scoring: {}, commands: {} };
 
@@ -72,8 +73,17 @@ export function fmtDate(unix) {
 }
 
 export function categoryOf(cat) {
-    return (store.ui.categories && store.ui.categories[cat]) || { icon: '★', color: 'var(--accent)' };
+    return (store.ui.categories && store.ui.categories[cat]) || { icon: 'star', color: 'var(--accent)' };
 }
+
+/** Icon badge for a category (or an explicit icon name / emoji). */
+export function badge(cat, override, cls = 'badge') {
+    const c = categoryOf(cat);
+    return h(`span.${cls}`, { vars: { '--c': c.color } }, glyph(override || c.icon, cls === 'badge-lg' ? 22 : 18));
+}
+
+/** Inline icon (null-safe) for buttons and headings. */
+export const ico = (name, size = 16) => icon(name, size);
 
 export function placeBadge(p) {
     return h(`span.place${p && p <= 3 ? '.p' + p : ''}`, p ?? '–');

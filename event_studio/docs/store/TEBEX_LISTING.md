@@ -34,7 +34,7 @@ Racing (circuits, sprints, time trials, drag, boat, bike, elimination races, par
 **Built to fit your server**
 - Works standalone or with ESX / QBCore / Qbox (auto-detected), ox_inventory items, optional oxmysql (or no database at all).
 - Several events at once, each in its own instance.
-- Your branding: title, logo, accent color, themes. English included; add languages through locale files.
+- Your branding: 8 designs to choose from, every color changeable in game, your own title, logo and artwork, and a compact, docked or full player window. English included; add languages through locale files.
 
 ## Spec table (required by the Cfx.re release rules)
 

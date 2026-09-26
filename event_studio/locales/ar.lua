@@ -174,6 +174,28 @@ ES.RegisterLocale('ar', {
     ['ui.everyone'] = 'الجميع', ['ui.also_chat'] = 'في الدردشة أيضًا', ['ui.level_filter'] = 'المستوى', ['ui.refresh'] = 'تحديث',
     ['ui.new_arena'] = 'ساحة جديدة', ['ui.points_list'] = 'النقاط',
 
+    -- NUI appearance (Admin Center → Appearance) and compact player window
+    ['ui.appearance'] = 'المظهر', ['ui.theme'] = 'التصميم', ['ui.player_window'] = 'نافذة فعاليات اللاعب (F7)',
+    ['ui.layout_compact'] = 'مدمجة', ['ui.layout_compact_help'] = 'نافذة صغيرة في وسط الشاشة',
+    ['ui.layout_docked'] = 'جانبية', ['ui.layout_docked_help'] = 'لوحة على الحافة اليمنى وتبقى اللعبة ظاهرة',
+    ['ui.layout_full'] = 'كاملة', ['ui.layout_full_help'] = 'نافذة كبيرة مع بطاقات ولوحة تفاصيل',
+    ['ui.keep_moving'] = 'يمكن للاعبين مواصلة الحركة', ['ui.keep_moving_help'] = 'للوضع الجانبي فقط: القيادة أو المشي والنافذة مفتوحة. زر F7 يغلقها.',
+    ['ui.hud_position'] = 'موضع واجهة اللعب', ['ui.hud_top_right'] = 'أعلى اليمين', ['ui.hud_top_left'] = 'أعلى اليسار',
+    ['ui.colors'] = 'الألوان', ['ui.colors_help'] = 'اترك اللون على افتراضي التصميم ليتبع التصميم المختار.',
+    ['ui.color_accent'] = 'اللون المميز', ['ui.color_accent2'] = 'اللون المميز 2', ['ui.color_background'] = 'الخلفية', ['ui.color_panel'] = 'اللوحات',
+    ['ui.color_text'] = 'النص', ['ui.color_good'] = 'مفتوح / مباشر', ['ui.color_warn'] = 'يبدأ', ['ui.color_bad'] = 'ممتلئ / أخطاء',
+    ['ui.theme_default'] = 'افتراضي التصميم', ['ui.none'] = 'بدون', ['ui.custom'] = 'مخصص',
+    ['ui.image_help'] = 'ملف داخل web/img/ (مثل img/logo.png) أو رابط https://.',
+    ['ui.branding'] = 'الهوية', ['ui.brand_title'] = 'العنوان', ['ui.brand_subtitle'] = 'العنوان الفرعي', ['ui.logo'] = 'الشعار', ['ui.artwork'] = 'صورة الخلفية',
+    ['ui.categories'] = 'الفئات', ['ui.icon'] = 'الأيقونة', ['ui.color'] = 'اللون',
+    ['ui.shape_cut'] = 'زوايا مقطوعة', ['ui.shape_round'] = 'زوايا دائرية', ['ui.selected'] = 'مختار',
+    ['ui.read_only'] = 'عرض فقط: دورك لا يسمح بتغيير المظهر.', ['ui.unsaved'] = 'تغييرات غير محفوظة',
+    ['ui.reset_config'] = 'العودة لملف الإعدادات', ['ui.discard'] = 'تجاهل',
+    ['ui.events_summary'] = '%d فعاليات · %d مفتوحة للانضمام', ['ui.close_hint'] = 'F7 أو Esc للإغلاق',
+    ['ui.err_unknown_theme'] = 'هذا التصميم غير موجود.', ['ui.err_invalid_layout'] = 'تخطيط نافذة غير معروف.',
+    ['ui.err_invalid_color'] = 'يجب أن تكون الألوان بصيغة hex مثل #d4b26a.', ['ui.err_invalid_image'] = 'الصور يجب أن تكون ملفًا في web/img/ أو رابط https://.',
+    ['ui.err_invalid'] = 'بعض القيم غير صالحة.',
+
     -- errors (NUI shows 'err_<code>')
     ['ui.err_not_found'] = 'الفعالية غير موجودة.', ['ui.err_full'] = 'الفعالية ممتلئة.', ['ui.err_invalid_state'] = 'غير ممكن الآن.',
     ['ui.err_already_joined'] = 'أنت مسجّل بالفعل.', ['ui.err_in_other_event'] = 'أنت في فعالية أخرى بالفعل.',

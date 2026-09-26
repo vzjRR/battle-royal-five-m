@@ -1,5 +1,5 @@
 // EVENT STUDIO — Event Builder (form generated from the mode's option schema) and Arena editor.
-import { h, mount, t, categoryOf } from '../ui.js';
+import { h, mount, t, categoryOf, ico } from '../ui.js';
 import { post } from '../app.js';
 import { A, can, call, refresh, render, go } from './admin.js';
 import { toast } from '../hud.js';
@@ -128,7 +128,7 @@ export function builderView() {
         field(t('name'), textIn(def, 'name', { maxlength: 64 })),
         field(t('id'), textIn(def, 'id', { placeholder: 'auto from name', maxlength: 64 })),
         field(t('description'), h('textarea', { rows: 2, oninput: (e) => setPath(def, 'description', e.target.value) }, def.description || ''), { full: true }),
-        field(t('mode'), selectIn(def, 'mode', A.data.modes.map((m) => [m.id, `${categoryOf(m.category).icon} ${m.label}`]), () => { def.options = {}; render(); }), { help: mode.description }),
+        field(t('mode'), selectIn(def, 'mode', A.data.modes.map((m) => [m.id, m.label]), () => { def.options = {}; render(); }), { help: mode.description }),
         mode.needsArena ? field(t('arena'), selectIn(def, 'arena', [['', '—'], ...arenas.map((a) => [a.id, a.name])]), { help: (mode.requires || []).length ? `requires: ${mode.requires.join(', ')}` : '' }) : field(t('arena'), h('div.faint', '—')),
         field(t('category'), selectIn(def, 'category', [['', `(${mode.category})`], ...A.data.categories.map((c) => [c, c])])),
         field(t('visibility'), selectIn(def, 'visibility', [['public', 'public'], ['hidden', 'hidden'], ['staff', 'staff']])),
@@ -212,7 +212,7 @@ export function arenaView() {
         h('div.point-list', (ar[key] || []).map((p, i) => h('div.row', { style: { padding: '4px 14px' } },
             h('span.grow', `#${i + 1}  ${p.x.toFixed(1)}, ${p.y.toFixed(1)}, ${p.z.toFixed(1)}${p.w !== undefined ? `  h${Math.round(p.w)}` : ''}${p.radius ? `  r${p.radius}` : ''}${p.team ? `  team ${p.team}` : ''}${p.label ? `  ${p.label}` : ''}`),
             h('button.btn.sm.ghost', { onclick: () => post('waypoint', p) }, '⌖'),
-            h('button.btn.sm.danger', { onclick: () => { ar[key].splice(i, 1); render(); } }, '✕')))));
+            h('button.btn.sm.danger', { onclick: () => { ar[key].splice(i, 1); render(); }, 'aria-label': t('remove') }, ico('close', 14))))));
     return h('div.scroll.pad',
         h('div.form', { style: { marginBottom: '14px' } },
             h('div.field', h('label', t('name')), h('input', { value: ar.name || '', oninput: (e) => { ar.name = e.target.value; } })),

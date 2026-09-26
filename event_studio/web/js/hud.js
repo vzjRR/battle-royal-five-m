@@ -1,5 +1,5 @@
 // EVENT STUDIO — in-game HUD. Timers count down locally from `remainingMs`; the server never sends per-second updates.
-import { h, $, mount, show, t, errText, fmtClock, fmtRace, categoryOf, placeBadge, store } from './ui.js';
+import { h, $, mount, show, t, errText, fmtClock, fmtRace, categoryOf, placeBadge, store, badge, ico } from './ui.js';
 import { post } from './app.js';
 
 let snap = null;          // latest state snapshot
@@ -132,7 +132,7 @@ function renderHud() {
     const cards = [];
     cards.push(h('div.hud-card',
         h('div.hud-head',
-            h('div.hud-icon', { style: { background: cat.color } }, cat.icon),
+            badge(snap.category, snap.icon),
             h('div', h('div.hud-title', snap.name), h('div.hud-sub', snap.role === 'spectator' ? t('spectating') : (you.status === 'eliminated' ? t('eliminated') : (you.status === 'finished' ? t('finished') : t('status_live'))))),
             h('div.hud-timer', fmtClock(remaining()))),
         snap.objective ? h('div.hud-objective', snap.objective) : null,
@@ -214,7 +214,7 @@ export function onResults(d) {
     const teamsById = {};
     (d.teams || []).forEach((tm) => { teamsById[tm.index] = tm; });
     mount(el, h('div.card',
-        h('div.top', h('div.muted', t('results')), h('h1', d.name), d.winner ? h('div.winner', `🏆 ${t('winner')}: ${d.winner}`) : null),
+        h('div.top', h('div.muted', t('results')), h('h1', d.name), d.winner ? h('div.winner', ico('trophy', 16), ` ${t('winner')}: ${d.winner}`) : null),
         d.teams ? h('div.pad', { style: { display: 'flex', gap: '8px' } }, d.teams.map((tm) => h('div.hud-team', { vars: { '--c': tm.color } }, h('b', `#${tm.placement} · ${tm.score}`), h('span', tm.name)))) : null,
         h('table.tbl',
             h('tr', h('th', t('place')), h('th', t('name')), h('th.num', t('score')), h('th.num', t('kills')), h('th.num', t('time')), h('th.num', t('points'))),

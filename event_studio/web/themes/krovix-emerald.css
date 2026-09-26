@@ -1,0 +1,52 @@
+/* EVENT STUDIO — Krovix Emerald: deep green glass with gold, for a royal-casino feel. */
+:root {
+    --font: "Manrope", "Segoe UI", sans-serif;
+    --font-display: "Syncopate", "Manrope", sans-serif;
+
+    --bg: rgba(6, 22, 17, 0.93);
+    --bg-solid: #04100c;
+    --shell-bg: linear-gradient(160deg, rgba(12, 38, 29, 0.95) 0%, rgba(4, 14, 11, 0.95) 100%);
+    --panel: rgba(11, 32, 25, 0.92);
+    --panel-2: rgba(16, 44, 34, 0.92);
+    --panel-3: rgba(24, 58, 45, 0.92);
+    --line: rgba(212, 178, 106, 0.14);
+    --line-strong: rgba(212, 178, 106, 0.3);
+    --edge: rgba(212, 178, 106, 0.42);
+    --head-bg: linear-gradient(90deg, rgba(95, 211, 154, 0.12), rgba(95, 211, 154, 0) 55%);
+
+    --text: #e8f3ee;
+    --text-dim: #b3cfc2;
+    --text-faint: #7fa393;
+
+    --accent: #d4b26a;
+    --accent-2: #5fd39a;
+    --accent-text: #0a1a14;
+    --grad-accent: linear-gradient(180deg, #f6e7b8 0%, #d4b26a 55%, #a9823f 100%);
+    --title-grad: linear-gradient(180deg, #f6e7b8 0%, #d4b26a 50%, #9c7a3c 100%);
+    --accent-soft: rgba(212, 178, 106, 0.12);
+    --accent-line: rgba(212, 178, 106, 0.5);
+    --glow: 0 0 0 3px rgba(95, 211, 154, 0.18);
+
+    --icon-bg: #08190f;
+    --icon-edge: #5fd39a;
+    --icon-ink: #bff0d7;
+
+    --good: #5fd39a;
+    --warn: #f6c66b;
+    --bad: #ff8f8f;
+    --good-soft: rgba(95, 211, 154, 0.12);
+    --good-line: rgba(95, 211, 154, 0.5);
+    --warn-soft: rgba(246, 198, 107, 0.1);
+    --warn-line: rgba(246, 198, 107, 0.5);
+    --bad-soft: rgba(255, 143, 143, 0.1);
+    --bad-line: rgba(255, 143, 143, 0.5);
+    --gold: #e6c67f;
+    --silver: #d0dcd6;
+    --bronze: #d49a68;
+
+    --radius: 12px;
+    --radius-sm: 9px;
+    --radius-lg: 18px;
+    --shadow: 0 30px 80px rgba(0, 0, 0, 0.55), inset 0 1px 0 rgba(246, 231, 184, 0.1);
+    --hud-bg: rgba(6, 22, 17, 0.88);
+}

@@ -1,0 +1,14 @@
+#!/bin/sh
+# Keeps the automatic change log in HANDOVER.md current: after each commit, refresh it and fold it into that commit.
+[ -n "$HANDOVER_AMEND" ] && exit 0
+GIT_DIR=$(git rev-parse --git-dir)
+if [ -d "$GIT_DIR/rebase-merge" ] || [ -d "$GIT_DIR/rebase-apply" ] || [ -f "$GIT_DIR/MERGE_HEAD" ] || [ -f "$GIT_DIR/CHERRY_PICK_HEAD" ]; then
+    exit 0
+fi
+command -v python3 >/dev/null 2>&1 || exit 0
+python3 tools/update_handover.py || exit 0
+if ! git diff --quiet -- HANDOVER.md; then
+    git add HANDOVER.md
+    HANDOVER_AMEND=1 git commit --amend --no-edit --no-verify -q
+fi
+exit 0

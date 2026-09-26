@@ -18,4 +18,4 @@
 
 **How heavy is it?** Nothing runs when no event exists. While events run, the server ticks every 500 ms. Client loops run only for markers and checks in the active event.
 
-**Can I rebrand it?** Yes: `Config.UI.brand` sets the title, logo and accent, and themes live in `web/themes/`. Nothing is tied to a particular server.
+**Can I rebrand it?** Yes. Pick one of the 8 designs and change any color, the title, logo and artwork live in the Admin Center → Appearance, or in `config/ui.lua`. You can add your own design in `web/themes/`. Nothing is tied to a particular server.

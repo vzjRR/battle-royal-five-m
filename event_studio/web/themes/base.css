@@ -1,0 +1,71 @@
+/* EVENT STUDIO — base design tokens. Always loaded first; each theme in web/themes/ overrides what it needs.
+   To make your own theme: copy krovix-gilded.css, change the values, add an entry in shared/themes.lua
+   (or Config.UI.extraThemes). Colors can also be changed live in the Admin Center → Appearance. */
+:root {
+    /* type */
+    --font: "Manrope", "Segoe UI", system-ui, sans-serif;
+    --font-display: var(--font);
+    --font-mono: "Consolas", "Menlo", monospace;
+
+    /* surfaces */
+    --bg: rgba(12, 14, 20, 0.92);
+    --bg-solid: #0c0e14;
+    --shell-bg: var(--bg);
+    --panel: rgba(22, 25, 34, 0.96);
+    --panel-2: rgba(32, 36, 48, 0.96);
+    --panel-3: rgba(44, 49, 64, 0.96);
+    --line: rgba(255, 255, 255, 0.08);
+    --line-strong: rgba(255, 255, 255, 0.16);
+    --edge: var(--line-strong);          /* outer border of windows and the HUD */
+    --head-bg: transparent;              /* window header band */
+
+    /* text */
+    --text: #eef1f7;
+    --text-dim: #a4abbd;
+    --text-faint: #6b7287;
+
+    /* accent */
+    --accent: #7c5cff;
+    --accent-2: #3dd6ff;
+    --accent-text: #ffffff;
+    --grad-accent: var(--accent);        /* primary buttons and active tabs */
+    --title-grad: linear-gradient(180deg, var(--text), var(--text));  /* display titles when the theme uses 'metal' */
+    --glow: 0 0 0 3px var(--accent-soft);
+
+    /* icon badges */
+    --icon-bg: var(--panel-3);
+    --icon-edge: var(--line-strong);
+    --icon-ink: var(--text);
+
+    /* status */
+    --good: #3ddc84;
+    --warn: #ffb020;
+    --bad: #ff4d5e;
+    --info: #3d8bff;
+    --gold: #ffd23d;
+    --silver: #cfd6e4;
+    --bronze: #e0955a;
+    --good-soft: rgba(61, 220, 132, 0.13);
+    --good-line: rgba(61, 220, 132, 0.45);
+    --warn-soft: rgba(255, 176, 32, 0.13);
+    --warn-line: rgba(255, 176, 32, 0.45);
+    --bad-soft: rgba(255, 77, 94, 0.13);
+    --bad-line: rgba(255, 77, 94, 0.45);
+    --info-soft: rgba(61, 139, 255, 0.13);
+    --info-line: rgba(61, 139, 255, 0.45);
+    --accent-soft: rgba(124, 92, 255, 0.13);
+    --accent-line: rgba(124, 92, 255, 0.45);
+
+    /* shape */
+    --radius: 12px;
+    --radius-sm: 8px;
+    --radius-lg: 18px;
+    --cut: 14px;                          /* corner cut size for themes with shape = 'cut' */
+    --shadow: 0 18px 48px rgba(0, 0, 0, 0.45);
+    --hud-bg: rgba(10, 12, 18, 0.72);
+    --blur: blur(10px);
+
+    /* artwork behind window content (set by the theme registry / Config.UI.artwork) */
+    --art: none;
+    --art-opacity: 0.16;
+}

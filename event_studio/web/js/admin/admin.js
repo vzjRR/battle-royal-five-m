@@ -1,16 +1,18 @@
 // EVENT STUDIO — Admin Center. Controls are hidden when the server says the role lacks a permission;
 // the server still enforces every action.
-import { h, $, mount, show, t, errText, fmtClock, fmtDate, fmtRace, categoryOf, placeBadge, statusChip, store } from '../ui.js';
+import { h, $, mount, show, t, errText, fmtClock, fmtDate, fmtRace, categoryOf, placeBadge, statusChip, store, badge, ico } from '../ui.js';
 import { rpc, closePanels } from '../app.js';
 import { toast } from '../hud.js';
 import { builderView, arenaView } from './builder.js';
+import { appearanceView, onAppearanceUI, discardPreview } from './appearance.js';
+import { logoOf } from '../theme.js';
 
 export const A = { data: null, section: 'dashboard', liveId: null, liveTimer: null, logs: [], history: [], players: [], editing: null, board: [] };
 
 const sections = [
-    ['dashboard', '◧', 'dashboard'], ['definitions', '☰', 'definitions'], ['builder', '✎', 'builder'], ['arenas', '⌖', 'arenas'],
-    ['scheduler', '⏱', 'scheduler'], ['live', '●', 'live_events'], ['tournaments', '🏆', 'tournaments'], ['leaderboard', '★', 'leaderboard'],
-    ['logs', '≡', 'logs'], ['settings', '⚙', 'settings'],
+    ['dashboard', 'home', 'dashboard'], ['definitions', 'list', 'definitions'], ['builder', 'pencil', 'builder'], ['arenas', 'pin', 'arenas'],
+    ['scheduler', 'clock', 'scheduler'], ['live', 'live', 'live_events'], ['tournaments', 'trophy', 'tournaments'], ['leaderboard', 'star', 'leaderboard'],
+    ['logs', 'logs', 'logs'], ['appearance', 'palette', 'appearance'], ['settings', 'settings', 'settings'],
 ];
 
 export const can = (action) => !!(A.data && A.data.perms && A.data.perms[action]);
@@ -50,9 +52,10 @@ export function open(data) {
     render();
 }
 
-export function onClose() { clearInterval(A.liveTimer); A.liveTimer = null; }
+export function onClose() { clearInterval(A.liveTimer); A.liveTimer = null; discardPreview(); }
 
 export function go(section, extra) {
+    if (A.section === 'appearance' && section !== 'appearance') discardPreview();
     A.section = section;
     clearInterval(A.liveTimer);
     A.liveTimer = null;
@@ -79,7 +82,7 @@ function dashboard() {
         h('div.grid2',
             h('div.box', h('div.box-head', t('live_events'), h('div.spacer'), h('button.btn.sm', { onclick: () => go('live') }, document.documentElement.dir === 'rtl' ? '←' : '→')),
                 d.instances.length ? h('table.tbl', d.instances.map((i) => h('tr', { style: { cursor: 'pointer' }, onclick: () => go('live', { liveId: i.id }) },
-                    h('td', `${categoryOf(i.category).icon} ${i.name}`), h('td', statusChip(i.status)), h('td.num', `${i.players}/${i.maxPlayers}`)))) : h('div.empty', '—')),
+                    h('td', h('span.row', badge(i.category, null, 'badge-sm'), i.name)), h('td', statusChip(i.status)), h('td.num', `${i.players}/${i.maxPlayers}`)))) : h('div.empty', '—')),
             h('div.box', h('div.box-head', t('upcoming')),
                 d.upcoming.length ? h('table.tbl', d.upcoming.map((u) => { const w = fmtDate(u.at); return h('tr', h('td', u.name), h('td.num', `${w.day} ${w.time}`)); })) : h('div.empty', '—'))),
         h('div.box', { style: { marginTop: '14px' } }, h('div.box-head', t('history')),
@@ -94,7 +97,7 @@ function definitions() {
             h('tr', h('th', t('name')), h('th', t('mode')), h('th', t('category')), h('th', t('players')), h('th', t('visibility')), h('th', t('status')), h('th', '')),
             list.map((d) => h('tr',
                 h('td', h('b', d.name), h('div.faint.mono', d.id)),
-                h('td', d.mode), h('td', `${categoryOf(d.category).icon} ${d.category}`), h('td', `${d.minPlayers}-${d.maxPlayers}${d.teams ? ` · ${d.teams}T` : ''}`),
+                h('td', d.mode), h('td', h('span.row', badge(d.category, null, 'badge-sm'), d.category)), h('td', `${d.minPlayers}-${d.maxPlayers}${d.teams ? ` · ${d.teams}T` : ''}`),
                 h('td', d.visibility), h('td', d.status === 'draft' ? h('span.chip', t('draft')) : (d.enabled ? h('span.chip.open', t('enabled')) : h('span.chip.full', t('disabled')))),
                 h('td', h('div.controls',
                     can('instance.create') ? h('button.btn.sm.primary', { onclick: async () => { const r = await call('admin:instance:create', { definition: d.id }, t('saved')); if (r) go('live', { liveId: r.id }); } }, t('run_now')) : null,
@@ -199,7 +202,7 @@ function liveDetail() {
         onclick: () => dangerous ? danger(name, { id, target, ...extra }, label) : call(name, { id, target, ...extra }, t('saved')),
     }, label) : null;
     return h('div.col', { style: { gap: '14px' } },
-        h('div.box', h('div.box-head', `${categoryOf(d.card.category).icon} ${d.card.name}`, h('span.faint.mono', `#${id}`), h('div.spacer'), statusChip(d.card.status), h('span.mono', { style: { marginInlineStart: '10px' } }, d.state)),
+        h('div.box', h('div.box-head', badge(d.card.category, null, 'badge-sm'), d.card.name, h('span.faint.mono', `#${id}`), h('div.spacer'), statusChip(d.card.status), h('span.mono', { style: { marginInlineStart: '10px' } }, d.state)),
             h('div.pad',
                 h('div.kv',
                     h('span', t('time_left')), h('b.mono', fmtClock(d.remainingMs)),
@@ -236,7 +239,7 @@ function live() {
     return h('div.shell-body',
         h('div.side', { style: { width: '260px' } }, list.length ? list.map((i) => h(`button.nav${A.liveId === i.id ? '.active' : ''}`, {
             onclick: () => { A.liveId = i.id; A.liveDetail = null; startLiveNow(); },
-        }, h('span.ico', categoryOf(i.category).icon), h('span.grow', i.name, h('div.faint', { style: { fontSize: '11px' } }, `#${i.id} · ${i.state} · ${i.players}/${i.maxPlayers}`)))) : h('div.empty', '—'),
+        }, badge(i.category, null, 'badge-sm'), h('span.grow', i.name, h('div.faint', { style: { fontSize: '11px' } }, `#${i.id} · ${i.state} · ${i.players}/${i.maxPlayers}`)))) : h('div.empty', '—'),
             can('instance.announce') ? h('div.foot', h('button.btn.sm', { onclick: () => globalAnnounce() }, `📢 ${t('everyone')}`)) : null),
         h('div.scroll.pad.grow', liveDetail()));
 }
@@ -262,7 +265,7 @@ function tournaments() {
     const entrantName = (tt, key) => { if (key === false) return 'BYE'; if (key == null) return '—'; const e = tt.entrants.find((x) => x.key === key); return e ? e.name : '?'; };
     return h('div.scroll.pad',
         list.map((tt) => h('div.box', { style: { marginBottom: '14px' } },
-            h('div.box-head', `🏆 ${tt.name}`, h('span.chip', tt.status), h('span.faint', `${t('format_' + tt.format)} · Bo${tt.bestOf} · ${tt.entrants.length} ${t('entrants')}`), h('div.spacer'),
+            h('div.box-head', ico('trophy'), tt.name, h('span.chip', tt.status), h('span.faint', `${t('format_' + tt.format)} · Bo${tt.bestOf} · ${tt.entrants.length} ${t('entrants')}`), h('div.spacer'),
                 tt.status === 'registration' && can('tournament.edit') ? h('button.btn.sm.primary', { onclick: async () => { if (await call('admin:tournament:begin', { id: tt.id }, t('saved'))) refresh(); } }, t('begin')) : null),
             h('div.pad', tt.rounds && tt.rounds.length ? h('div.bracket', tt.rounds.map((round, ri) => h('div.round', h('div.section-title', (tt.roundLabels && tt.roundLabels[ri]) || `${t('round')} ${ri + 1}`),
                 round.map((m) => h('div.match', h('div', { class: m.winner && m.winner === m.a ? 'w' : '' }, entrantName(tt, m.a), h('span', String(m.wins ? m.wins.a : 0))),
@@ -334,17 +337,28 @@ function settings() {
 
 // Shell --------------------------------------------------------------------------
 
+export function brandLogo() {
+    const src = logoOf(store.ui);
+    return h('div.logo', src ? h('img', { src, alt: '' }) : (store.ui.brand && store.ui.brand.title ? store.ui.brand.title.slice(0, 2).toUpperCase() : 'ES'));
+}
+
+/** Appearance changed (live push): redraw if the Admin Center is open. */
+export function onUI() {
+    onAppearanceUI();
+    if (!$('admin').classList.contains('hidden')) render();
+}
+
 export function render() {
     if (!A.data) return;
-    const views = { dashboard, definitions, builder: builderView, arenas: arenaView, scheduler, live, tournaments, leaderboard, logs, settings };
+    const views = { dashboard, definitions, builder: builderView, arenas: arenaView, scheduler, live, tournaments, leaderboard, logs, appearance: appearanceView, settings };
     const brand = store.ui.brand || {};
     const titleKey = (sections.find((s) => s[0] === A.section) || [])[2];
     mount($('admin'), h('div.shell',
         h('div.shell-head',
-            h('div.brand', h('div.logo', brand.logo ? h('img', { src: brand.logo }) : 'ES'), h('div', h('h1', t('admin')), h('small', brand.title || 'Event Studio'))),
-            h('button.close-x', { onclick: closePanels }, '✕')),
+            h('div.brand', brandLogo(), h('div', h('h1.display', t('admin')), h('small', brand.title || 'Event Studio'))),
+            h('button.close-x', { onclick: closePanels, 'aria-label': t('close') }, ico('close'))),
         h('div.shell-body',
-            h('div.side', sections.map(([key, ico, label]) => h(`button.nav${A.section === key ? '.active' : ''}`, { onclick: () => go(key) }, h('span.ico', ico), t(label))),
+            h('div.side', sections.map(([key, icon, label]) => h(`button.nav${A.section === key ? '.active' : ''}`, { onclick: () => go(key) }, h('span.ico', ico(icon, 17)), t(label))),
                 h('div.foot', `v${A.data.version} · ${A.data.role || ''}`)),
             h('div.main', h('div.main-head', h('h2', t(titleKey)), h('div.spacer'), h('button.btn.sm', { onclick: refresh }, t('refresh'))),
                 h('div.grow', { style: { display: 'flex', flexDirection: 'column', minHeight: 0 } }, views[A.section]())))));

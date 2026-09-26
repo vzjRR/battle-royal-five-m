@@ -3,6 +3,7 @@ import { store, $, show } from './ui.js';
 import * as hud from './hud.js';
 import * as browser from './browser.js';
 import * as admin from './admin/admin.js';
+import { applyUI } from './theme.js';
 
 const resource = typeof GetParentResourceName === 'function' ? GetParentResourceName() : 'event_studio';
 export const inGame = typeof GetParentResourceName === 'function';
@@ -38,9 +39,8 @@ function applyLocale(locale) {
     document.documentElement.dir = l.dir === 'rtl' ? 'rtl' : 'ltr';
 }
 
-function applyBranding(ui) {
-    if (ui.theme && ui.theme !== 'default') $('theme').setAttribute('href', `themes/${ui.theme}.css`);
-    if (ui.brand && ui.brand.accent) document.documentElement.style.setProperty('--accent', ui.brand.accent);
+export function applyBranding(ui) {
+    applyUI(ui);
     hud.setPosition(ui.hudPosition);
 }
 
@@ -50,6 +50,14 @@ const handlers = {
         applyBranding(store.ui);
         applyLocale(d.locale);
     },
+    // live appearance change from the Admin Center
+    ui(d) {
+        store.ui = d || {};
+        applyBranding(store.ui);
+        browser.onUI();
+        admin.onUI();
+    },
+    close: () => closePanels(),
     open(d) {
         if (d.view === 'browser') browser.open();
         if (d.view === 'admin') admin.open(d.data);

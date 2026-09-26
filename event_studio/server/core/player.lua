@@ -16,7 +16,7 @@ end
 ---Browser card for an instance.
 function ES.instanceCard(inst, src)
     local d = inst.def
-    local ui = Config.UI.categories[d.category] or {}
+    local ui = (ES.UI and ES.UI.effective().categories or Config.UI.categories)[d.category] or {}
     local count = inst:participantCount({ registered = true, active = true, finished = true, eliminated = true })
     local full = count >= d.players.max
     return {
@@ -35,7 +35,7 @@ RPC.register('client:ready', { public = true, rate = { burst = 3, per = 30 } }, 
     local level, role = ES.Perm.level(src)
     local recovery = ES.Manager.onClientReady(src)
     return {
-        version = ES.version, ui = Config.UI, commands = Config.Commands, strings = ES.uiStrings(), locale = ES.localeInfo(),
+        version = ES.version, ui = ES.UI.effective(), commands = Config.Commands, strings = ES.uiStrings(), locale = ES.localeInfo(),
         framework = ES.Bridge.name, staff = level > 0, role = role, recovery = recovery,
         scoring = Config.Scoring.profiles,
     }

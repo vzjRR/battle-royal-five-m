@@ -5,6 +5,9 @@ All notable changes to EVENT STUDIO. Uses [Semantic Versioning](https://semver.o
 ## [Unreleased]
 
 ### Added
+- **Krovix design system in the UI:** 8 designs (Krovix Gilded default, Sapphire, Obsidian, Emerald, Crimson, Arctic, Classic, Light), bundled fonts, built-in line icons in place of emoji, panel artwork, cut-corner shapes.
+- **Admin Center → Appearance:** live design, layout, color, branding, artwork and category icon changes, saved on the server and pushed to every player (`admin:ui:get/save/reset`, permission `ui.edit`).
+- **Player window layouts:** compact (default), docked (optionally keep moving while open) and full.
 - `docs/PROTECTION.md`: researched licensing, activation and code-protection plan (Asset Escrow + Tebex approval/subscriptions, server-authoritative design, legal enforcement, rejected approaches, residual risks).
 - `tools/build_release.py`: release builder with protection and compliance checks and escrow-ready zip output.
 - **Roles component** (per-role health, armor, weapons; HUD role badge).

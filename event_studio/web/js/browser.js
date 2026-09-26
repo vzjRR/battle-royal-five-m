@@ -1,8 +1,8 @@
 // EVENT STUDIO — player event browser (live & open, upcoming, leaderboard, tournaments)
-import { h, $, mount, show, t, errText, fmtClock, fmtDate, fmtRace, categoryOf, placeBadge, statusChip, store } from './ui.js';
+import { h, $, mount, show, t, errText, fmtClock, fmtDate, fmtRace, categoryOf, placeBadge, statusChip, store, badge, ico } from './ui.js';
 import { rpc, closePanels } from './app.js';
 import { toast } from './hud.js';
-import { confirmDialog } from './admin/admin.js';
+import { confirmDialog, brandLogo } from './admin/admin.js';
 
 let tab = 'live';
 let data = null;
@@ -59,11 +59,11 @@ function header() {
     const brand = store.ui.brand || {};
     const tabs = [['live', t('live')], ['upcoming', t('upcoming')], ['leaderboard', t('leaderboard')], ['tournaments', t('tournaments')]];
     return h('div.shell-head',
-        h('div.brand', h('div.logo', brand.logo ? h('img', { src: brand.logo }) : 'ES'), h('div', h('h1', brand.title || 'Event Studio'), h('small', brand.subtitle || t('events')))),
+        h('div.brand', brandLogo(), h('div', h('h1.display', brand.title || 'Event Studio'), h('small', brand.subtitle || t('events')))),
         h('div.tabs', tabs.map(([k, label]) => h(`button.tab${tab === k ? '.active' : ''}`, {
             onclick: () => { tab = k; if (k === 'leaderboard') loadBoard(); render(); },
         }, label))),
-        h('button.close-x', { onclick: closePanels }, '✕'));
+        h('button.close-x', { onclick: closePanels, 'aria-label': t('close') }, ico('close')));
 }
 
 function card(c) {
@@ -74,7 +74,7 @@ function card(c) {
         onclick: async () => { selected = c.id; await loadDetails(c.id); render(); },
     },
         h('div.card-banner', c.banner ? { style: { backgroundImage: `url("${encodeURI(c.banner)}")` } } : null,
-            h('div.icon', c.icon || cat.icon), statusChip(c.status)),
+            badge(c.category, c.icon, 'icon'), statusChip(c.status)),
         h('div.card-body',
             h('div.card-title', c.name),
             h('div.card-meta',
@@ -86,7 +86,7 @@ function card(c) {
             h('div.card-foot',
                 h('div.fill', h('i', { style: { width: `${pct}%` } })),
                 c.status === 'open' && c.remainingMs !== null ? h('span.faint.mono', fmtClock(c.remainingMs)) : null,
-                c.joined ? h('span.chip.open', '✓') : null)));
+                c.joined ? h('span.chip.open', ico('check', 12)) : null)));
 }
 
 function detailPanel() {
@@ -98,7 +98,7 @@ function detailPanel() {
     const canSpectate = d.spectators && (d.status === 'live' || d.status === 'starting') && !d.joined && !current;
     return h('div.detail',
         h('div.scroll.pad.grow', { style: { display: 'flex', flexDirection: 'column', gap: '14px' } },
-            h('div.row', h('div.hud-icon', { style: { background: cat.color } }, d.icon || cat.icon), h('div.grow', h('h2', d.name), h('div.muted', d.modeLabel)), statusChip(d.status)),
+            h('div.row', badge(d.category, d.icon, 'badge-lg'), h('div.grow', h('div.eyebrow', d.modeLabel), h('h2.display', d.name)), statusChip(d.status)),
             d.description ? h('div.muted', d.description) : null,
             h('div.kv',
                 h('span', t('players')), h('b', `${d.players}/${d.maxPlayers} (min ${d.minPlayers})`),
@@ -111,12 +111,52 @@ function detailPanel() {
             d.bests && d.bests.length ? h('div', h('div.section-title', t('best_times')), h('div.list-plain', d.bests.map((b) => h('div.row', placeBadge(b.rank), h('span.grow', b.name), h('span.mono', fmtRace(b.best_ms)))))) : null,
             h('div', h('div.section-title', `${t('participants')} (${d.participants.length})`),
                 h('div.list-plain', d.participants.length ? d.participants.map((p) => h('div.row', h('span.grow', p.name), p.team && d.teamsInfo ? h('span.faint', d.teamsInfo[p.team - 1].name) : null)) : h('div.faint', '—')))),
-        h('div.pad.row', { style: { borderTop: '1px solid var(--line)' } },
-            d.joined ? h('span.chip.open', t('joined')) : null,
-            h('div.spacer'),
-            canSpectate ? h('button.btn', { onclick: () => act('event:spectate', { id: d.id }).then((ok) => ok && closePanels()) }, t('spectate')) : null,
-            d.joined ? h('button.btn.danger', { onclick: () => confirmDialog(t('leave'), t('leave_confirm'), () => act('event:leave', {})) }, t('leave')) : null,
-            canJoin ? h('button.btn.primary', { onclick: () => act('event:join', { id: d.id }, 'joined_toast') }, t('join')) : null));
+        h('div.pad.row', { style: { borderTop: '1px solid var(--line)' } }, actions(d)));
+}
+
+function actions(d) {
+    const current = data && data.current;
+    const canJoin = d.status === 'open' && !d.joined && !current;
+    const canSpectate = d.spectators && (d.status === 'live' || d.status === 'starting') && !d.joined && !current;
+    return [
+        d.joined ? h('span.chip.open', t('joined')) : null,
+        h('div.spacer'),
+        canSpectate ? h('button.btn', { onclick: () => act('event:spectate', { id: d.id }).then((ok) => ok && closePanels()) }, ico('eye', 15), t('spectate')) : null,
+        d.joined ? h('button.btn.danger', { onclick: () => confirmDialog(t('leave'), t('leave_confirm'), () => act('event:leave', {})) }, t('leave')) : null,
+        canJoin ? h('button.btn.primary', { onclick: () => act('event:join', { id: d.id }, 'joined_toast') }, t('join')) : null,
+    ];
+}
+
+// Compact / docked layouts: one slim list, the selected event opens in place.
+function metaLine(c) {
+    return [c.modeLabel, `${c.players}/${c.maxPlayers}`, c.duration ? fmtClock(c.duration * 1000) : null].filter(Boolean).join(' · ');
+}
+
+function listRow(c) {
+    const open = selected === c.id;
+    const head = h('div.erow-head',
+        badge(c.category, c.icon, 'badge'),
+        h('div.grow', h('b.erow-name', c.name), h('small.faint', metaLine(c),
+            c.status === 'open' && c.remainingMs !== null ? [' · ', h('span.mono.accent', fmtClock(c.remainingMs))] : null)),
+        c.reward ? h('b.erow-prize', c.reward) : null,
+        statusChip(c.status));
+    if (!open) {
+        return h('button.erow', { onclick: async () => { selected = c.id; await loadDetails(c.id); render(); } }, head);
+    }
+    const d = details && details.id === c.id ? details : null;
+    return h('div.erow.open', head,
+        d && d.description ? h('div.muted.erow-desc', d.description) : null,
+        d && d.rewards && d.rewards.length ? h('div.erow-rewards', d.rewards.slice(0, 4).map((r, i) => h('span',
+            h(`span.medal.m${i + 1}`), h('b', r.label === 'participation' ? t('participation') : r.label), ' ', r.items.join(', ')))) : null,
+        d ? h('div.row.erow-actions', actions(d)) : h('div.faint', '…'));
+}
+
+function listView() {
+    const live = (data && data.live) || [];
+    const openCount = live.filter((c) => c.status === 'open').length;
+    return [
+        h('div.scroll.grow.elist', live.length ? live.map(listRow) : h('div.empty', t('no_events'))),
+        h('div.efoot', h('span', t('events_summary', live.length, openCount)), h('span', t('close_hint')))];
 }
 
 function liveView() {
@@ -132,7 +172,7 @@ function upcomingView() {
         list.length ? list.map((u) => {
             const when = fmtDate(u.at);
             const cat = categoryOf(u.category);
-            return h('div.upcoming-row', h('div.when', when.time, h('small', when.day)), h('div.hud-icon', { style: { background: cat.color } }, cat.icon),
+            return h('div.upcoming-row', h('div.when', when.time, h('small', when.day)), badge(u.category),
                 h('div.grow', h('b', u.name), h('div.faint', u.category ? u.category : '')), h('span.chip.upcoming', t('status_upcoming')));
         }) : h('div.empty', '—')));
 }
@@ -142,7 +182,7 @@ function leaderboardView() {
     return h('div.shell-body', h('div.scroll.pad.grow',
         h('div.row', { style: { marginBottom: '14px' } },
             h('select', { style: { width: '220px' }, onchange: (e) => { board.category = e.target.value; loadBoard(); } },
-                cats.map((c) => h('option', { value: c, selected: board.category === c ? 'selected' : null }, c === '*' ? t('all_categories') : `${categoryOf(c).icon} ${c}`))),
+                cats.map((c) => h('option', { value: c, selected: board.category === c ? 'selected' : null }, c === '*' ? t('all_categories') : c))),
             h('span.muted', `${t('season')}: ${board.season || ''}`)),
         board.rows && board.rows.length ? h('table.tbl',
             h('tr', h('th', '#'), h('th', t('name')), h('th.num', t('points')), h('th.num', t('wins')), h('th.num', t('podiums')), h('th.num', t('events_joined')), h('th.num', t('kills'))),
@@ -154,12 +194,19 @@ function tournamentsView() {
     const list = (data && data.tournaments) || [];
     return h('div.shell-body', h('div.scroll.pad.grow',
         list.length ? list.map((tt) => h('div.upcoming-row',
-            h('div.hud-icon', { style: { background: categoryOf('tournament').color } }, '🏆'),
+            badge('tournament'),
             h('div.grow', h('b', tt.name), h('div.faint', `${t('format_' + tt.format)} · ${t('best_of')} ${tt.bestOf} · ${t('entrants')}: ${tt.entrants}`)),
             tt.status === 'registration' ? h('button.btn.primary', { onclick: () => act('tournament:join', { id: tt.id }, 'joined_toast') }, t('register')) : h('span.chip.live', t('status_live')))) : h('div.empty', '—')));
 }
 
+const layout = () => (['compact', 'docked', 'full'].includes(store.ui.browserLayout) ? store.ui.browserLayout : 'compact');
+
 function render() {
-    const views = { live: liveView, upcoming: upcomingView, leaderboard: leaderboardView, tournaments: tournamentsView };
-    mount($('browser'), h('div.shell', header(), views[tab]()));
+    const views = { live: layout() === 'full' ? liveView : listView, upcoming: upcomingView, leaderboard: leaderboardView, tournaments: tournamentsView };
+    mount($('browser'), h(`div.shell.shell-${layout()}`, header(), views[tab]()));
+}
+
+/** Appearance changed while the window is open. */
+export function onUI() {
+    if (!$('browser').classList.contains('hidden')) render();
 }

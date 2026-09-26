@@ -26,6 +26,7 @@ Open the Admin Center with `/event`. What you see depends on your role; the serv
 - **Tournaments:** create one (event definition, format, best-of, seeding, registration time), let players sign up in `/events → Tournaments`, then *Begin*. Matches start on their own, and players who don't show up forfeit.
 - **Leaderboard:** season points per category.
 - **Logs:** audit, security and lifecycle entries.
+- **Appearance:** choose the design from the gallery, the player window layout (compact, docked or full, and whether players can keep moving with the docked panel), the HUD side, every color, the title, logo and background artwork, and each category's icon and color. Changes preview on your screen immediately; **Save** applies them for every player right away, **Discard** throws them away, **Reset to config** returns to `config/ui.lua`.
 - **Settings:** version, framework, storage and your permissions.
 
 ## Console commands

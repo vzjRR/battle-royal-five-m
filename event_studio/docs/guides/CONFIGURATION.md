@@ -6,7 +6,7 @@ All settings live in `config/`. Files marked **shared** are also sent to players
 |---|---|---|
 | `general.lua` | shared | locale, engine tick, bucket range, default definition values, exit behaviour, join cooldown, anti-cheat tolerances |
 | `commands.lua` | shared | command names and default keys (set a command to `false` to disable it) |
-| `ui.lua` | shared | theme, branding (title, logo, accent), HUD position, scoreboard, category icons/colors |
+| `ui.lua` | shared | design (theme), player window layout, colors, branding, artwork, HUD position, scoreboard, category icons/colors |
 | `scoring.lua` | shared | season period and scoring profiles |
 | `framework.lua` | shared | framework adapter, inventory, identifier strategy |
 | `permissions.lua` | server | roles (host/moderator/manager/admin), ACE prefix, framework group mapping, action → role |
@@ -24,12 +24,33 @@ Definitions, arenas and schedules created in the Admin Center are stored in the 
 
 ## Branding & themes
 
+Everything below can also be changed **live in game** from the Admin Center → **Appearance** (role with `ui.edit`, admin by default). What staff save there overrides `config/ui.lua` for every player; **Reset to config** goes back to the file.
+
 ```lua
-Config.UI.brand = { title = 'My City Events', subtitle = 'Weekly competitions', logo = 'https://…/logo.png', accent = '#00c2ff' }
-Config.UI.theme = 'default'   -- or 'light', or your own web/themes/<name>.css
+Config.UI.theme = 'krovix-gilded'      -- see the list below
+Config.UI.browserLayout = 'compact'    -- player window (F7): 'compact' | 'docked' | 'full'
+Config.UI.browserKeepMoving = false    -- docked only: players can keep driving/walking while it is open
+Config.UI.brand = { title = 'My City Events', subtitle = 'Weekly competitions', logo = 'auto' }  -- 'auto' | false | 'img/logo.png' | https://…
+Config.UI.colors = { accent = '#00c2ff' }   -- accent, accent2, background, panel, text, good, warn, bad (nil = design default)
+Config.UI.artwork = 'auto'             -- panel background artwork: 'auto' | false | 'img/art/my.svg' | https://…
 ```
 
-A theme is just CSS variables; copy `web/themes/default.css` to start one. No build step is needed.
+| Design (`theme`) | Look |
+|---|---|
+| `krovix-gilded` (default) | navy glass, gold hairlines, metallic gold titles |
+| `krovix-sapphire` | deep blue, teal highlights, gold rings, app-icon badges |
+| `krovix-obsidian` | near-black, cut corners, gold used sparingly |
+| `krovix-emerald` | deep green glass with gold |
+| `krovix-crimson` | dark red and amber, cut corners |
+| `krovix-arctic` | light frosted glass, navy text, gold accent |
+| `classic` | the original violet look |
+| `light` | plain light theme |
+
+When you change one color, the lighter and darker shades that go with it (button gradient, borders, soft backgrounds) are worked out for you.
+
+**Your own design:** copy `web/themes/krovix-gilded.css` to `web/themes/mytheme.css`, change the values, then add it to `Config.UI.extraThemes` (`{ id = 'mytheme', name = 'My Theme', file = 'mytheme', shape = 'round', title = 'plain', logo = false, art = false, preview = { '#000000', '#111111', '#ff0000', '#ffffff' } }`). It then shows up in the Appearance gallery. `web/themes/base.css` lists every token with a comment. No build step is needed.
+
+Category icons use the built-in icon names (`flag`, `car`, `crosshair`, `target`, `shield`, `compass`, `mountain`, `dice`, `trophy`, `anchor`, `bolt`, `star`, `question`, `users` and more in `web/js/icons.js`); an emoji also works. The fonts are bundled in `web/fonts/` (SIL Open Font License), so nothing is loaded from the internet.
 
 ## Routing buckets
 
