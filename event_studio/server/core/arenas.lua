@@ -106,7 +106,11 @@ function Arenas.loadAll()
     local n = 0
     for _, a in ipairs(ES.ConfigArenas or {}) do
         local ok, err = Arenas.register(a, 'config')
-        if ok then n = n + 1 else ES.Log.error('Arena %s invalid: %s', tostring(a.id), tostring(err)) end
+        if ok then n = n + 1 else
+            ES.Log.error('Arena %s invalid: %s', tostring(a.id), tostring(err))
+            ES.LoadErrors = ES.LoadErrors or {}
+            table.insert(ES.LoadErrors, 'arena ' .. tostring(a.id) .. ': ' .. tostring(err))
+        end
     end
     for id, a in pairs(ES.Storage.loadDocuments('arena') or {}) do
         local ok, err = Arenas.register(a, 'storage')

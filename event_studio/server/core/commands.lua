@@ -63,6 +63,11 @@ subs.director = function(src, args)
     reply(src, 'Director ' .. (ES.Director.enabled and 'enabled' or 'disabled'))
 end
 
+subs.selftest = function(src)
+    if not ES.Perm.can(src, 'debug') then return reply(src, 'No permission.') end
+    Citizen.CreateThread(function() ES.SelfTest.report(src, ES.SelfTest.run()) end)
+end
+
 subs.status = function(src)
     reply(src, ('Event Studio %s | framework=%s items=%s storage=%s | instances=%d buckets=%d | director=%s'):format(
         ES.version, ES.Bridge.name, tostring(ES.Bridge.inventory), tostring(ES.Storage.adapter),
@@ -73,6 +78,6 @@ RegisterCommand('eventstudio', function(src, args)
     local sub = table.remove(args, 1) or 'status'
     if src ~= 0 and ES.Perm.level(src) <= 0 then return end
     local fn = subs[sub]
-    if not fn then return reply(src, 'Usage: eventstudio status|list|defs|create <def> [regSeconds]|start <id> [force]|stop <id>|cancel <id>|director on|off') end
+    if not fn then return reply(src, 'Usage: eventstudio status|selftest|list|defs|create <def> [regSeconds]|start <id> [force]|stop <id>|cancel <id>|director on|off') end
     fn(src, args)
 end, false)

@@ -5,6 +5,8 @@
 
 ---
 
+> **Decision (2026-09-26): EVENT STUDIO is sold as a monthly subscription only.** Every license can be revoked, and access ends when payments stop.
+
 ## 1. Summary
 
 | Requirement | Achievable? | How |
@@ -62,7 +64,7 @@
 ### Layer 2 — Activation controlled by Krovix Store (Tebex)
 - **Public sales:** Tebex checkout. Every sale is logged and tied to the buyer's Cfx account.
 - **Hand-picked activation ("only me"):** keep the package hidden or unlisted and issue access yourself with **Tebex → Payments → Create Payment → Manual Payment** (the customer's Cfx-linked account plus the package). Nobody gets the asset without you.
-- **Revocable activation:** sell as a **subscription** (monthly or yearly). Cancel or refund it, or stop renewals, and access ends (PLA §6.3(ii)).
+- **Licensing model — monthly subscription (chosen):** one Tebex *subscription* package billed monthly. Stop renewals, cancel, refund or charge back, and access ends (PLA §6.3(ii)). There is no one-time package, so there are no irrevocable licenses in circulation.
 - **Per-server commercial tiers:** since entitlement is per account, sell "Single server" / "Network (up to N servers)" tiers as a commercial term in the EULA, enforced legally and through subscriptions, not technically.
 
 ### Layer 3 — Server-authoritative design (makes client dumps worthless) ✅ already in place
@@ -99,9 +101,9 @@ If you want something that only exists on **your** backend, build **online featu
 1. `python3 tools/build_release.py` produces `dist/event_studio-<ver>.zip`.
 2. Cfx Portal → *Created Assets* → upload the zip → wait for "escrowed".
 3. Tebex → Packages → create package → type **FiveM Asset** → select the asset.
-   - Choose **One-time** (irrevocable) or **Subscription** (revocable).
+   - Set it as a **Subscription**, billing period **1 month** (the chosen model). Don't create a one-time package.
    - For approval-only sales, set the package hidden/unlisted.
-4. To activate a customer yourself: Tebex → Payments → **Create Payment → Manual Payment** → customer + package. Access is delivered to their Cfx account within minutes.
+4. To activate a customer yourself: Tebex → Payments → **Create Payment → Manual Payment** → customer + package. Access is delivered to their Cfx account within minutes. *Before relying on this, check in Tebex how a manual payment behaves on a subscription package: whether it grants a single billing period or ongoing access. If it grants ongoing access, revoke it yourself in Tebex when the partnership ends.*
 5. The customer downloads it from their Cfx Portal (*Granted Assets*) and adds `ensure event_studio`. It runs on servers using license keys from **that** account only.
 6. To revoke (subscriptions): cancel the subscription in Tebex. The entitlement ends and the resource won't start on their next restart.
 7. Updates: rebuild → re-upload → customers download the new version from the Portal.
@@ -137,7 +139,7 @@ If you want something that only exists on **your** backend, build **online featu
 | # | Decision |
 |---|---|
 | P1 | Cfx Asset Escrow + Tebex is the only protection and activation mechanism. |
-| P2 | Revocable licensing = Tebex subscription packages; hand-picked activation = Tebex manual payments. |
+| P2 | **Monthly subscription only** (revocable). Hand-picked activation = Tebex manual payments on the subscription package. |
 | P3 | No custom licensing, remote checks, remote code or obfuscation, ever. The release build fails if such patterns appear. |
 | P4 | Keep the architecture server-authoritative so client/NUI exposure has no business value. |
 | P5 | Any future vendor backend is an optional data service, never a condition for the resource to run. |

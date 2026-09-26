@@ -8,6 +8,7 @@ Config.Commands = {
     spectate = 'eventspectate',  -- /eventspectate [id]
     scoreboard = 'eventboard',   -- hold to expand the scoreboard while in an event
     reset = 'eventreset',        -- races: back to the last checkpoint (stuck / flipped)
+    arenaFix = 'eventarenafix',  -- staff: /eventarenafix <arenaId> [apply] — measure & fix arena heights in game
 
     keys = {
         browser = 'F7',          -- default key mapping (players can rebind in GTA settings); false = none

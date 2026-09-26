@@ -405,3 +405,73 @@ RPC.register('admin:leaderboard', {
 }, function(_, data)
     return { rows = ES.Stats.publicRows(ES.Stats.leaderboard(data.category, data.season, 50)), season = data.season or ES.Scoring.season() }
 end)
+
+----------------------------------------------------------------------------
+-- Arena ground-height fixer (live-server bring-up helper)
+----------------------------------------------------------------------------
+
+local pointKeys = { 'spawns', 'vehicleSpawns', 'checkpoints', 'zones', 'objectives', 'targets', 'spectator' }
+
+---Flatten every positioned point of an arena for probing.
+function ES.arenaPoints(a)
+    local out = {}
+    local function add(key, index, p, team)
+        out[#out + 1] = { key = key, index = index, team = team, x = p.x, y = p.y, z = p.z }
+    end
+    if a.center then add('center', nil, a.center) end
+    if a.finish then add('finish', nil, a.finish) end
+    for _, key in ipairs(pointKeys) do
+        for i, p in ipairs(a[key] or {}) do add(key, i, p) end
+    end
+    for t, list in ipairs(a.teamSpawns or {}) do
+        for i, p in ipairs(list) do add('teamSpawns', i, p, t) end
+    end
+    return out
+end
+
+---Apply validated Z fixes to an arena copy. Returns ok, arenaOrError, appliedCount.
+function ES.applyArenaZ(a, fixes)
+    local copy = U.deepCopy(a)
+    local applied = 0
+    for _, f in ipairs(fixes) do
+        local target
+        if f.key == 'center' or f.key == 'finish' then
+            target = copy[f.key]
+        elseif f.key == 'teamSpawns' then
+            target = copy.teamSpawns and copy.teamSpawns[f.team or 0] and copy.teamSpawns[f.team][f.index or 0]
+        elseif U.contains(pointKeys, f.key) then
+            target = copy[f.key] and copy[f.key][f.index or 0]
+        end
+        if not target then return false, ('unknown point %s[%s]'):format(tostring(f.key), tostring(f.index)) end
+        if type(f.z) ~= 'number' or f.z ~= f.z or math.abs(f.z - target.z) > 60 then
+            return false, ('fix for %s[%s] out of range'):format(f.key, tostring(f.index))
+        end
+        target.z = U.round(f.z, 2)
+        applied = applied + 1
+    end
+    return true, copy, applied
+end
+
+RPC.register('admin:arena:probe', { perm = 'arena.edit', schema = { id = 'id' } }, function(_, data)
+    local a = ES.Arenas.get(data.id)
+    if not a then return false, 'not_found' end
+    return { id = a.id, name = a.name, points = ES.arenaPoints(a) }
+end)
+
+RPC.register('admin:arena:applyZ', {
+    perm = 'arena.edit',
+    schema = { id = 'id', fixes = { type = 'list', maxItems = 512, item = { type = 'object', fields = {
+        key = { type = 'string', maxLen = 16 }, index = 'integer?', team = 'integer?', z = 'number',
+    } } } },
+    rate = { burst = 3, per = 10 },
+}, function(src, data)
+    local a = ES.Arenas.get(data.id)
+    if not a then return false, 'not_found' end
+    local ok, res, applied = ES.applyArenaZ(a, data.fixes)
+    if not ok then return false, res end
+    local okR, err = ES.Arenas.register(res, 'storage')
+    if not okR then return false, err end
+    ES.Storage.saveDocument('arena', a.id, ES.Arenas.get(a.id), Log.actorLabel(src))
+    Log.audit('arena.groundfix', src, nil, { id = a.id, applied = applied })
+    return true, { applied = applied }
+end)

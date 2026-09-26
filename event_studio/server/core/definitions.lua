@@ -214,7 +214,11 @@ function Defs.loadAll()
     local n = 0
     for _, d in ipairs(ES.ConfigDefinitions or {}) do
         local ok, err = Defs.register(d, 'config')
-        if ok then n = n + 1 else ES.Log.error('Definition %s invalid: %s', tostring(d.id), tostring(err)) end
+        if ok then n = n + 1 else
+            ES.Log.error('Definition %s invalid: %s', tostring(d.id), tostring(err))
+            ES.LoadErrors = ES.LoadErrors or {}
+            table.insert(ES.LoadErrors, 'definition ' .. tostring(d.id) .. ': ' .. tostring(err))
+        end
     end
     for id, d in pairs(ES.Storage.loadDocuments('definition') or {}) do
         local ok, err = Defs.register(d, 'storage')

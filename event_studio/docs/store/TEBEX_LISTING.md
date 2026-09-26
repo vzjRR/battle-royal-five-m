@@ -41,7 +41,7 @@ Racing (circuits, sprints, time trials, drag, boat, bike, elimination races, par
 | | |
 |---|---|
 | Code is accessible | Partial: config, locales, themes, hook files and SQL are open; core is protected by Cfx Asset Escrow |
-| Subscription based | No (one-time) / Yes (subscription tier) — *choose per package* |
+| Subscription based | Yes — monthly subscription |
 | Lines (approximately) | ~10,800 Lua + ~1,600 UI |
 | Requirements | OneSync; optional: oxmysql, ESX/QBCore/Qbox, ox_inventory |
 | Support | Yes (*Krovix Store support channel — fill in*) |
@@ -50,9 +50,10 @@ Racing (circuits, sprints, time trials, drag, boat, bike, elimination races, par
 
 | Package | Type | Notes |
 |---|---|---|
-| EVENT STUDIO — Standard | One-time | Irrevocable license (Cfx PLA §6.3); tied to the buyer's Cfx account |
-| EVENT STUDIO — Subscription | Monthly/yearly | Access ends when the subscription ends; revocable |
-| Partner / approved servers | Manual payment | Hidden package; Krovix Store issues access through Tebex → Payments → Manual Payment |
+| EVENT STUDIO — Monthly | Subscription, billed every month | The only public package. Access ends when the subscription ends (revocable). Tied to the buyer's Cfx account |
+| Partner / approved servers | Manual payment on the monthly package | Krovix Store issues access itself (Tebex → Payments → Manual Payment). Check how this behaves on subscriptions before use (PROTECTION.md §5) |
+
+Pricing (to fill in): monthly price ______ · optional "network" tier for several servers on one Cfx account, enforced by the EULA.
 
 ## Media checklist
 

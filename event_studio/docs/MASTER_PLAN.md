@@ -92,7 +92,7 @@ Full plan: [PROTECTION.md](PROTECTION.md). Summary of the researched, platform-c
 | Goal | Mechanism |
 |---|---|
 | Only servers approved by Krovix Store can run it | **Cfx Asset Escrow**: the entitlement is checked against the server's license key before decryption. Customers are approved through **Tebex** (checkout or **manual payments**). |
-| Revoke a customer | Sell as a **Tebex subscription**: access ends with the subscription (PLA §6.3(ii)). One-time sales are irrevocable (PLA §6.3(i)). |
+| Revoke a customer | **Monthly Tebex subscription (chosen model)**: access ends when the subscription ends (PLA §6.3(ii)). No one-time package is sold, because one-time licenses would be irrevocable (PLA §6.3(i)). |
 | Core cannot be read or edited | Escrow encrypts all Lua; server code is only decrypted in memory. Editable surface = `config/**`, `locales`, `web/themes`, `integrations/custom`, `migrations`. |
 | Client/NUI copying is worthless | Server-authoritative architecture: no rules, scoring, rewards or admin logic on the client; NUI is a view. |
 | Release can't ship weakened | `tools/build_release.py` blocks: version mismatch, missing `lua54`, over-broad `escrow_ignore`, secrets in config, custom licensing/IP-lock/remote-code/obfuscation patterns, syntax errors, failing tests. |
@@ -155,7 +155,7 @@ TESTING.md. Three layers:
 | 11 Performance | resmon profiling, tuning | 0.5.0 |
 | 12 Testing | full in-game matrix | 0.5.0 → 1.0.0 |
 | 13 Documentation | guides complete | 1.0.0 |
-| 14 Commercial Packaging & Protection | escrow build (`tools/build_release.py`), Cfx Portal upload, Tebex one-time/subscription packages, manual-payment activation, EULA (PROTECTION.md) | 1.0.0 |
+| 14 Commercial Packaging & Protection | escrow build (`tools/build_release.py`), Cfx Portal upload, Tebex monthly subscription package, manual-payment activation, EULA (PROTECTION.md) | 1.0.0 |
 
 ## 19. Dependencies
 
@@ -203,7 +203,7 @@ No ox_lib dependency (kept optional to avoid version coupling).
 | D9 | Match score ≠ season points | Modes rank naturally; points uniform across modes |
 | D10 | Ledger-guarded payouts | Idempotent rewards |
 | D11 | Asset Escrow + Tebex is the only licensing/activation mechanism | Strongest available protection and the only compliant one |
-| D12 | Revocable licensing via Tebex subscriptions; hand-picked activation via manual payments | One-time licenses are irrevocable under the PLA |
+| D12 | Monthly subscription only; hand-picked activation via manual payments | One-time licenses are irrevocable under the PLA |
 | D13 | Release build enforces protection rules | A mistake can't ship an exposed or non-compliant build |
 
 ## 22. Alternatives considered

@@ -80,6 +80,7 @@ server_scripts {
     'server/core/player.lua',
     'server/core/admin.lua',
     'server/core/api.lua',
+    'server/core/selftest.lua',
     'server/core/commands.lua',
 
     -- components & modes
