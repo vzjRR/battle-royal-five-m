@@ -384,7 +384,8 @@ RPC.register('admin:tournament:create', {
     schema = {
         name = { type = 'string', maxLen = 64, optional = true },
         definitionId = 'id',
-        format = { type = 'enum', values = { 'single_elimination', 'round_robin' }, default = 'single_elimination' },
+        format = { type = 'enum', values = { 'single_elimination', 'double_elimination', 'round_robin', 'swiss' }, default = 'single_elimination' },
+        swissRounds = { type = 'integer', min = 1, max = 15, optional = true },
         bestOf = { type = 'enum', values = { 1, 3, 5 }, default = 1 },
         seeding = { type = 'enum', values = { 'registration', 'random' }, default = 'registration' },
         registrationSeconds = { type = 'integer', min = 30, max = 3600, default = 180 },

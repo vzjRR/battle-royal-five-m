@@ -179,3 +179,106 @@ H.test('util merge/deepCopy/isArray', function()
     H.eq(m.a.b, 1) H.eq(m.a.c, 3) H.eq(#m.l, 1, 'arrays replaced')
     H.ok(U.isArray({ 1, 2 })) H.no(U.isArray({ a = 1 }))
 end)
+
+local function playOut(t, pickWinner, maxGames)
+    local played, losses = 0, {}
+    for _ = 1, maxGames or 200 do
+        if t.status == 'complete' then break end
+        local ready = ES.Tournaments.readyMatches(t)
+        if #ready == 0 then
+            if t.format == 'swiss' then
+                -- emulate the runner: next Swiss round once the current one is done
+                if t.currentRound < t.totalRounds then ES.Tournaments.swissNextRound(t) else break end
+            else break end
+        else
+            local m = ready[1]
+            local w = pickWinner(m)
+            local l = (w == m.a) and m.b or m.a
+            losses[l] = (losses[l] or 0) + 1
+            ES.Tournaments.recordGame(t, m, w)
+            played = played + 1
+        end
+    end
+    return played, losses
+end
+
+local function entrantsN(n)
+    local e = {}
+    for i = 1, n do e[i] = { key = ('p%02d'):format(i), name = 'P' .. i } end
+    return e
+end
+
+H.test('double elimination: 8 entrants, top seed wins without reset (14 matches, nobody out before 2 losses)', function()
+    local t = { format = 'double_elimination', bestOf = 1, entrants = entrantsN(8), standings = {} }
+    t.rounds, t.roundLabels = ES.Tournaments.buildDoubleElimination(t.entrants)
+    ES.Tournaments.resolveGraphByes(t)
+    local played, losses = playOut(t, function(m) return (m.a < m.b) and m.a or m.b end)
+    H.eq(t.status, 'complete')
+    H.eq(t.winner, 'p01')
+    H.eq(played, 14, '2N-2 matches without bracket reset')
+    for k, n in pairs(losses) do H.ok(n <= 2, k .. ' lost ' .. n .. ' times') end
+    H.eq(ES.Tournaments.findMatch(t, 'gf2').status, 'void', 'reset not needed')
+end)
+
+H.test('double elimination: losers-bracket champion forces a bracket reset', function()
+    local t = { format = 'double_elimination', bestOf = 1, entrants = entrantsN(4), standings = {} }
+    t.rounds = ES.Tournaments.buildDoubleElimination(t.entrants)
+    ES.Tournaments.resolveGraphByes(t)
+    local champ = 'p04'
+    -- p04 loses once in winners round 1, then wins everything (including both grand finals)
+    local first = true
+    local played = playOut(t, function(m)
+        if m.a == champ or m.b == champ then
+            if first then first = false return m.a == champ and m.b or m.a end
+            return champ
+        end
+        return (m.a < m.b) and m.a or m.b
+    end)
+    H.eq(t.status, 'complete')
+    H.eq(t.winner, champ)
+    H.eq(played, 7, '2N-1 matches with reset')
+    H.eq(ES.Tournaments.findMatch(t, 'gf2').status, 'done', 'reset played')
+end)
+
+H.test('double elimination: odd field (5) completes through byes', function()
+    for n = 2, 9 do
+        local t = { format = 'double_elimination', bestOf = 1, entrants = entrantsN(n), standings = {} }
+        t.rounds = ES.Tournaments.buildDoubleElimination(t.entrants)
+        ES.Tournaments.resolveGraphByes(t)
+        local _, losses = playOut(t, function(m) return (m.a < m.b) and m.a or m.b end)
+        H.eq(t.status, 'complete', n .. ' entrants complete')
+        H.eq(t.winner, 'p01', n .. ' entrants: top seed wins')
+        for k, c in pairs(losses) do H.ok(c <= 2, ('%d entrants: %s lost %d times'):format(n, k, c)) end
+    end
+end)
+
+H.test('swiss: 8 entrants, 3 rounds, no rematches, best record wins', function()
+    local t = { format = 'swiss', bestOf = 1, entrants = entrantsN(8), standings = {}, rounds = {}, totalRounds = 3 }
+    ES.Tournaments.swissNextRound(t)
+    local seen = {}
+    local played = playOut(t, function(m) return (m.a < m.b) and m.a or m.b end)
+    H.eq(t.status, 'complete')
+    H.eq(played, 12, '3 rounds x 4 matches')
+    for _, round in ipairs(t.rounds) do
+        for _, m in ipairs(round) do
+            if m.b then
+                local k = m.a < m.b and (m.a .. m.b) or (m.b .. m.a)
+                H.no(seen[k], 'rematch ' .. k)
+                seen[k] = true
+            end
+        end
+    end
+    H.eq(t.winner, 'p01')
+    H.eq(t.standings.p01.points, 9)
+end)
+
+H.test('swiss: odd field gives each bye at most once', function()
+    local t = { format = 'swiss', bestOf = 1, entrants = entrantsN(5), standings = {}, rounds = {}, totalRounds = 3 }
+    ES.Tournaments.swissNextRound(t)
+    playOut(t, function(m) return (m.a < m.b) and m.a or m.b end)
+    H.eq(t.status, 'complete')
+    local byes = 0
+    for _, round in ipairs(t.rounds) do for _, m in ipairs(round) do if m.reason == 'bye' then byes = byes + 1 end end end
+    H.eq(byes, 3, 'one bye per round')
+    H.eq(ES.Util.count(t.byes), 3, 'three different players got a bye')
+end)

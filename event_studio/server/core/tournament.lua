@@ -79,7 +79,174 @@ function T.buildRoundRobin(entrants)
     return rounds
 end
 
-local function findMatch(t, id)
+----------------------------------------------------------------------------
+-- Double elimination: winners bracket + losers bracket + grand final (with bracket reset).
+-- Matches are a graph: winTo / loseTo point to { id, slot }. Slot values: nil = waiting,
+-- key = entrant, false = nobody will ever arrive (bye / void).
+----------------------------------------------------------------------------
+
+function T.buildDoubleElimination(entrants)
+    local size = nextPow2(math.max(2, #entrants))
+    local k = 0
+    while (1 << k) < size do k = k + 1 end
+    local order = T.seedOrder(size)
+    local rounds, labels = {}, {}
+    local function mk(id) return newMatch(id, #rounds + 1, nil, nil) end
+    for r = 1, k do
+        local list = {}
+        for i = 1, size >> r do list[i] = mk(('w%dm%d'):format(r, i)) end
+        rounds[#rounds + 1] = list
+        labels[#labels + 1] = ('Winners %d'):format(r)
+    end
+    local lbCount = 2 * (k - 1)
+    for j = 1, lbCount do
+        local list = {}
+        for i = 1, size >> ((j + 1) // 2 + 1) do list[i] = mk(('l%dm%d'):format(j, i)) end
+        rounds[#rounds + 1] = list
+        labels[#labels + 1] = ('Losers %d'):format(j)
+    end
+    rounds[#rounds + 1] = { mk('gf1') }
+    labels[#labels + 1] = 'Grand final'
+    rounds[#rounds + 1] = { mk('gf2') }
+    labels[#labels + 1] = 'Grand final (reset)'
+    local function slot(i) return i % 2 == 1 and 'a' or 'b' end
+    for r = 1, k do
+        for i, m in ipairs(rounds[r]) do
+            m.winTo = r < k and { id = ('w%dm%d'):format(r + 1, (i + 1) // 2), slot = slot(i) } or { id = 'gf1', slot = 'a' }
+            if k == 1 then
+                m.loseTo = { id = 'gf1', slot = 'b' }
+            elseif r == 1 then
+                m.loseTo = { id = ('l1m%d'):format((i + 1) // 2), slot = slot(i) }
+            else
+                m.loseTo = { id = ('l%dm%d'):format(2 * r - 2, i), slot = 'b' }
+            end
+        end
+    end
+    for j = 1, lbCount do
+        for i, m in ipairs(rounds[k + j]) do
+            if j == lbCount then m.winTo = { id = 'gf1', slot = 'b' }
+            elseif j % 2 == 1 then m.winTo = { id = ('l%dm%d'):format(j + 1, i), slot = 'a' }
+            else m.winTo = { id = ('l%dm%d'):format(j + 1, (i + 1) // 2), slot = slot(i) } end
+        end
+    end
+    for i, m in ipairs(rounds[1]) do
+        local ea, eb = entrants[order[2 * i - 1]], entrants[order[2 * i]]
+        m.a, m.b = ea and ea.key or false, eb and eb.key or false
+    end
+    return rounds, labels
+end
+
+local findMatch
+
+local function resolveGraph(t, m)
+    if m.status ~= 'pending' or m.a == nil or m.b == nil or (m.a and m.b) then return end
+    if m.a then T.setWinner(t, m, m.a, 'bye')
+    elseif m.b then T.setWinner(t, m, m.b, 'bye')
+    else T.setWinner(t, m, nil, 'void') end
+end
+
+local function place(t, dest, value)
+    local d = findMatch(t, dest.id)
+    if not d then return end
+    d[dest.slot] = value
+    resolveGraph(t, d)
+end
+
+local function advanceGraph(t, m, key)
+    local loser = false
+    if key ~= nil then
+        -- explicit branch: `x and false or y` would turn a false ("nobody") slot into y
+        if m.a == key then loser = m.b else loser = m.a end
+        if loser == nil then loser = false end
+    end
+    if m.id == 'gf1' then
+        local gf2 = findMatch(t, 'gf2')
+        if key and key == m.a then
+            gf2.status, gf2.reason = 'void', 'not_needed'
+            t.winner, t.status = key, 'complete'
+        elseif key then
+            gf2.a, gf2.b = m.a, key -- bracket reset: the winners-bracket champion's first loss
+        end
+        return
+    elseif m.id == 'gf2' then
+        t.winner, t.status = key, 'complete'
+        return
+    end
+    place(t, m.winTo, key or false)
+    if m.loseTo then place(t, m.loseTo, loser) end
+end
+
+function T.resolveGraphByes(t)
+    for _, m in ipairs(t.rounds[1]) do resolveGraph(t, m) end
+end
+
+----------------------------------------------------------------------------
+-- Swiss: pair players with similar scores each round, no rematches, byes for odd counts.
+----------------------------------------------------------------------------
+
+local function standing(t, key)
+    t.standings[key] = t.standings[key] or { points = 0, wins = 0, losses = 0, draws = 0 }
+    return t.standings[key]
+end
+
+---Buchholz tie-break: sum of the points of everyone the entrant played.
+function T.buchholz(t, key)
+    local sum = 0
+    for opp in pairs((t.played or {})[key] or {}) do sum = sum + standing(t, opp).points end
+    return sum
+end
+
+---Entrant keys ordered by points, Buchholz, wins, then seed.
+function T.standingsOrder(t)
+    local keys = {}
+    for i, e in ipairs(t.entrants) do keys[#keys + 1] = { key = e.key, seed = i } end
+    table.sort(keys, function(x, y)
+        local a, b = standing(t, x.key), standing(t, y.key)
+        if a.points ~= b.points then return a.points > b.points end
+        local ba, bb = T.buchholz(t, x.key), T.buchholz(t, y.key)
+        if ba ~= bb then return ba > bb end
+        if a.wins ~= b.wins then return a.wins > b.wins end
+        return x.seed < y.seed
+    end)
+    return U.map(keys, function(x) return x.key end)
+end
+
+---Create the next Swiss round (appended to t.rounds).
+function T.swissNextRound(t)
+    t.played = t.played or {}
+    t.byes = t.byes or {}
+    local r = #t.rounds + 1
+    local unpaired = T.standingsOrder(t)
+    local list = {}
+    if #unpaired % 2 == 1 then
+        local idx = #unpaired
+        for i = #unpaired, 1, -1 do if not t.byes[unpaired[i]] then idx = i break end end
+        local bye = table.remove(unpaired, idx)
+        t.byes[bye] = true
+        local s = standing(t, bye)
+        s.points, s.wins = s.points + 3, s.wins + 1
+        local m = newMatch(('r%dbye'):format(r), r, bye, nil)
+        m.status, m.winner, m.reason = 'done', bye, 'bye'
+        list[#list + 1] = m
+    end
+    while #unpaired > 0 do
+        local a = table.remove(unpaired, 1)
+        local pick = 1
+        for i = 1, #unpaired do
+            if not (t.played[a] and t.played[a][unpaired[i]]) then pick = i break end
+        end
+        local b = table.remove(unpaired, pick)
+        t.played[a] = t.played[a] or {}
+        t.played[b] = t.played[b] or {}
+        t.played[a][b], t.played[b][a] = true, true
+        list[#list + 1] = newMatch(('r%dm%d'):format(r, #list + 1), r, a, b)
+    end
+    t.rounds[r] = list
+    t.currentRound = r
+    return list
+end
+
+findMatch = function(t, id)
     for ri, round in ipairs(t.rounds) do
         for mi, m in ipairs(round) do
             if m.id == id then return m, ri, mi end
@@ -106,6 +273,9 @@ function T.setWinner(t, m, key, reason)
     m.winner = key
     m.status = (reason == 'void') and 'void' or 'done'
     m.reason = reason
+    if t.format == 'double_elimination' then
+        return advanceGraph(t, m, key)
+    end
     if t.format == 'single_elimination' then
         local _, ri, mi = findMatch(t, m.id)
         local nextRound = t.rounds[ri + 1]
@@ -144,7 +314,12 @@ function T.setWinner(t, m, key, reason)
         for _, round in ipairs(t.rounds) do
             for _, mm in ipairs(round) do if mm.status ~= 'done' and mm.status ~= 'void' then allDone = false end end
         end
-        if allDone then
+        if allDone and t.format == 'swiss' then
+            if (t.currentRound or 0) >= (t.totalRounds or 0) then
+                t.winner = T.standingsOrder(t)[1]
+                t.status = 'complete'
+            end
+        elseif allDone then
             local best, bestPts
             for k, s in pairs(t.standings) do
                 if not bestPts or s.points > bestPts or (s.points == bestPts and s.wins > t.standings[best].wins) then
@@ -169,7 +344,7 @@ function T.recordGame(t, m, winnerKey)
         T.setWinner(t, m, m.wins.b > m.wins.a and m.b or m.a, 'draw_limit')
         return true
     end
-    if t.format == 'round_robin' and (t.bestOf or 1) == 1 and not winnerKey then
+    if (t.format == 'round_robin' or t.format == 'swiss') and (t.bestOf or 1) == 1 and not winnerKey then
         T.setWinner(t, m, nil, 'draw')
         return true
     end
@@ -180,7 +355,7 @@ end
 function T.readyMatches(t)
     local out = {}
     for ri, round in ipairs(t.rounds) do
-        if t.format == 'round_robin' and ri ~= t.currentRound then goto continue end
+        if (t.format == 'round_robin' or t.format == 'swiss') and ri ~= t.currentRound then goto continue end
         for _, m in ipairs(round) do
             if m.status == 'pending' and m.a and m.b then out[#out + 1] = m end
         end
@@ -212,7 +387,8 @@ function T.public(t)
     return {
         id = t.id, name = t.name, definitionId = t.definitionId, format = t.format, bestOf = t.bestOf,
         status = t.status, winner = t.winner, entrants = U.map(t.entrants, function(e) return { key = e.key, name = e.name } end),
-        rounds = t.rounds, standings = t.standings, currentRound = t.currentRound, registrationEndsAt = t.registrationEndsAt,
+        rounds = t.rounds, roundLabels = t.roundLabels, standings = t.standings, currentRound = t.currentRound,
+        totalRounds = t.totalRounds, registrationEndsAt = t.registrationEndsAt,
         createdAt = t.createdAt,
     }
 end
@@ -224,7 +400,8 @@ function T.create(cfg, actor)
     local id = cfg.id or ('t' .. os.time() .. math.random(100, 999))
     local t = {
         id = id, name = cfg.name or def.name .. ' Cup', definitionId = def.id,
-        format = cfg.format == 'round_robin' and 'round_robin' or 'single_elimination',
+        format = ({ round_robin = true, double_elimination = true, swiss = true })[cfg.format] and cfg.format or 'single_elimination',
+        swissRounds = tonumber(cfg.swissRounds),
         bestOf = (cfg.bestOf == 3 or cfg.bestOf == 5) and cfg.bestOf or 1,
         seeding = cfg.seeding or 'registration',
         teamSize = def.players.teams and (def.players.teams.size or 1) or 1,
@@ -268,6 +445,17 @@ function T.begin(id)
         t.rounds = T.buildSingleElimination(t.entrants)
         t.status = 'running'
         T.resolveByes(t)
+    elseif t.format == 'double_elimination' then
+        t.rounds, t.roundLabels = T.buildDoubleElimination(t.entrants)
+        t.status = 'running'
+        T.resolveGraphByes(t)
+    elseif t.format == 'swiss' then
+        local log2 = 0
+        while (1 << log2) < #t.entrants do log2 = log2 + 1 end
+        t.totalRounds = math.max(1, math.min(t.swissRounds or log2, #t.entrants - 1))
+        t.rounds = {}
+        t.status = 'running'
+        T.swissNextRound(t)
     else
         t.rounds = T.buildRoundRobin(t.entrants)
         t.currentRound = 1
@@ -281,7 +469,12 @@ end
 ---Create instances for all ready matches.
 function T.launchReady(t)
     if t.status ~= 'running' then return end
-    if t.format == 'round_robin' then
+    if t.format == 'swiss' then
+        local round = t.rounds[t.currentRound]
+        local done = true
+        for _, m in ipairs(round or {}) do if m.status ~= 'done' and m.status ~= 'void' then done = false end end
+        if done and t.currentRound < t.totalRounds then T.swissNextRound(t) end
+    elseif t.format == 'round_robin' then
         local round = t.rounds[t.currentRound]
         local done = true
         for _, m in ipairs(round or {}) do if m.status ~= 'done' and m.status ~= 'void' then done = false end end

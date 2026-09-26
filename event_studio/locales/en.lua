@@ -127,7 +127,7 @@ ES.RegisterLocale('en', {
     ['ui.submit'] = 'Submit', ['ui.your_answer'] = 'Your answer', ['ui.season'] = 'Season', ['ui.all_categories'] = 'All categories',
     ['ui.wins'] = 'Wins', ['ui.podiums'] = 'Podiums', ['ui.events_joined'] = 'Events', ['ui.hint_hot'] = 'Hot!', ['ui.hint_warm'] = 'Warm',
     ['ui.hint_cool'] = 'Cool', ['ui.hint_cold'] = 'Cold', ['ui.reset_hint'] = 'Stuck? Press your reset key',
-    ['ui.register'] = 'Sign up', ['ui.entrants'] = 'Entrants', ['ui.format_single_elimination'] = 'Knockout', ['ui.format_round_robin'] = 'League',
+    ['ui.register'] = 'Sign up', ['ui.entrants'] = 'Entrants', ['ui.format_single_elimination'] = 'Knockout', ['ui.format_round_robin'] = 'League', ['ui.format_double_elimination'] = 'Double elimination', ['ui.format_swiss'] = 'Swiss',
     ['ui.best_of'] = 'Best of', ['ui.invite_only'] = 'Invite only', ['ui.leave_confirm'] = 'Leave this event? You will not receive rewards.',
     ['ui.joined_toast'] = 'You joined the event.',
 

@@ -259,19 +259,19 @@ function globalAnnounce() {
 function tournaments() {
     const list = A.data.tournaments || [];
     const f = { name: '', definitionId: (A.data.definitions.find((d) => d.id === 'pistol_duel_cup') || A.data.definitions[0] || {}).id, format: 'single_elimination', bestOf: 1, seeding: 'registration', registrationSeconds: 180 };
-    const entrantName = (tt, key) => { const e = tt.entrants.find((x) => x.key === key); return e ? e.name : (key ? '?' : 'BYE'); };
+    const entrantName = (tt, key) => { if (key === false) return 'BYE'; if (key == null) return '—'; const e = tt.entrants.find((x) => x.key === key); return e ? e.name : '?'; };
     return h('div.scroll.pad',
         list.map((tt) => h('div.box', { style: { marginBottom: '14px' } },
             h('div.box-head', `🏆 ${tt.name}`, h('span.chip', tt.status), h('span.faint', `${t('format_' + tt.format)} · Bo${tt.bestOf} · ${tt.entrants.length} ${t('entrants')}`), h('div.spacer'),
                 tt.status === 'registration' && can('tournament.edit') ? h('button.btn.sm.primary', { onclick: async () => { if (await call('admin:tournament:begin', { id: tt.id }, t('saved'))) refresh(); } }, t('begin')) : null),
-            h('div.pad', tt.rounds && tt.rounds.length ? h('div.bracket', tt.rounds.map((round, ri) => h('div.round', h('div.section-title', `${t('round')} ${ri + 1}`),
+            h('div.pad', tt.rounds && tt.rounds.length ? h('div.bracket', tt.rounds.map((round, ri) => h('div.round', h('div.section-title', (tt.roundLabels && tt.roundLabels[ri]) || `${t('round')} ${ri + 1}`),
                 round.map((m) => h('div.match', h('div', { class: m.winner && m.winner === m.a ? 'w' : '' }, entrantName(tt, m.a), h('span', String(m.wins ? m.wins.a : 0))),
                     h('div', { class: m.winner && m.winner === m.b ? 'w' : '' }, entrantName(tt, m.b), h('span', String(m.wins ? m.wins.b : 0)))))))) :
                 h('div.list-plain', tt.entrants.map((e) => h('div', e.name)))))),
         can('tournament.edit') ? h('div.box', h('div.box-head', t('new_tournament')), h('div.pad.form',
             h('div.field', h('label', t('name')), h('input', { oninput: (e) => { f.name = e.target.value; } })),
             h('div.field', h('label', t('definitions')), h('select', { onchange: (e) => { f.definitionId = e.target.value; } }, A.data.definitions.map((d) => h('option', { value: d.id, selected: d.id === f.definitionId ? 'selected' : null }, d.name)))),
-            h('div.field', h('label', t('format')), h('select', { onchange: (e) => { f.format = e.target.value; } }, ['single_elimination', 'round_robin'].map((x) => h('option', { value: x }, t('format_' + x))))),
+            h('div.field', h('label', t('format')), h('select', { onchange: (e) => { f.format = e.target.value; } }, ['single_elimination', 'double_elimination', 'round_robin', 'swiss'].map((x) => h('option', { value: x }, t('format_' + x))))),
             h('div.field', h('label', t('best_of')), h('select', { onchange: (e) => { f.bestOf = Number(e.target.value); } }, [1, 3, 5].map((x) => h('option', { value: x }, String(x))))),
             h('div.field', h('label', t('seeding')), h('select', { onchange: (e) => { f.seeding = e.target.value; } }, ['registration', 'random'].map((x) => h('option', { value: x }, x)))),
             h('div.field', h('label', t('registration')), h('input', { type: 'number', value: 180, oninput: (e) => { f.registrationSeconds = Number(e.target.value); } })),
