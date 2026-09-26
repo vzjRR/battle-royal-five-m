@@ -91,6 +91,7 @@ export function onState(d) {
     }
     if (d.state === 'PAUSED') banner(t('paused'), 'var(--warn)'); else if (was === 'PAUSED') show($('banner'), false);
     if (d.state === 'REGISTRATION' || d.state === 'SCHEDULED') { show($('hud'), false); return; }
+    if (d.state === 'ARCHIVED') { onLeft(); return; }
     renderHud();
     startTicker();
 }

@@ -86,3 +86,23 @@ H.test('arena probe lists every point; applyZ validates and persists', function(
     -- presets on this arena still validate after the change
     H.ok(ES.Definitions.validate(ES.Util.deepCopy(ES.Definitions.get('airfield_ctf'))))
 end)
+
+H.test('after an event ends, "left" is the last message a participant gets (no snapshot brings the HUD back)', function()
+    local d = { id = 'o_end', name = 'o_end', mode = 'deathmatch', arena = 'docks_yard', players = { min = 2, max = 4 },
+        timing = { registration = 30, lobby = 1, countdown = 1, duration = 600, results = 3 } }
+    assert(ES.Definitions.register(d))
+    local srcs = H.players(2, 60)
+    local inst = H.createAndJoin('o_end', srcs)
+    H.toActive(inst)
+    inst:finishNow('test')
+    H.ok(H.waitState(inst, 'ARCHIVED', 60000))
+    Sim.advance(2000)
+    for _, s in ipairs(srcs) do
+        local last
+        for _, m in ipairs(Sim.outbox[s] or {}) do
+            if m.name == 'es:push' and (m.args[1] == 'state' or m.args[1] == 'left') then last = m.args[1] end
+        end
+        H.eq(last, 'left', 'no state push after left')
+        for _, st in ipairs(H.pushes(s, 'state')) do H.no(st.state == 'ARCHIVED', 'ARCHIVED snapshot sent') end
+    end
+end)

@@ -289,7 +289,9 @@ function Instance:setState(new, reason)
         local ok, err = pcall(handler, self, old, reason)
         if not ok then Log.error('#%d error entering %s: %s', self.id, new, tostring(err)) end
     end
-    if self.state == new then -- handler may have moved on already
+    -- handler may have moved on already; ARCHIVED already sent everyone 'left' in cleanup(), so a
+    -- final snapshot would bring the HUD back after the player is out
+    if self.state == new and new ~= S.ARCHIVED then
         self:syncState()
     end
     TriggerEvent('event_studio:instanceState', self.id, new, old, { reason = reason, definitionId = self.def.id })

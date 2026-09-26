@@ -17,6 +17,7 @@ local function clearComponents()
 end
 
 ES.on('state', function(snap)
+    if snap.state == 'ARCHIVED' then return end -- the event is over; 'left' handles the cleanup
     local prev = Client.current
     Client.current = snap
     LocalPlayer.state:set('es:clientEvent', snap.id, false)

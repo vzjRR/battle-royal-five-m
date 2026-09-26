@@ -19,6 +19,7 @@ All notable changes to EVENT STUDIO. Uses [Semantic Versioning](https://semver.o
 - **CI:** GitHub Actions runs the syntax check, all tests and the release guard on every push.
 
 ### Fixed
+- HUD stayed on screen after an event ended: entering ARCHIVED sent a final state snapshot after the 'left' message. The server no longer does, and the client ignores ARCHIVED snapshots.
 - No modes loaded on a real FXServer (every event failed with "unknown mode"): the manifest used `modes/*/server.lua`, and FXServer does not expand a wildcard in a folder name. Mode files are now listed explicitly; the test runner rejects such patterns like FXServer does.
 
 ### Changed
