@@ -44,6 +44,21 @@ H.test('eventstudio selftest command is permission gated', function()
     H.eq(#H.pushes(p, 'notify'), 0, 'non-staff gets nothing')
 end)
 
+H.test('eventstudio perms (console) shows role, identifiers and the grant line; players cannot run it', function()
+    local a, b = table.unpack(H.players(2, 35))
+    H.admin(a)
+    local n = #Sim.logs
+    Sim.commands.eventstudio(0, { 'perms' })
+    local out = table.concat({ table.unpack(Sim.logs, n + 1) }, '\n')
+    H.ok(out:find(('[%d] Player%d → role: admin'):format(a, a), 1, true), 'admin resolved')
+    H.ok(out:find(('[%d] Player%d → role: none'):format(b, b), 1, true), 'non-staff resolved')
+    H.ok(out:find('add_ace identifier.' .. Sim.players[b].license .. ' eventstudio.admin allow', 1, true), 'grant line for non-staff')
+    H.no(out:find('ip:', 1, true), 'IP addresses are never printed')
+    H.clear(a)
+    Sim.commands.eventstudio(a, { 'perms' })
+    H.eq(H.lastPush(a, 'notify').text, 'Run this in the server console.')
+end)
+
 H.test('arena probe lists every point; applyZ validates and persists', function()
     local admin = H.players(1, 40)[1]
     H.admin(admin)

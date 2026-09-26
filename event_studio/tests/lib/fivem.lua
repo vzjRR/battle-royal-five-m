@@ -182,6 +182,11 @@ function GetPlayerIdentifierByType(src, kind)
     if kind == 'license' then return p.license end
     return nil
 end
+function GetPlayerIdentifiers(src)
+    local p = Sim.players[tonumber(src)]
+    if not p then return {} end
+    return { p.license, 'fivem:' .. p.src, 'ip:127.0.0.1' }
+end
 function GetPlayerPing(src) local p = Sim.players[tonumber(src)] return p and p.ping or 0 end
 function DropPlayer(src, reason) Sim.dropped = Sim.dropped or {} Sim.dropped[tonumber(src)] = reason end
 function IsPlayerAceAllowed(src, object) local p = Sim.players[tonumber(src)] return p ~= nil and p.aces[object] == true end

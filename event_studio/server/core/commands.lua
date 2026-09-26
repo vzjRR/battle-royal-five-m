@@ -68,6 +68,45 @@ subs.selftest = function(src)
     Citizen.CreateThread(function() ES.SelfTest.report(src, ES.SelfTest.run()) end)
 end
 
+---Console only: what the server sees for a player's permissions (identifiers, ACE per role, framework groups).
+subs.perms = function(src, args)
+    if src ~= 0 then return reply(src, 'Run this in the server console.') end
+    local targets = {}
+    if args[1] then targets[1] = tonumber(args[1]) else
+        for _, id in ipairs(GetPlayers()) do targets[#targets + 1] = tonumber(id) end
+    end
+    if #targets == 0 then return reply(src, 'No players online.') end
+    for _, id in ipairs(targets) do
+        if not GetPlayerName(tostring(id)) then
+            reply(src, ('Player %s is not online.'):format(tostring(id)))
+        else
+            ES.Perm.clear(id)
+            local level, role = ES.Perm.level(id)
+            reply(src, ('[%d] %s → role: %s (level %d)'):format(id, GetPlayerName(tostring(id)), tostring(role or 'none'), level))
+            local ids = {}
+            for _, ident in ipairs(GetPlayerIdentifiers(tostring(id)) or {}) do
+                if not ident:find('^ip:') then ids[#ids + 1] = ident end
+            end
+            reply(src, '    identifiers: ' .. table.concat(ids, '  '))
+            local aces = {}
+            for r in pairs(Config.Permissions.roles) do
+                aces[#aces + 1] = ('%s=%s'):format(r, IsPlayerAceAllowed(tostring(id), (Config.Permissions.acePrefix or 'eventstudio.') .. r) and 'yes' or 'no')
+            end
+            table.sort(aces)
+            local groups = {}
+            for g in pairs(ES.Bridge.getGroups(id) or {}) do groups[#groups + 1] = g end
+            reply(src, ('    ACE: %s | %s groups: %s'):format(table.concat(aces, ' '), ES.Bridge.name, #groups > 0 and table.concat(groups, ', ') or 'none'))
+            if level <= 0 then
+                local license
+                for _, ident in ipairs(ids) do if ident:find('^license:') then license = ident end end
+                if license then
+                    reply(src, ('    grant admin (add to server.cfg too): add_ace identifier.%s eventstudio.admin allow'):format(license))
+                end
+            end
+        end
+    end
+end
+
 subs.status = function(src)
     reply(src, ('Event Studio %s | framework=%s items=%s storage=%s | instances=%d buckets=%d | director=%s'):format(
         ES.version, ES.Bridge.name, tostring(ES.Bridge.inventory), tostring(ES.Storage.adapter),
@@ -78,6 +117,6 @@ RegisterCommand('eventstudio', function(src, args)
     local sub = table.remove(args, 1) or 'status'
     if src ~= 0 and ES.Perm.level(src) <= 0 then return end
     local fn = subs[sub]
-    if not fn then return reply(src, 'Usage: eventstudio status|selftest|list|defs|create <def> [regSeconds]|start <id> [force]|stop <id>|cancel <id>|director on|off') end
+    if not fn then return reply(src, 'Usage: eventstudio status|selftest|perms [playerId]|list|defs|create <def> [regSeconds]|start <id> [force]|stop <id>|cancel <id>|director on|off') end
     fn(src, args)
 end, false)

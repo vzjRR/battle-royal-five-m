@@ -6,7 +6,7 @@ Set `set es_debug 1` in `server.cfg` for detailed logs. `eventstudio status` sho
 |---|---|
 | `OneSync is disabled` error | Add `set onesync on`. Routing buckets and server-side positions need OneSync. |
 | `Definition X invalid: arena … lacks checkpoints` | The arena is missing the points that mode needs; see EVENT_CREATION.md. |
-| `/event` says "No permission" | Grant a role: `add_ace group.admin eventstudio.admin allow` and make sure you are in that group. |
+| `/event` says "No permission" | Run `eventstudio perms` in the server console: it shows each online player's identifiers, which Event Studio roles their ACE grants and their framework groups, and prints the exact `add_ace identifier.license:… eventstudio.admin allow` line for anyone without a role. Add that line to `server.cfg` (and type it in the console to apply it now). txAdmin only puts the owner's identifier in `group.admin`, so `add_ace group.admin …` does nothing for players who are not in that group. |
 | Players spawn under the map / in the air | The arena's Z values are off. The client snaps to the ground when it can, but fixing the point in the arena editor is better. |
 | Vehicle doesn't appear | Wrong model name (`vehicle_spawn_failed` in the log) or a server artifact too old for `CreateVehicleServerSetter`. |
 | Checkpoints rejected (`checkpoint_far` / `too_fast` in security logs) | Checkpoint radius too small, or very fast vehicles; raise `checkpointTolerance` / `maxPlausibleSpeed`. |
