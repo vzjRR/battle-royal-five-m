@@ -15,6 +15,7 @@ end
 
 ---Teleport with fade and collision loading. snap = adjust Z to ground if the given Z is off.
 function World.teleport(coords, heading, snap)
+    if ES.Phone then ES.Phone.close() end -- a phone / tablet left open would keep the mouse and keyboard
     local ped = PlayerPedId()
     local x, y, z = coords.x + 0.0, coords.y + 0.0, coords.z + 0.0
     DoScreenFadeOut(250)

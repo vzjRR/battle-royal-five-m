@@ -99,7 +99,7 @@ responses['admin:ui:get'] = { effective: { ...baseUI, themes }, overrides: { the
     base: baseUI, baseKeys: { browser: 'F7', scoreboard: 'U', reset: 'F9' } };
 send('init', { strings, locale: { code: lang, dir: ['ar', 'he', 'fa', 'ur'].includes(lang) ? 'rtl' : 'ltr' }, staff: true, role: 'admin', ui: { ...baseUI, themes } });
 
-document.body.style.background = 'linear-gradient(180deg, #1b2a44 0%, #3b3a52 42%, #7a5238 60%, #151a24 61%, #0b0e14 100%)';
+if (!document.body.dataset.embed) document.body.style.background = 'linear-gradient(180deg, #1b2a44 0%, #3b3a52 42%, #7a5238 60%, #151a24 61%, #0b0e14 100%)';
 responses['admin:arena:get'] = { id: 'alamo_sea', name: 'Alamo Sea Course', route: 'water', radius: 900, center: { x: 1200, y: 4000, z: 30 },
     vehicleSpawns: [{ x: 1300, y: 3850, z: 30.4, w: 300 }, { x: 1306, y: 3858, z: 30.4, w: 300 }, { x: 1312, y: 3866, z: 30.4, w: 300 }, { x: 1318, y: 3874, z: 30.4, w: 300 }],
     checkpoints: [{ x: 1100, y: 3950, z: 30.4, radius: 18 }, { x: 800, y: 4000, z: 30.4, radius: 18 }, { x: 600, y: 4150, z: 30.4, radius: 18 },

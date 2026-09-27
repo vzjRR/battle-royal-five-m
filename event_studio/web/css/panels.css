@@ -181,3 +181,21 @@ button.erow:hover { background: var(--panel); border-color: var(--line-strong); 
 .about-rights { font-size: 12px; color: var(--text-faint); margin-top: 4px; }
 .flag { border-radius: 2px; box-shadow: 0 0 0 1px rgba(255, 255, 255, .15); }
 .editor-foot { position: sticky; bottom: -20px; margin: 0 -22px -20px; padding: 12px 22px; background: var(--bg-solid); border-top: 1px solid var(--line-strong); z-index: 2; }
+
+/* Phone / tablet app (web/phone.html) ------------------------------------------------------------ */
+/* The phone owns the window: our page fills its screen, no backdrop, no close button, room for the status bar. */
+body.embed { background: var(--shell-bg); overflow: hidden; }
+body.embed #browser { background: transparent; padding: 0; place-items: stretch; }
+body.embed #browser .shell { width: 100%; height: 100%; border: 0; border-radius: 0; box-shadow: none; clip-path: none; }
+body.embed.embed-phone #browser .shell-head { padding-top: 46px; }
+body.embed.embed-npwd #browser .shell-head { padding-top: 10px; }
+body.embed:not(.embed-tablet) #browser .tabs { display: flex; overflow-x: auto; gap: 2px; scrollbar-width: none; }
+body.embed:not(.embed-tablet) #browser .tabs::-webkit-scrollbar { display: none; }
+body.embed:not(.embed-tablet) #browser .tab { flex: 0 0 auto; padding: 7px 10px; font-size: 12px; white-space: nowrap; }
+body.embed:not(.embed-tablet) #browser .upcoming-row { gap: 10px; padding: 10px 12px; }
+body.embed:not(.embed-tablet) #browser .upcoming-row .when { width: 64px; font-size: 13px; flex: 0 0 auto; }
+body.embed:not(.embed-tablet) #browser .upcoming-row .chip { display: none; }
+body.embed:not(.embed-tablet) #browser .upcoming-row > div:not(.when) { min-width: 0; flex: 1; }
+body.embed:not(.embed-tablet) #browser table.tbl { font-size: 12px; }
+body.embed:not(.embed-tablet) #browser table.tbl :is(th, td):nth-child(n+5) { display: none; }
+body.embed #toasts { top: 60px; }

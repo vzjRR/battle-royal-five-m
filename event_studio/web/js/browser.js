@@ -1,6 +1,6 @@
 // EVENT STUDIO — player event browser (live & open, upcoming, leaderboard, tournaments)
 import { h, $, mount, show, t, errText, fmtClock, fmtDate, fmtRace, categoryOf, placeBadge, statusChip, store, badge, ico } from './ui.js';
-import { rpc, closePanels } from './app.js';
+import { rpc, closePanels, embed } from './app.js';
 import { toast } from './hud.js';
 import { confirmDialog, brandLogo } from './admin/admin.js';
 
@@ -63,7 +63,7 @@ function header() {
         h('div.tabs', tabs.map(([k, label]) => h(`button.tab${tab === k ? '.active' : ''}`, {
             onclick: () => { tab = k; if (k === 'leaderboard') loadBoard(); render(); },
         }, label))),
-        h('button.close-x', { onclick: closePanels, 'aria-label': t('close') }, ico('close')));
+        embed ? null : h('button.close-x', { onclick: closePanels, 'aria-label': t('close') }, ico('close')));
 }
 
 function card(c) {
@@ -156,7 +156,7 @@ function listView() {
     const openCount = live.filter((c) => c.status === 'open').length;
     return [
         h('div.scroll.grow.elist', live.length ? live.map(listRow) : h('div.empty', t('no_events'))),
-        h('div.efoot', h('span', t('events_summary', live.length, openCount)), h('span', t('close_hint', (store.ui.keys && store.ui.keys.browser) || 'F7')))];
+        h('div.efoot', h('span', t('events_summary', live.length, openCount)), embed ? null : h('span', t('close_hint', (store.ui.keys && store.ui.keys.browser) || 'F7')))];
 }
 
 function liveView() {
@@ -199,7 +199,10 @@ function tournamentsView() {
             tt.status === 'registration' ? h('button.btn.primary', { onclick: () => act('tournament:join', { id: tt.id }, 'joined_toast') }, t('register')) : h('span.chip.live', t('status_live')))) : h('div.empty', '—')));
 }
 
-const layout = () => (['compact', 'docked', 'full'].includes(store.ui.browserLayout) ? store.ui.browserLayout : 'compact');
+const layout = () => {
+    if (embed) return embed === 'tablet' ? 'compact' : 'docked'; // phone / tablet app
+    return ['compact', 'docked', 'full'].includes(store.ui.browserLayout) ? store.ui.browserLayout : 'compact';
+};
 
 function render() {
     const views = { live: layout() === 'full' ? liveView : listView, upcoming: upcomingView, leaderboard: leaderboardView, tournaments: tournamentsView };

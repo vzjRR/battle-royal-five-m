@@ -6,7 +6,7 @@ local Sim = {
     root = (_G.Sim and _G.Sim.root) or '.',
     clock = 0, threads = {}, handlers = {}, outbox = {}, players = {}, vehicles = {}, kvp = {},
     exports = {}, commands = {}, state = {}, logs = {}, verbose = os.getenv('ES_VERBOSE') == '1',
-    nextEntity = 50000, cancelled = false, resourceStates = {}, convars = { onesync = 'on', es_debug = '0' },
+    nextEntity = 50000, cancelled = false, resourceStates = {}, resourceMeta = {}, foreignExports = {}, convars = { onesync = 'on', es_debug = '0' },
 }
 _G.Sim = Sim
 
@@ -241,6 +241,7 @@ function IsDuplicityVersion() return true end
 function GetCurrentResourceName() return 'event_studio' end
 function GetInvokingResource() return 'test' end
 function GetResourceState(name) return Sim.resourceStates[name] or 'missing' end
+function GetResourceMetadata(name, key) return (Sim.resourceMeta[name] or {})[key] end
 function GetConvar(k, d) return Sim.convars[k] or d end
 function GetConvarInt(k, d) return tonumber(Sim.convars[k]) or d end
 function LoadResourceFile(_, path)
@@ -296,6 +297,7 @@ end
 exports = setmetatable({}, {
     __call = function(_, name, fn) Sim.exports[name] = fn end,
     __index = function(_, res)
+        if Sim.foreignExports[res] then return Sim.foreignExports[res] end
         return setmetatable({}, { __index = function(_, fname)
             return function() error(('export %s.%s not available in tests'):format(res, fname)) end
         end })

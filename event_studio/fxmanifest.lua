@@ -15,6 +15,8 @@ ui_page 'web/index.html'
 
 files {
     'web/index.html',
+    'web/phone.html',
+    'dist/web/app.js',             -- NPWD 4 app (loads web/phone.html)
     'web/css/*.css',
     'web/themes/*.css',
     'web/js/*.js',
@@ -37,6 +39,7 @@ shared_scripts {
     'config/ui.lua',
     'config/scoring.lua',
     'config/framework.lua',
+    'config/phone.lua',
 }
 
 server_scripts {
@@ -84,6 +87,7 @@ server_scripts {
     'server/core/admin.lua',
     'server/core/api.lua',
     'server/core/ui.lua',
+    'server/core/phone.lua',
     'server/core/selftest.lua',
     'server/core/commands.lua',
 
