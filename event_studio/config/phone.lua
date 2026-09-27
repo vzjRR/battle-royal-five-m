@@ -1,7 +1,7 @@
 -- EVENT STUDIO — "Events" app for phones and tablets
 --
 -- When one of these resources is started, players get an "Events" app with everything the events window (F7) has:
--- live & open events, upcoming, leaderboard, tournaments, sign up, join, leave and spectate.
+-- active & open events, upcoming, leaderboard, tournaments, sign up, join, leave and spectate.
 -- Nothing to install: the app is added automatically. F7 keeps working as well.
 
 Config.Phone = {

@@ -18,7 +18,7 @@ Open the Admin Center with `/event`. What you see depends on your role; the serv
   - **Check route** moves you invisibly to every point and uses the game map: road routes are snapped to drivable roads and every leg is checked for a road path; boat routes are kept on open water deep enough for boats and every leg is checked for land; on-foot points are moved to safe ground outside buildings. The report lists each point (OK, Fixed, Problem, Kept) and each leg; **Apply fixes** saves the corrections and marks the route as checked. Points marked Problem need a new position.
   - **Editor:** **Record by driving** (drive the route; a checkpoint is added every *spacing* metres and at sharp turns, G adds one now, F2 finishes), **From map waypoint** (road routes, beta: checkpoints along the GPS line to your waypoint), **Start grid behind me** (8 start places), and per point: go there, move to my position, insert my position after it, move up/down, radius, remove. **Show in world** draws the points and the route line in the game while you edit.
 - **Scheduler:** turn schedules on or off, create weekly/daily/monthly/one-off/interval schedules, toggle the Event Director.
-- **Live Events:** full control of each instance. The actions marked in red ask for confirmation.
+- **Active Events:** full control of each instance. The actions marked in red ask for confirmation.
   - Start (needs the minimum player count) / Force start (ignores it)
   - Pause / Resume (the timer freezes, players freeze)
   - Force finish (goes straight to results and rewards) / Cancel (no rewards) / Restart (same players, fresh instance)

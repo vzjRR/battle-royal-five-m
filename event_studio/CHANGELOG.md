@@ -5,6 +5,7 @@ All notable changes to EVENT STUDIO. Uses [Semantic Versioning](https://semver.o
 ## [Unreleased]
 
 ### Changed
+- **Wording:** "Live" now reads as active / in progress, not broadcast: Arabic "الجارية والمفتوحة" and "جارية" (was "مباشر"), English "Active & Open", "In progress", "Active Events".
 - **Typed commands are staff only.** `/event`, `/events`, `/eventjoin`, `/eventleave`, `/eventspectate` and `/eventarenafix` are registered only for players with a staff role; the console command `eventstudio` is restricted (console, or `command.eventstudio` ACE). Players use the events window key (F7) to see events and register, join, leave or spectate.
 - **Player keys can be changed live** in Admin Center → Appearance → Player controls (events window, scoreboard, race reset), with checks for allowed and duplicate keys; announcements name the current key.
 

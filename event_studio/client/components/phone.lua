@@ -1,5 +1,5 @@
 -- EVENT STUDIO — "Events" app for phone and tablet resources.
--- The app is web/phone.html: the same event window as F7 (live & open, upcoming, leaderboard, tournaments, sign up,
+-- The app is web/phone.html: the same event window as F7 (active & open, upcoming, leaderboard, tournaments, sign up,
 -- join, leave, spectate), shown inside the phone. It calls our NUI callbacks directly, and every action still goes
 -- through the server's RPC checks, so the app adds no new rights.
 --

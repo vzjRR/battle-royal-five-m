@@ -124,11 +124,11 @@ ES.RegisterLocale('en', {
     rules_vehicle_tag = 'The IT car passes the tag by touching another car. Everyone else scores every second. No tag-backs right away.',
 
     -- NUI ------------------------------------------------------------------------
-    ['ui.events'] = 'Events', ['ui.live'] = 'Live & Open', ['ui.upcoming'] = 'Upcoming', ['ui.leaderboard'] = 'Leaderboard',
+    ['ui.events'] = 'Events', ['ui.live'] = 'Active & Open', ['ui.upcoming'] = 'Upcoming', ['ui.leaderboard'] = 'Leaderboard',
     ['ui.tournaments'] = 'Tournaments', ['ui.close'] = 'Close', ['ui.join'] = 'Join', ['ui.leave'] = 'Leave',
     ['ui.spectate'] = 'Spectate', ['ui.details'] = 'Details', ['ui.players'] = 'Players', ['ui.reward'] = 'Reward',
     ['ui.difficulty'] = 'Difficulty', ['ui.duration'] = 'Duration', ['ui.starts_in'] = 'Starts in', ['ui.no_events'] = 'No events right now. Check the upcoming schedule!',
-    ['ui.status_open'] = 'Open', ['ui.status_full'] = 'Full', ['ui.status_starting'] = 'Starting', ['ui.status_live'] = 'Live',
+    ['ui.status_open'] = 'Open', ['ui.status_full'] = 'Full', ['ui.status_starting'] = 'Starting', ['ui.status_live'] = 'In progress',
     ['ui.status_finished'] = 'Finished', ['ui.status_cancelled'] = 'Cancelled', ['ui.status_upcoming'] = 'Upcoming',
     ['ui.diff_easy'] = 'Easy', ['ui.diff_medium'] = 'Medium', ['ui.diff_hard'] = 'Hard', ['ui.diff_extreme'] = 'Extreme',
     ['ui.rules'] = 'Rules', ['ui.scoring'] = 'Scoring', ['ui.rewards'] = 'Rewards', ['ui.participants'] = 'Participants',
@@ -152,7 +152,7 @@ ES.RegisterLocale('en', {
 
     -- NUI admin
     ['ui.admin'] = 'Admin Center', ['ui.dashboard'] = 'Dashboard', ['ui.definitions'] = 'Events', ['ui.builder'] = 'Event Builder',
-    ['ui.arenas'] = 'Routes & arenas', ['ui.scheduler'] = 'Scheduler', ['ui.live_events'] = 'Live Events', ['ui.logs'] = 'Logs',
+    ['ui.arenas'] = 'Routes & arenas', ['ui.scheduler'] = 'Scheduler', ['ui.live_events'] = 'Active Events', ['ui.logs'] = 'Logs',
     ['ui.settings'] = 'Settings', ['ui.create'] = 'Create', ['ui.save'] = 'Save', ['ui.delete'] = 'Delete', ['ui.cancel'] = 'Cancel',
     ['ui.confirm'] = 'Confirm', ['ui.start'] = 'Start', ['ui.force_start'] = 'Force start', ['ui.pause'] = 'Pause', ['ui.resume'] = 'Resume',
     ['ui.stop'] = 'Force finish', ['ui.restart'] = 'Restart', ['ui.announce'] = 'Announce', ['ui.add_player'] = 'Add player',
@@ -188,7 +188,7 @@ ES.RegisterLocale('en', {
     ['ui.hud_position'] = 'HUD position', ['ui.hud_top_right'] = 'Top right', ['ui.hud_top_left'] = 'Top left',
     ['ui.colors'] = 'Colors', ['ui.colors_help'] = 'Leave a color on the design default to follow the selected design.',
     ['ui.color_accent'] = 'Accent', ['ui.color_accent2'] = 'Accent 2', ['ui.color_background'] = 'Background', ['ui.color_panel'] = 'Panels',
-    ['ui.color_text'] = 'Text', ['ui.color_good'] = 'Open / live', ['ui.color_warn'] = 'Starting', ['ui.color_bad'] = 'Full / errors',
+    ['ui.color_text'] = 'Text', ['ui.color_good'] = 'Open / in progress', ['ui.color_warn'] = 'Starting', ['ui.color_bad'] = 'Full / errors',
     ['ui.theme_default'] = 'Design default', ['ui.none'] = 'None', ['ui.custom'] = 'Custom',
     ['ui.image_help'] = 'A file in web/img/ (for example img/logo.png) or an https:// link.',
     ['ui.branding'] = 'Branding', ['ui.brand_title'] = 'Title', ['ui.brand_subtitle'] = 'Subtitle', ['ui.logo'] = 'Logo', ['ui.artwork'] = 'Background artwork',
@@ -246,7 +246,7 @@ ES.RegisterLocale('en', {
     ['ui.err_none_open'] = 'No event is open for registration.', ['ui.err_multiple_open'] = 'Several events are open — pick one in the events window.',
     ['ui.err_not_in_event'] = 'You are not in an event.', ['ui.err_forbidden'] = 'You do not have permission.',
     ['ui.err_rate_limited'] = 'Slow down.', ['ui.err_confirm_required'] = 'Confirmation required.', ['ui.err_spectators_disabled'] = 'Spectating is disabled for this event.',
-    ['ui.err_not_live'] = 'The event is not live.', ['ui.err_none_live'] = 'No live event to spectate.', ['ui.err_not_enough_players'] = 'Not enough players.',
+    ['ui.err_not_live'] = 'The event is not in progress.', ['ui.err_none_live'] = 'No event in progress to spectate.', ['ui.err_not_enough_players'] = 'Not enough players.',
     ['ui.err_no_players'] = 'No players registered.', ['ui.err_team_full'] = 'That team is full.', ['ui.err_not_ready'] = 'Event Studio is still starting.',
     ['ui.err_timeout'] = 'The server did not respond.', ['ui.err_blocked'] = 'You cannot join right now.', ['ui.err_not_open'] = 'Registration is closed.',
     ['ui.err_player_offline'] = 'Player is offline.', ['ui.err_config_schedule'] = 'Config schedules can only be disabled, not deleted.',

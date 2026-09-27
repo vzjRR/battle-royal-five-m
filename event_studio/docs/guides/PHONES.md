@@ -1,6 +1,6 @@
 # Events app for phones and tablets
 
-Players get an **Events** app in their phone or tablet with everything the events window (F7) has: live and open events, upcoming events, the leaderboard, tournaments, and sign up, join, leave and spectate. The app is added automatically when a supported phone is started; there is nothing to install. F7 keeps working.
+Players get an **Events** app in their phone or tablet with everything the events window (F7) has: active and open events, upcoming events, the leaderboard, tournaments, and sign up, join, leave and spectate. The app is added automatically when a supported phone is started; there is nothing to install. F7 keeps working.
 
 | Phone / tablet | Resource name | How the app is added |
 |---|---|---|

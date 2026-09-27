@@ -126,11 +126,11 @@ ES.RegisterLocale('ar', {
     rules_vehicle_tag = 'سيارة المطارِد تنقل الدور بلمس سيارة أخرى. الجميع غيره يكسبون النقاط كل ثانية. لا يمكن إعادة اللمس فورًا.',
 
     -- NUI ------------------------------------------------------------------------
-    ['ui.events'] = 'الفعاليات', ['ui.live'] = 'مباشر ومفتوح', ['ui.upcoming'] = 'القادمة', ['ui.leaderboard'] = 'المتصدرون',
+    ['ui.events'] = 'الفعاليات', ['ui.live'] = 'الجارية والمفتوحة', ['ui.upcoming'] = 'القادمة', ['ui.leaderboard'] = 'المتصدرون',
     ['ui.tournaments'] = 'البطولات', ['ui.close'] = 'إغلاق', ['ui.join'] = 'انضمام', ['ui.leave'] = 'مغادرة',
     ['ui.spectate'] = 'مشاهدة', ['ui.details'] = 'التفاصيل', ['ui.players'] = 'اللاعبون', ['ui.reward'] = 'الجائزة',
     ['ui.difficulty'] = 'الصعوبة', ['ui.duration'] = 'المدة', ['ui.starts_in'] = 'يبدأ خلال', ['ui.no_events'] = 'لا توجد فعاليات الآن. تفقّد الجدول القادم!',
-    ['ui.status_open'] = 'مفتوح', ['ui.status_full'] = 'ممتلئ', ['ui.status_starting'] = 'يبدأ', ['ui.status_live'] = 'مباشر',
+    ['ui.status_open'] = 'مفتوح', ['ui.status_full'] = 'ممتلئ', ['ui.status_starting'] = 'يبدأ', ['ui.status_live'] = 'جارية',
     ['ui.status_finished'] = 'انتهى', ['ui.status_cancelled'] = 'أُلغي', ['ui.status_upcoming'] = 'قادم',
     ['ui.diff_easy'] = 'سهل', ['ui.diff_medium'] = 'متوسط', ['ui.diff_hard'] = 'صعب', ['ui.diff_extreme'] = 'متطرف',
     ['ui.rules'] = 'القوانين', ['ui.scoring'] = 'احتساب النقاط', ['ui.rewards'] = 'الجوائز', ['ui.participants'] = 'المشاركون',
@@ -154,7 +154,7 @@ ES.RegisterLocale('ar', {
 
     -- NUI admin
     ['ui.admin'] = 'مركز الإدارة', ['ui.dashboard'] = 'لوحة التحكم', ['ui.definitions'] = 'الفعاليات', ['ui.builder'] = 'منشئ الفعاليات',
-    ['ui.arenas'] = 'المسارات والمواقع', ['ui.scheduler'] = 'الجدولة', ['ui.live_events'] = 'الفعاليات المباشرة', ['ui.logs'] = 'السجلات',
+    ['ui.arenas'] = 'المسارات والمواقع', ['ui.scheduler'] = 'الجدولة', ['ui.live_events'] = 'الفعاليات الجارية', ['ui.logs'] = 'السجلات',
     ['ui.settings'] = 'الإعدادات', ['ui.create'] = 'إنشاء', ['ui.save'] = 'حفظ', ['ui.delete'] = 'حذف', ['ui.cancel'] = 'إلغاء',
     ['ui.confirm'] = 'تأكيد', ['ui.start'] = 'بدء', ['ui.force_start'] = 'بدء إجباري', ['ui.pause'] = 'إيقاف مؤقت', ['ui.resume'] = 'استئناف',
     ['ui.stop'] = 'إنهاء إجباري', ['ui.restart'] = 'إعادة التشغيل', ['ui.announce'] = 'إعلان', ['ui.add_player'] = 'إضافة لاعب',
@@ -190,7 +190,7 @@ ES.RegisterLocale('ar', {
     ['ui.hud_position'] = 'موضع واجهة اللعب', ['ui.hud_top_right'] = 'أعلى اليمين', ['ui.hud_top_left'] = 'أعلى اليسار',
     ['ui.colors'] = 'الألوان', ['ui.colors_help'] = 'اترك اللون على افتراضي التصميم ليتبع التصميم المختار.',
     ['ui.color_accent'] = 'اللون المميز', ['ui.color_accent2'] = 'اللون المميز 2', ['ui.color_background'] = 'الخلفية', ['ui.color_panel'] = 'اللوحات',
-    ['ui.color_text'] = 'النص', ['ui.color_good'] = 'مفتوح / مباشر', ['ui.color_warn'] = 'يبدأ', ['ui.color_bad'] = 'ممتلئ / أخطاء',
+    ['ui.color_text'] = 'النص', ['ui.color_good'] = 'مفتوحة / جارية', ['ui.color_warn'] = 'يبدأ', ['ui.color_bad'] = 'ممتلئ / أخطاء',
     ['ui.theme_default'] = 'افتراضي التصميم', ['ui.none'] = 'بدون', ['ui.custom'] = 'مخصص',
     ['ui.image_help'] = 'ملف داخل web/img/ (مثل img/logo.png) أو رابط https://.',
     ['ui.branding'] = 'الهوية', ['ui.brand_title'] = 'العنوان', ['ui.brand_subtitle'] = 'العنوان الفرعي', ['ui.logo'] = 'الشعار', ['ui.artwork'] = 'صورة الخلفية',
@@ -248,7 +248,7 @@ ES.RegisterLocale('ar', {
     ['ui.err_none_open'] = 'لا توجد فعالية مفتوحة للتسجيل.', ['ui.err_multiple_open'] = 'هناك عدة فعاليات مفتوحة — اختر واحدة من نافذة الفعاليات.',
     ['ui.err_not_in_event'] = 'لست في فعالية.', ['ui.err_forbidden'] = 'ليست لديك صلاحية.',
     ['ui.err_rate_limited'] = 'تمهّل قليلًا.', ['ui.err_confirm_required'] = 'التأكيد مطلوب.', ['ui.err_spectators_disabled'] = 'المشاهدة معطلة في هذه الفعالية.',
-    ['ui.err_not_live'] = 'الفعالية ليست مباشرة.', ['ui.err_none_live'] = 'لا توجد فعالية مباشرة للمشاهدة.', ['ui.err_not_enough_players'] = 'عدد اللاعبين غير كافٍ.',
+    ['ui.err_not_live'] = 'الفعالية ليست جارية الآن.', ['ui.err_none_live'] = 'لا توجد فعالية جارية للمشاهدة.', ['ui.err_not_enough_players'] = 'عدد اللاعبين غير كافٍ.',
     ['ui.err_no_players'] = 'لا يوجد لاعبون مسجّلون.', ['ui.err_team_full'] = 'هذا الفريق ممتلئ.', ['ui.err_not_ready'] = 'Event Studio ما زال قيد التشغيل.',
     ['ui.err_timeout'] = 'لم يستجب الخادم.', ['ui.err_blocked'] = 'لا يمكنك الانضمام الآن.', ['ui.err_not_open'] = 'التسجيل مغلق.',
     ['ui.err_player_offline'] = 'اللاعب غير متصل.', ['ui.err_config_schedule'] = 'جداول ملف الإعدادات يمكن تعطيلها فقط، لا حذفها.',

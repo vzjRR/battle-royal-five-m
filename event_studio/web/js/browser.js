@@ -1,4 +1,4 @@
-// EVENT STUDIO — player event browser (live & open, upcoming, leaderboard, tournaments)
+// EVENT STUDIO — player event browser (active & open, upcoming, leaderboard, tournaments)
 import { h, $, mount, show, t, errText, fmtClock, fmtDate, fmtRace, categoryOf, placeBadge, statusChip, store, badge, ico } from './ui.js';
 import { rpc, closePanels, embed } from './app.js';
 import { toast } from './hud.js';
