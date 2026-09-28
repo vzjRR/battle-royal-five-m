@@ -12,7 +12,7 @@ const KEYS = [...[1, 2, 3, 4, 5, 6, 7, 9, 10, 11, 12].map((n) => 'F' + n), ...'A
     ...[0, 1, 2, 3, 4, 5, 6, 7, 8, 9].map((n) => 'NUMPAD' + n), 'HOME', 'END', 'INSERT', 'DELETE', 'PAGEUP', 'PAGEDOWN'];
 const KEY_ACTIONS = ['browser', 'scoreboard', 'reset'];
 
-const S = { loaded: false, loading: false, base: null, baseKeys: {}, draft: null, dirty: false };
+const S = { loaded: false, loading: false, base: null, baseKeys: {}, baseLocale: 'en', draft: null, dirty: false };
 
 const clone = (v) => JSON.parse(JSON.stringify(v ?? null));
 
@@ -29,6 +29,7 @@ async function load() {
     if (!res) return;
     S.base = res.base;
     S.baseKeys = res.baseKeys || {};
+    S.baseLocale = res.baseLocale || 'en';
     S.draft = blankDraft(res.overrides);
     S.loaded = true;
     S.dirty = false;
@@ -83,6 +84,17 @@ function layoutPicker(eff) {
         h('div.field', h('label', { for: 'ap-hud' }, t('hud_position')),
             h('select', { id: 'ap-hud', style: { maxWidth: '240px' }, onchange: (e) => change((d) => { d.hudPosition = e.target.value; }) },
                 ['top-right', 'top-left'].map((p) => h('option', { value: p, selected: eff.hudPosition === p ? 'selected' : null }, t('hud_' + p.replace('-', '_')))))));
+}
+
+/** Language for everyone. Picking the config language removes the override. */
+function languagePicker() {
+    const current = S.draft.locale || S.baseLocale;
+    const list = store.ui.locales || [{ code: 'en', name: 'English' }];
+    return h('div.field',
+        h('select', { id: 'ap-locale', 'aria-label': t('language'), style: { maxWidth: '260px' },
+            onchange: (e) => change((d) => { if (e.target.value === S.baseLocale) delete d.locale; else d.locale = e.target.value; }) },
+            list.map((l) => h('option', { value: l.code, selected: current === l.code ? 'selected' : null }, `${l.name} (${l.code})`))),
+        h('div.help', t('language_help')));
 }
 
 function keysOf() {
@@ -187,6 +199,7 @@ export function appearanceView() {
     return h('div.col.grow', { style: { minHeight: 0 } },
         h('div.scroll.pad.grow.col', { style: { gap: '16px' } },
             editable ? null : h('div.chip.starting', t('read_only')),
+            section(t('language'), languagePicker()),
             section(t('theme'), themeGallery(eff)),
             section(t('player_window'), layoutPicker(eff)),
             section(t('player_controls'), playerControls()),

@@ -7,6 +7,7 @@ local function boot()
         local ok, res = ES.rpcAwait('client:ready', {}, 8000)
         if ok and type(res) == 'table' then
             ES.ServerInfo = res
+            if res.locale and res.locale.code then ES.localeOverride = res.locale.code end
             ES.NUI.send('init', {
                 ui = res.ui, strings = res.strings, locale = res.locale, version = res.version, staff = res.staff, role = res.role,
                 commands = res.commands, scoring = res.scoring,

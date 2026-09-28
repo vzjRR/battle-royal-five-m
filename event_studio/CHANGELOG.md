@@ -10,6 +10,7 @@ All notable changes to EVENT STUDIO. Uses [Semantic Versioning](https://semver.o
 - **Player keys can be changed live** in Admin Center → Appearance → Player controls (events window, scoreboard, race reset), with checks for allowed and duplicate keys; announcements name the current key.
 
 ### Added
+- **Language picker** in Admin Center → Appearance: switch every player between the installed languages (English, Arabic, or any locale file you add) without a restart; saved on the server.
 - **Events app for phones and tablets** (`web/phone.html`, `client/components/phone.lua`, `config/phone.lua`): added automatically to LB Phone, LB Tablet, Quasar Smartphone PRO, YSeries, 17mov Phone, GKSPhone and NPWD 4, with everything the events window has. qb-phone and NPWD 3 cannot take outside apps (players use F7).
 - **Route check & repair** (Admin Center → Routes & arenas → Check route, or `/eventarenafix <arena> [apply]`): road routes snap to drivable roads with every leg checked for a road path; boat routes stay on deep open water with legs checked for land; on-foot points move to safe ground outside buildings. Report with per-point and per-leg status; fixes validated by the server (`admin:arena:applyFix`, max 300 m move) and the route marked as checked. Arenas carry a `route` type.
 - **Route editor:** record a route by driving it, road route from the map waypoint (beta), start grid behind you, go-to / move-here / insert / reorder / radius per point, in-world preview. Event builder route picker with Edit route / New route.

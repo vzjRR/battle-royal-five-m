@@ -179,3 +179,43 @@ H.test('the eventstudio console command is restricted; player messages name no t
         end
     end
 end)
+
+H.test('language: picked in Appearance, applies to everyone live, persists, reset goes back to config', function()
+    local admin, player = table.unpack(H.players(2, 995))
+    H.admin(admin)
+    Sim.advance(2600)
+    local _, ready = H.rpc(player, 'client:ready', {})
+    H.eq(ready.ui.locale, Config.General.locale or 'en')
+    local codes = {}
+    for _, l in ipairs(ready.ui.locales) do codes[l.code] = l.name end
+    H.eq(ready.ui.locales[1].code, 'en', 'English first')
+    H.eq(codes.ar, 'العربية', 'Arabic offered with its own name')
+
+    Sim.advance(2600)
+    local okBad, errBad = H.rpc(admin, 'admin:ui:save', { settings = { locale = 'xx' } })
+    H.no(okBad) H.eq(errBad, 'unknown_locale')
+    Sim.advance(2600)
+    local okP, errP = H.rpc(player, 'admin:ui:save', { settings = { locale = 'ar' } })
+    H.no(okP) H.eq(errP, 'forbidden')
+
+    H.clear(player)
+    Sim.advance(2600)
+    local ok, eff = H.rpc(admin, 'admin:ui:save', { settings = { locale = 'ar' } })
+    H.ok(ok, tostring(eff))
+    H.eq(eff.locale, 'ar')
+    local pushed = H.lastPush(player, 'locale')
+    H.ok(pushed, 'players get the new language at once')
+    H.eq(pushed.locale.code, 'ar') H.eq(pushed.locale.dir, 'rtl')
+    H.eq(pushed.strings.about, 'حول', 'NUI texts in Arabic')
+    H.eq(L('ui.about'), 'حول', 'server messages in Arabic too')
+    local _, again = H.rpc(player, 'client:ready', {})
+    H.eq(again.locale.code, 'ar', 'players who join later get it too')
+
+    ES.UI.overrides, ES.UI.cache, ES.localeOverride = {}, nil, nil
+    ES.UI.load()
+    H.eq(ES.localeCode(), 'ar', 'saved language survives a restart')
+
+    Sim.advance(2600)
+    H.ok((H.rpc(admin, 'admin:ui:reset', { confirm = true })))
+    H.eq(ES.localeCode(), Config.General.locale or 'en', 'reset goes back to config/general.lua')
+end)

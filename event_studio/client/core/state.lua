@@ -60,6 +60,14 @@ ES.on('ui', function(d)
     ES.NUI.send('ui', d)
 end)
 
+-- Staff picked another language in the Admin Center: new texts and text direction for the NUI.
+ES.on('locale', function(d)
+    if type(d) ~= 'table' then return end
+    if ES.ServerInfo then ES.ServerInfo.strings, ES.ServerInfo.locale = d.strings, d.locale end
+    if d.locale and d.locale.code then ES.localeOverride = d.locale.code end
+    ES.NUI.send('locale', d)
+end)
+
 ES.on('announce', function(d) ES.NUI.send('toast', d) end)
 ES.on('notify', function(d) ES.NUI.send('toast', d) end)
 ES.on('results', function(d) ES.NUI.send('results', d) end)

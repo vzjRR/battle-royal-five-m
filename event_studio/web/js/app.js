@@ -63,6 +63,13 @@ const handlers = {
         browser.onUI();
         admin.onUI();
     },
+    // staff picked another language
+    locale(d) {
+        if (d.strings) store.strings = d.strings;
+        applyLocale(d.locale);
+        browser.onUI();
+        admin.onUI();
+    },
     close: () => closePanels(),
     arenaCheck: (d) => admin.onArenaCheck(d),
     arenaRecorded: (d) => admin.onArenaRecorded(d),
