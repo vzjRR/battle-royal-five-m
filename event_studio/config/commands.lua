@@ -13,7 +13,7 @@ Config.Commands = {
     spectate = 'eventspectate',  -- staff: /eventspectate [id]
     arenaFix = 'eventarenafix',  -- staff: /eventarenafix <arenaId> [apply] — check and fix an arena in game
 
-    -- Player keys. Change them live in Admin Center → Appearance → Player controls if a key clashes with another
+    -- Player keys. Change them live in Admin Center → Settings → Player controls if a key clashes with another
     -- resource on your server (the saved choice overrides these). Allowed: F1-F12 except F8, A-Z, 0-9, NUMPAD0-9,
     -- HOME, END, INSERT, DELETE, PAGEUP, PAGEDOWN. Players can still rebind them in GTA Settings → Key Bindings → FiveM.
     keys = {

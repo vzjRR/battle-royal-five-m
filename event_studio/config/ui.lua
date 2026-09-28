@@ -1,6 +1,6 @@
 -- EVENT STUDIO — UI / branding (shared)
 -- Everything here is the starting point. Staff with the 'ui.edit' permission can change the theme, layout,
--- colors and branding live from the Admin Center (Appearance). Those changes are saved and override this file;
+-- colors and branding live from the Admin Center (Settings). Those changes are saved and override this file;
 -- "Reset to config" in the Admin Center goes back to what is written here.
 
 Config.UI = {

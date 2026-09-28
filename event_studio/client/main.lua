@@ -91,7 +91,7 @@ end
 
 -- Player keys ------------------------------------------------------------------
 -- Players only get keys (default F7 for the events window); typed commands are for staff. Owners change the keys
--- in Admin Center → Appearance → Player controls, and the change reaches everyone live.
+-- in Admin Center → Settings → Player controls, and the change reaches everyone live.
 -- GTA keeps a player's first default for each key-mapping command, so every mapping's internal command carries its
 -- key in the name (es_menu_f7). A new key therefore gets a fresh mapping with the new default; the old one stops acting.
 

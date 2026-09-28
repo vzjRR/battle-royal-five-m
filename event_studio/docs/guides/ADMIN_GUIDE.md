@@ -19,7 +19,9 @@ Open the Admin Center with `/event`. What you see depends on your role; the serv
   - **Editor:** **Record by driving** (drive the route; a checkpoint is added every *spacing* metres and at sharp turns, G adds one now, F2 finishes), **From map waypoint** (road routes, beta: checkpoints along the GPS line to your waypoint), **Start grid behind me** (8 start places), and per point: go there, move to my position, insert my position after it, move up/down, radius, remove. **Show in world** draws the points and the route line in the game while you edit.
 - **Scheduler:** turn schedules on or off, create weekly/daily/monthly/one-off/interval schedules, toggle the Event Director.
 - **Active Events:** full control of each instance. The actions marked in red ask for confirmation.
-  - Start (needs the minimum player count) / Force start (ignores it)
+  - **Close registration** (needs the minimum player count; the second button ignores it): the players are moved into the arena and wait, frozen, with "Waiting for the host to start" on screen. Staff online get a message that the event is ready.
+  - **Start (10 s countdown)**: press it when everyone is in and ready. If nobody presses it, the event starts on its own after `Config.General.flow.lobbyWaitMax` seconds (default 5 minutes; 0 = always wait). Tournament matches start by themselves.
+  - **Finish grace:** in races, hunts and red light, when the first player finishes the others get up to 60 seconds (`flow.finishGrace`) to finish; the event ends earlier once everyone has finished. Combat and objective modes end as soon as the winner is decided.
   - Pause / Resume (the timer freezes, players freeze)
   - Force finish (goes straight to results and rewards) / Cancel (no rewards) / Restart (same players, fresh instance)
   - Per player: Teleport to spawn, Reset (respawn plus vehicle and loadout), +10 points, Remove, Disqualify
@@ -28,7 +30,7 @@ Open the Admin Center with `/event`. What you see depends on your role; the serv
 - **Tournaments:** create one (event definition, format, best-of, seeding, registration time), let players sign up in the events window (F7) → Tournaments, then *Begin*. Matches start on their own, and players who don't show up forfeit.
 - **Leaderboard:** season points per category.
 - **Logs:** audit, security and lifecycle entries.
-- **Appearance:** choose the design from the gallery, the player window layout (compact, docked or full, and whether players can keep moving with the docked panel), the HUD side, every color, the title, logo and background artwork, and each category's icon and color. **Player controls** sets the key that opens the events window (default F7), the scoreboard key and the race reset key; pick another key when one clashes with a resource on your server. The saved keys reach every player at once. Changes preview on your screen immediately; **Save** applies them for every player right away, **Discard** throws them away, **Reset to config** returns to `config/ui.lua`.
+- **Settings:** choose the design from the gallery, the player window layout (compact, docked or full, and whether players can keep moving with the docked panel), the HUD side, every color, the title, logo and background artwork, and each category's icon and color. **Player controls** sets the key that opens the events window (default F7), the scoreboard key and the race reset key; pick another key when one clashes with a resource on your server. The saved keys reach every player at once. Changes preview on your screen immediately; **Save** applies them for every player right away, **Discard** throws them away, **Reset to config** returns to `config/ui.lua`.
 - **Settings:** product, developer and rights.
 
 Normal players have no typed commands: they use the events window key (F7 by default) to see events and register, join, leave or spectate. Only staff get `/event`, `/events`, `/eventjoin`, `/eventleave`, `/eventspectate` and `/eventarenafix`.

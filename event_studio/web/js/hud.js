@@ -80,7 +80,7 @@ export function onState(d) {
     const was = lastState;
     lastState = d.state;
     if (d.state === 'LOBBY') {
-        mount($('countdown'), h('div.label', t('lobby')));
+        mount($('countdown'), h('div.label', d.awaitingStart ? t('waiting_host') : t('lobby')));
         show($('countdown'), true);
     } else if (d.state === 'COUNTDOWN') {
         renderCountdown();

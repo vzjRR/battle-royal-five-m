@@ -5,6 +5,9 @@ All notable changes to EVENT STUDIO. Uses [Semantic Versioning](https://semver.o
 ## [Unreleased]
 
 ### Changed
+- **The host starts every event.** After registration closes, players wait in the arena until the host presses **Start** in Active Events; then a 10-second countdown runs. Staff are told when an event is ready; without a host it starts after 5 minutes (`Config.General.flow`). Tournament matches start by themselves.
+- **Finish grace for everyone:** after the first player finishes (races, hunts, red light), the others have at most 60 seconds; the event ends as soon as everyone has finished.
+- **About page:** fixed product information with the transparent Krovix mark (not changed by Settings); the Oman flag is shown with the publisher, Krovix Team. **Appearance** is now called **Settings**.
 - **Wording:** "Live" now reads as active / in progress, not broadcast: Arabic "الجارية والمفتوحة" and "جارية" (was "مباشر"), English "Active & Open", "In progress", "Active Events".
 - **Typed commands are staff only.** `/event`, `/events`, `/eventjoin`, `/eventleave`, `/eventspectate` and `/eventarenafix` are registered only for players with a staff role; the console command `eventstudio` is restricted (console, or `command.eventstudio` ACE). Players use the events window key (F7) to see events and register, join, leave or spectate.
 - **Player keys can be changed live** in Admin Center → Appearance → Player controls (events window, scoreboard, race reset), with checks for allowed and duplicate keys; announcements name the current key.

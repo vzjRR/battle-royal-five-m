@@ -92,11 +92,12 @@ function H.createAndJoin(defId, srcs, opts)
     return ES.Manager.get(id)
 end
 
----Force an instance from REGISTRATION to ACTIVE (lobby + countdown elapsed).
+---Force an instance from REGISTRATION to ACTIVE: close registration, the host presses Start, countdown elapses.
 function H.toActive(inst)
     assert(inst:start(true))
     for _ = 1, 400 do
         if inst.state == 'ACTIVE' then return end
+        if inst.state == 'LOBBY' and inst.awaitingStart then inst:go() end
         Sim.advance(100)
     end
     error('instance did not reach ACTIVE, state=' .. inst.state)

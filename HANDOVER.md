@@ -23,7 +23,7 @@ EVENT STUDIO is a commercial FiveM resource (Lua 5.4 + NUI in plain HTML/CSS/JS)
 
 ## 3. Current state (update this when you change something big)
 
-**Built and tested offline (143 automated tests pass):** event engine and lifecycle, 20 modes, 48 presets, 12 sample arenas, tournaments (single/double elimination, round robin, Swiss), scheduler and director, rewards with payout ledger, stats and leaderboards, Discord webhooks, Admin Center, event builder, arena editor, self-test, arena height fixer, permissions diagnostic, English and Arabic, 8 UI designs with live appearance editing.
+**Built and tested offline (147 automated tests pass):** event engine and lifecycle, 20 modes, 48 presets, 12 sample arenas, tournaments (single/double elimination, round robin, Swiss), scheduler and director, rewards with payout ledger, stats and leaderboards, Discord webhooks, Admin Center, event builder, arena editor, self-test, arena height fixer, permissions diagnostic, English and Arabic, 8 UI designs with live appearance editing.
 
 **Tested on a live server (owner's local QBCore server, txAdmin):**
 - `eventstudio selftest` passes: OneSync, buckets, vehicle spawn, oxmysql, QBCore, 48 definitions.
@@ -33,7 +33,7 @@ EVENT STUDIO is a commercial FiveM resource (Lua 5.4 + NUI in plain HTML/CSS/JS)
 **UI / design (latest work):**
 - Designs: `krovix-gilded` (default), `krovix-sapphire`, `krovix-obsidian`, `krovix-emerald`, `krovix-crimson`, `krovix-arctic`, `classic`, `light`. Registry: `event_studio/shared/themes.lua`; CSS: `event_studio/web/themes/`.
 - Player window (F7) layouts: compact (default), docked (optional keep-moving), full.
-- Admin Center → Appearance edits theme, layout, colors, branding, artwork and category icons live; saved server-side (`server/core/ui.lua`, storage document `setting/ui`), pushed to all players.
+- Admin Center → Settings edits theme, layout, colors, branding, artwork and category icons live; saved server-side (`server/core/ui.lua`, storage document `setting/ui`), pushed to all players.
 - Fonts bundled in `web/fonts/` (OFL), icons in `web/js/icons.js` (no emoji).
 
 **Routes, rewards, settings (latest work, from live testing feedback):**
@@ -48,9 +48,13 @@ EVENT STUDIO is a commercial FiveM resource (Lua 5.4 + NUI in plain HTML/CSS/JS)
 - `client/components/phone.lua`: one adapter per device (LB Phone, LB Tablet, Quasar PRO, YSeries, 17mov, GKSPhone), registered after `client:ready`, re-added when a phone restarts; `ES.Phone.close()` runs on every event teleport (only LB exposes a close export). NPWD 4: `server/core/phone.lua` + `dist/web/app.js` (plain JS, `window.__npwd_React`). Settings: `config/phone.lua`. Guide: `docs/guides/PHONES.md`.
 - Built from each phone's official docs and templates; **not tested with the real phones** (paid resources). GKSPhone fields come from search snippets (their docs site did not load); NPWD 4 load path (`dist/web/app.js`) follows their app template.
 
+**Start / finish flow (latest work, owner request):**
+- `Config.General.flow`: `manualStart` (LOBBY waits for the host, `Instance:go()`, RPC `admin:instance:go`, button "Start (10 s countdown)" in Active Events), `countdown` 10 s, `lobbyWaitMax` 300 s fallback, `finishGrace` 60 s. Tournament matches (`autoStart`) skip the wait. `markFinished` puts any `rankBy = 'finish'` mode into FINISHING on the first finisher; FINISHING ends when all are done (`checkViability`).
+- About page: fixed product mark `web/img/krovix-mark.png` (transparent, also the theme logo), Oman flag with publisher Krovix Team. The Appearance tab is labelled **Settings**.
+
 **Commands and keys (latest work, owner request):**
 - Typed commands (`/event`, `/events`, `/eventjoin`, `/eventleave`, `/eventspectate`, `/eventarenafix`) are registered on the client only when `client:ready` says the player is staff (`ES.registerStaffCommands`, `client/main.lua`). Console `eventstudio` is `restricted` (console, or ACE `command.eventstudio`).
-- Players only use keys: events window (F7), scoreboard hold (U), race reset (F9). Owners change them in Admin Center → Appearance → Player controls; stored in the UI overrides (`keys`), validated in `server/core/ui.lua` (whitelist, no F8, no duplicates), sent as `ui.keys` and applied live by `ES.applyKeys`.
+- Players only use keys: events window (F7), scoreboard hold (U), race reset (F9). Owners change them in Admin Center → Settings → Player controls; stored in the UI overrides (`keys`), validated in `server/core/ui.lua` (whitelist, no F8, no duplicates), sent as `ui.keys` and applied live by `ES.applyKeys`.
 - Each key mapping's internal command has the key in its name (`es_menu_f7`) because GTA keeps the first default per command; chat suggestions for these names are removed.
 - Announcements say "Press <key>" (`ES.UI.menuKey()`), no command names.
 
@@ -58,7 +62,7 @@ EVENT STUDIO is a commercial FiveM resource (Lua 5.4 + NUI in plain HTML/CSS/JS)
 0. Owner: run **Check route** on every sample route in game and apply the fixes; re-record any route with problems.
 1. Owner: in-game test matrix in `event_studio/docs/TESTING.md` §2 (combat, CTF, trivia, tournaments, reconnects), `resmon` numbers.
 2. Owner: `/eventarenafix <arena> apply` for every sample arena (coordinates are approximate).
-3. Owner: open the Events app in the phone/tablet you use (check sign up / join and that LB closes on event start). 3b. Owner: check the new UI in game (all designs, compact/docked/full, keep-moving, Arabic), and that a normal player has no typed commands while staff do; change the F7 key in Appearance → Player controls and check it switches live.
+3. Owner: open the Events app in the phone/tablet you use (check sign up / join and that LB closes on event start). 3b. Owner: check the new UI in game (all designs, compact/docked/full, keep-moving, Arabic), and that a normal player has no typed commands while staff do; change the F7 key in Settings → Player controls and check it switches live.
 4. Cfx Portal escrow upload of `dist/event_studio-<version>.zip`, Tebex monthly package, price. Before listing: private test on a friend's server with a hidden package + manual payment (`event_studio/docs/PROTECTION.md` §5b).
 5. Legal review of `event_studio/LICENSE.md` (draft subscription license).
 6. Move the CHANGELOG `[Unreleased]` section under a version before the first release.
@@ -108,10 +112,11 @@ Its reference implementation is this repository's `event_studio/web/themes/`, `w
 ## 7. Change log (automatic)
 
 <!-- AUTO-LOG:START -->
-_Generated by `tools/update_handover.py` from git history (27 commits in total, newest first, last 27 shown). Do not edit by hand._
+_Generated by `tools/update_handover.py` from git history (28 commits in total, newest first, last 28 shown). Do not edit by hand._
 
 | Date | Change | Files |
 |---|---|---|
+| 2026-09-28 | Host starts every event; finish grace; About and Settings fixes | 30 |
 | 2026-09-28 | Refresh the handover change log | 1 |
 | 2026-09-28 | Fix race HUD lap and checkpoint counts not updating | 6 |
 | 2026-09-28 | Add a Windows updater for the local test server | 7 |

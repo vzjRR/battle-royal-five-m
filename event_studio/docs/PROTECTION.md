@@ -112,7 +112,8 @@ If you want something that only exists on **your** backend, build **online featu
 
 The same system gives a private test: only the account you choose can run it, and nobody can buy it.
 
-1. Build and upload as in steps 1–2 (escrowed asset in the Cfx Portal).
+1. Build and upload as in steps 1–2 (escrowed asset in the Cfx Portal). The asset shows **Processing** first and becomes **Active** when encryption is done (usually under two hours) or **Failed** with the reason.
+   How to tell an escrowed build: it contains a small **`.fxap`** file at the top of the resource, and files such as `server/core/*.lua` are unreadable. `config/`, `locales/`, `web/`, `migrations/` and `integrations/custom/` always stay readable: they are listed in `escrow_ignore` (buyers edit them) and NUI files cannot be encrypted. If `server/core/*.lua` is readable and there is no `.fxap`, you are looking at the original upload or the asset is not Active yet.
 2. Tebex: create a package for the asset and set it **hidden** (not listed in the store). The price does not matter, because nobody can reach the checkout.
 3. Ask your friend for the **Cfx.re account that owns their server's license key** (the one in their `server.cfg` / txAdmin). Tebex → Payments → **Create Payment → Manual Payment** → that account + the hidden package.
 4. Your friend downloads it from their Cfx Portal (*Granted Assets*) and adds `ensure event_studio`.

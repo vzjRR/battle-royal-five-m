@@ -50,7 +50,7 @@ With oxmysql, the tables are created automatically (`migrations/001_initial.sql`
 
 1. In game, type `/event` to open the Admin Center.
 2. **Routes:** the sample routes use approximate coordinates. Open **Routes & arenas**, press **Check route** on each one and **Apply fixes**; re-place any point marked Problem, or record the route again by driving it.
-3. **Events:** press *Run now* on "Downtown Street Circuit". Players press **F7** to open the events window and press *Join* (players have no typed commands; if F7 clashes with another resource, change it in **Appearance → Player controls**).
+3. **Events:** press *Run now* on "Downtown Street Circuit". Players press **F7** to open the events window and press *Join*. In **Active Events**, press **Close registration** to bring them into the arena, then **Start** when everyone is ready (10-second countdown) (players have no typed commands; if F7 clashes with another resource, change it in **Settings → Player controls**).
 4. **Scheduler:** turn the example weekly schedules on or off, or create your own.
 
 ## 4. Updating

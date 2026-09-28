@@ -6,6 +6,15 @@ Config.General = {
     -- Engine tick while at least one event exists (ms). 250-1000 is sensible.
     tickMs = 500,
 
+    -- Start and finish of every event.
+    flow = {
+        manualStart = true,   -- players wait in the arena until the host presses Start (Admin Center → Active Events)
+        countdown = 10,       -- seconds of countdown after Start
+        lobbyWaitMax = 300,   -- nobody pressed Start: begin anyway after this many seconds (0 = always wait for the host)
+        finishGrace = 60,     -- after the first player finishes, the others have at most this many seconds to finish;
+                              -- the event ends earlier when everyone has finished
+    },
+
     -- Routing bucket pool used for event instances. Pick a range no other resource uses.
     buckets = { from = 7100, to = 7299, lockdown = 'relaxed', population = false },
 

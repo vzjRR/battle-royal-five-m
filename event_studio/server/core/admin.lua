@@ -36,6 +36,7 @@ local function liveDetail(i)
         leader = rows[1] and rows[1].name or nil, zones = zones, results = i.results and U.map(i.results, function(r)
             return { name = r.name, placement = r.placement, points = r.points, score = r.score, status = r.status }
         end) or nil, createdBy = i.createdBy, tournament = i.tournament,
+        awaitingStart = i.awaitingStart == true, countdown = (Config.General.flow and Config.General.flow.countdown) or 10,
     }
 end
 
@@ -246,6 +247,7 @@ end
 
 control('start', 'instance.start', false, function(i) return i:start(false) end)
 control('forceStart', 'instance.start', true, function(i) return i:start(true) end)
+control('go', 'instance.start', false, function(i) return i:go() end) -- the host starts the countdown
 control('pause', 'instance.pause', false, function(i) return i:pause() end)
 control('resume', 'instance.pause', false, function(i) return i:resume() end)
 control('stop', 'instance.stop', true, function(i) return i:finishNow('admin') end)

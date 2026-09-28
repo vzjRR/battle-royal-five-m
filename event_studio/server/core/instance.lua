@@ -36,6 +36,7 @@ function Instance.new(id, def, opts)
         tournament = opts.tournament,
         match = opts.match,
         createdBy = opts.createdBy,
+        autoStart = opts.autoStart == true or opts.tournament ~= nil, -- tournament matches start by themselves
         createdAt = os.time(),
         startAt = opts.startAt,
         clock = { startedAt = nil, pausedAt = nil, pausedTotal = 0 },
@@ -166,7 +167,8 @@ function Instance:snapshot(src)
         spectateOnEliminate = self.def.players.spectateOnEliminate,
         gameplay = { health = self.def.gameplay.health, armor = self.def.gameplay.armor,
                      restoreWeapons = self.def.gameplay.restoreWeapons, blockInventoryWeapons = self.def.gameplay.blockInventoryWeapons },
-        objective = self.mode.objectiveKey and L(self.mode.objectiveKey) or nil,
+        objective = self.mode.objectiveKey and ES.Lp(src, self.mode.objectiveKey) or nil,
+        awaitingStart = self.awaitingStart == true or nil,   -- waiting for the host to press Start
     }
     local rp = (p and p.returnPoint) or (self.spectators[src] and self.spectators[src].returnPoint)
     if rp then snap.returnPoint = { coords = rp.coords, heading = rp.heading } end
@@ -302,6 +304,17 @@ function Instance:setState(new, reason)
 end
 
 local function secs(n) return ES.now() + (n or 0) * 1000 end
+local function flow() return (Config.General and Config.General.flow) or {} end
+
+---Tell the staff online that an event is waiting for Start.
+local function notifyStaff(self)
+    for _, id in ipairs(GetPlayers()) do
+        local src = tonumber(id)
+        if ES.Perm.level(src) > 0 then
+            ES.push(src, 'announce', ES.say(src, 'info', 'announce_ready_to_start', self.def.name, self.id, self:participantCount({ active = true })))
+        end
+    end
+end
 
 enter[S.REGISTRATION] = function(self)
     self.deadline = secs(self.def.timing.registration)
@@ -337,12 +350,22 @@ enter[S.LOBBY] = function(self)
         end
     end
     self.startCount = self:participantCount({ active = true })
-    self.deadline = secs(self.def.timing.lobby)
+    if flow().manualStart ~= false and not self.autoStart then
+        -- everyone waits in the arena until the host presses Start (or lobbyWaitMax runs out)
+        self.awaitingStart = true
+        local wait = flow().lobbyWaitMax or 0
+        self.deadline = wait > 0 and secs(wait) or nil
+        notifyStaff(self)
+    else
+        self.deadline = secs(self.def.timing.lobby)
+    end
     self:dirty()
 end
 
 enter[S.COUNTDOWN] = function(self)
-    self.deadline = secs(self.def.timing.countdown)
+    local manual = self.awaitingStart ~= nil
+    self.awaitingStart = nil
+    self.deadline = secs(manual and (flow().countdown or 10) or self.def.timing.countdown)
 end
 
 enter[S.ACTIVE] = function(self, old)
@@ -376,9 +399,12 @@ enter[S.PAUSED] = function(self)
 end
 
 enter[S.FINISHING] = function(self)
-    local g = self.def.timing.grace or 0
+    -- the first player finished: the rest get a grace time (config flow.finishGrace, else the definition's grace)
+    local g = flow().finishGrace
+    if g == nil then g = self.def.timing.grace or 0 end
     if g <= 0 then return self:setState(S.RESULTS, 'grace_skipped') end
     self.deadline = secs(g)
+    if #self:activeParticipants() > 0 then self:announce('announce_finish_grace', 'warn', g) end
 end
 
 enter[S.RESULTS] = function(self)
@@ -422,6 +448,14 @@ function Instance:start(force)
     return self:setState(S.LOBBY, force and 'forced' or 'start')
 end
 
+---Host presses Start: players are in the arena and ready, the countdown begins (flow.countdown, default 10 s).
+function Instance:go()
+    if self.state == S.REGISTRATION or self.state == S.SCHEDULED then return false, 'close_registration_first' end
+    if self.state ~= S.LOBBY then return false, 'invalid_state' end
+    if self:participantCount({ active = true }) == 0 then return false, 'no_players' end
+    return self:setState(S.COUNTDOWN, 'host_start')
+end
+
 function Instance:pause()
     if self.state ~= S.ACTIVE then return false, 'invalid_state' end
     return self:setState(S.PAUSED, 'admin')
@@ -436,7 +470,8 @@ end
 function Instance:finish(reason)
     if self.state ~= S.ACTIVE and self.state ~= S.PAUSED then return false, 'invalid_state' end
     if self.state == S.PAUSED then self:setState(S.ACTIVE, 'finish') end
-    if self.mode.graceOnFinish then return self:setState(S.FINISHING, reason) end
+    -- modes where players cross a finish (races, hunts, red light) give the others a grace time
+    if self.mode.graceOnFinish or self.mode.rankBy == 'finish' then return self:setState(S.FINISHING, reason) end
     return self:setState(S.RESULTS, reason)
 end
 
@@ -529,7 +564,7 @@ function Instance:onDeadline()
             self:cancel('not_enough_players')
         end
     elseif st == S.LOBBY then
-        self:setState(S.COUNTDOWN, 'lobby_done')
+        self:setState(S.COUNTDOWN, self.awaitingStart and 'wait_over' or 'lobby_done')
     elseif st == S.COUNTDOWN then
         self:setState(S.ACTIVE, 'countdown_done')
     elseif st == S.ACTIVE then

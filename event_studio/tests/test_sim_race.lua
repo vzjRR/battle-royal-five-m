@@ -138,7 +138,7 @@ H.test('a winner who disconnects after finishing is paid automatically when they
     H.toActive(inst)
     drive(inst, { a })                 -- only a finishes
     Sim.removePlayer(a)                -- then crashes before the results
-    H.ok(H.waitState(inst, 'ARCHIVED', 60000), 'archived, state=' .. inst.state)
+    H.ok(H.waitState(inst, 'ARCHIVED', 120000), 'archived after the finish grace, state=' .. inst.state)
     H.eq(inst.results[1].placement, 1)
     H.eq(inst.results[1].status, 'finished')
     for _, p in ipairs(H.paid) do H.ok(p.src ~= a, 'nothing paid to an offline player') end
@@ -225,4 +225,68 @@ H.test('HUD: checkpoint and lap counts update after every checkpoint (2 laps)', 
     H.ok(H.waitState(inst, 'ARCHIVED', 60000), 'race finished after 2 laps')
     H.eq(inst.results[1].src, s)
     Sim.players[s] = nil
+end)
+
+H.test('start: players wait in the arena until the host presses Start, then a 10 s countdown', function()
+    local s = H.players(1, 7200)[1]
+    H.setPos(s, 500.0, 500.0, 30.0)
+    local inst = H.createAndJoin('test_race', { s })
+    H.eq(select(2, inst:go()), 'close_registration_first', 'Start needs the players in the arena first')
+    H.ok(inst:start(true))
+    H.eq(inst.state, 'LOBBY') H.ok(inst.awaitingStart)
+    H.clear(s)
+    Sim.advance(30000)
+    H.eq(inst.state, 'LOBBY', 'still waiting: nobody pressed Start')
+    local admin = H.players(1, 7201)[1]
+    H.admin(admin)
+    H.ok((H.rpc(admin, 'admin:instance:go', { id = inst.id })))
+    H.eq(inst.state, 'COUNTDOWN')
+    Sim.advance(9000)
+    H.eq(inst.state, 'COUNTDOWN', 'countdown lasts 10 seconds')
+    Sim.advance(1500)
+    H.eq(inst.state, 'ACTIVE')
+    inst:cancel('test')
+    Sim.advance(1000)
+    Sim.players[s], Sim.players[admin] = nil, nil
+end)
+
+H.test('start: without a host the event begins after flow.lobbyWaitMax; tournament matches start by themselves', function()
+    local s = H.players(1, 7300)[1]
+    H.setPos(s, 500.0, 500.0, 30.0)
+    local inst = H.createAndJoin('test_race', { s })
+    H.ok(inst:start(true))
+    Sim.advance((Config.General.flow.lobbyWaitMax or 300) * 1000 + 500)
+    H.eq(inst.state, 'COUNTDOWN', 'waited long enough, countdown started')
+    inst:cancel('test')
+    Sim.advance(1000)
+    local ok, id = ES.Manager.create('test_race', { registration = 30, tournament = 'T1' })
+    H.ok(ok)
+    H.ok(ES.Manager.get(id).autoStart)
+    ES.Manager.get(id):cancel('test')
+    Sim.advance(1000)
+    Sim.players[s] = nil
+end)
+
+H.test('finish: after the first finisher the others get at most 60 s; ends early when everyone finished', function()
+    local a, b = table.unpack(H.players(2, 7400))
+    for _, s in ipairs({ a, b }) do H.setPos(s, 500.0, 500.0, 30.0) end
+    local inst = H.createAndJoin('test_race', { a, b })
+    H.toActive(inst)
+    drive(inst, { a })
+    H.eq(inst.state, 'FINISHING', 'grace starts with the winner')
+    local left = inst.deadline - ES.now()
+    H.ok(left <= 60000 and left > 55000, 'grace is 60 s, got ' .. left)
+    Sim.advance(30000)
+    H.eq(inst.state, 'FINISHING', 'still waiting for b')
+    -- b arrives within the grace: the race ends at once
+    local cp = inst:component('checkpoints')
+    for i, pt in ipairs(arena.checkpoints) do
+        Sim.advance(2000)
+        H.setPos(b, pt.x, pt.y, pt.z)
+        H.ok((H.rpc(b, 'event:action', { action = 'checkpoint', data = { index = i } })))
+    end
+    H.eq(inst.state, 'RESULTS', 'everyone finished: results straight away')
+    H.eq(inst.results[2].status, 'finished')
+    H.ok(H.waitState(inst, 'ARCHIVED', 30000))
+    Sim.players[a], Sim.players[b] = nil, nil
 end)

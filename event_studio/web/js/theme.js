@@ -1,5 +1,5 @@
 // EVENT STUDIO — applies the appearance settings: theme file, shape, artwork, logo and color overrides.
-// Settings come from the server (Config.UI merged with what staff saved in Admin Center → Appearance).
+// Settings come from the server (Config.UI merged with what staff saved in Admin Center → Settings).
 
 const root = document.documentElement;
 const OVERRIDDEN = new Set();

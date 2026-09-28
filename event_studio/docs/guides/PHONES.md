@@ -31,7 +31,7 @@ Config.Phone = {
 
 - The app is the page `web/phone.html`, shown by the phone in its own frame. It is the same event window as F7, laid out for a phone (a narrow list, swipeable tabs, no close button) or a tablet (the wider list).
 - The page talks to Event Studio directly (`phone:init`, `rpc`), and every action goes through the same server checks as F7. The app gives players no new rights.
-- Design and colors follow Admin Center → Appearance; the app picks up changes within a few seconds.
+- Design and colors follow Admin Center → Settings; the app picks up changes within a few seconds.
 - When an event moves the player (start, respawn), LB Phone and LB Tablet are closed automatically. Other phones have no documented close function; players close them as usual.
 - A phone started after Event Studio (or restarted) gets the app again automatically.
 

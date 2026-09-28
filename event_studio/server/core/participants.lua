@@ -316,6 +316,11 @@ function Instance:markFinished(p)
     self:push(p, 'announce', ES.say(p, 'success', 'you_finished', U.fmtDuration(p.finishMs)))
     self:syncState(p.src)
     self:dirty()
+    -- first finisher: the others get the finish grace time (every mode that ranks by finishing)
+    if self.state == S.ACTIVE and self.mode.rankBy == 'finish' and not self.flags.firstFinish then
+        self.flags.firstFinish = true
+        self:finish('winner')
+    end
     self:checkViability()
     return true
 end

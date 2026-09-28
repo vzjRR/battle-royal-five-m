@@ -45,7 +45,7 @@ In game:
 - **Staff** (host and above): `/event` opens the Admin Center. `/events`, `/eventjoin [id]`, `/eventleave`, `/eventspectate [id]` and `/eventarenafix` exist only for staff.
 - **Phone and tablet app:** an **Events** app appears automatically in LB Phone, LB Tablet, Quasar Smartphone PRO, YSeries, 17mov Phone, GKSPhone and NPWD 4 ([guide](docs/guides/PHONES.md)).
 - **Language:** each player switches between Arabic and English with the flag switch (Oman / UK flag) in the events window.
-- If F7 (or another key) clashes with a resource on your server, change it in **Admin Center → Appearance → Player controls**. The change reaches every player at once.
+- If F7 (or another key) clashes with a resource on your server, change it in **Admin Center → Settings → Player controls**. The change reaches every player at once.
 
 ## Documentation
 

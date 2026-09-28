@@ -15,7 +15,7 @@ export const A = { data: null, section: 'dashboard', liveId: null, liveTimer: nu
 const sections = [
     ['dashboard', 'home', 'dashboard'], ['definitions', 'list', 'definitions'], ['builder', 'pencil', 'builder'], ['arenas', 'pin', 'arenas'],
     ['scheduler', 'clock', 'scheduler'], ['live', 'live', 'live_events'], ['tournaments', 'trophy', 'tournaments'], ['leaderboard', 'star', 'leaderboard'],
-    ['logs', 'logs', 'logs'], ['appearance', 'palette', 'appearance'], ['about', 'info', 'about'],
+    ['logs', 'logs', 'logs'], ['appearance', 'settings', 'settings'], ['about', 'info', 'about'],
 ];
 
 export const can = (action) => !!(A.data && A.data.perms && A.data.perms[action]);
@@ -185,8 +185,10 @@ function liveControls(d) {
         onclick: () => dangerous ? danger(rpcName, { id }, label) : call(rpcName, { id }, t('saved')),
     }, label) : null;
     return h('div.controls',
-        btn(t('start'), 'admin:instance:start', 'instance.start', '.primary', false, st === 'REGISTRATION' || st === 'SCHEDULED'),
-        btn(t('force_start'), 'admin:instance:forceStart', 'instance.start', '', true, st === 'REGISTRATION' || st === 'SCHEDULED'),
+        // 1) close registration: players are moved into the arena; 2) Start when everyone is ready: 10 s countdown
+        btn(t('close_registration'), 'admin:instance:start', 'instance.start', '.primary', false, st === 'REGISTRATION' || st === 'SCHEDULED'),
+        btn(t('force_close_registration'), 'admin:instance:forceStart', 'instance.start', '', true, st === 'REGISTRATION' || st === 'SCHEDULED'),
+        btn(t('start_countdown', d.countdown || 10), 'admin:instance:go', 'instance.start', '.primary.big', false, st === 'LOBBY' && d.awaitingStart),
         btn(t('pause'), 'admin:instance:pause', 'instance.pause', '', false, st === 'ACTIVE'),
         btn(t('resume'), 'admin:instance:resume', 'instance.pause', '.good', false, st === 'PAUSED'),
         btn(t('stop'), 'admin:instance:stop', 'instance.stop', '.danger', true, st === 'ACTIVE' || st === 'PAUSED' || st === 'FINISHING'),
@@ -216,6 +218,7 @@ function liveDetail() {
                     d.tournament ? [h('span', t('tournaments')), h('b', d.tournament)] : null),
                 d.teams ? h('div.hud-teams', d.teams.map((tm) => h('div.hud-team', { vars: { '--c': tm.color } }, h('b', String(tm.score)), h('span', tm.name)))) : null,
                 d.zones ? h('div.row', { style: { marginTop: '10px', flexWrap: 'wrap' } }, d.zones.map((z) => h('span.chip', `${z.label}: ${z.owner ?? '—'}${z.contested ? ' ⚔' : ''}`))) : null,
+                d.awaitingStart ? h('div.start-callout', ico('users', 16), h('span', t('waiting_for_start'))) : null,
                 h('div', { style: { marginTop: '12px' } }, liveControls(d)))),
         h('div.box', h('div.box-head', t('participants')),
             h('table.tbl', h('tr', h('th', t('name')), h('th', t('status')), h('th', t('team')), h('th.num', t('score')), h('th.num', 'K/D'), h('th.num', 'ping'), h('th', '')),
@@ -330,12 +333,13 @@ function logs() {
 function about() {
     return h('div.scroll.pad', h('div.about',
         h('div.about-card',
-            brandLogo(),
+            // fixed product information: not affected by Settings (logo, title, colors)
+            h('div.about-logo', h('img', { src: 'img/krovix-mark.png', alt: 'Krovix' })),
             h('h2.display', 'EVENT STUDIO'),
             h('p.muted', t('about_tagline')),
             h('div.about-rows',
-                h('div.about-row', h('span.faint', t('about_developer')), h('b.row', 'vzjRR', flagOman(13))),
-                h('div.about-row', h('span.faint', t('about_publisher')), h('b', 'Krovix Team'))),
+                h('div.about-row', h('span.faint', t('about_developer')), h('b', 'vzjRR')),
+                h('div.about-row', h('span.faint', t('about_publisher')), h('b.row', 'Krovix Team', flagOman(13)))),
             h('p.about-rights', `© ${new Date().getFullYear()} Krovix Team. ${t('about_rights')}`))));
 }
 

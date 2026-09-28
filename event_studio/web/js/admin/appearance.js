@@ -1,4 +1,4 @@
-// EVENT STUDIO — Admin Center → Appearance: theme gallery, player window layout, colors, branding, category icons.
+// EVENT STUDIO — Admin Center → Settings: theme gallery, player window layout, colors, branding, category icons.
 // Changes preview instantly on this screen; Save stores them on the server and applies them for every player.
 import { h, t, store, badge, ico } from '../ui.js';
 import { ICON_NAMES } from '../icons.js';

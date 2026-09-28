@@ -107,7 +107,8 @@ responses['admin:arena:get'] = { id: 'alamo_sea', name: 'Alamo Sea Course', rout
         { x: 900, y: 4300, z: 30.4, radius: 18 }, { x: 1250, y: 4200, z: 30.4, radius: 18 }, { x: 1320, y: 3900, z: 30.4, radius: 20, label: 'Finish' }] };
 responses['admin:definition:get'] = { ...adminData.definitions[0] };
 const adminSection = { dashboard: 'dashboard', events: 'definitions', builder: 'builder', arenas: 'arenas', 'arena-edit': 'arenas', 'arena-check': 'arenas',
-    scheduler: 'scheduler', live: 'live', tournaments: 'tournaments', 'admin-board': 'leaderboard', logs: 'logs', appearance: 'appearance', controls: 'appearance', settings: 'about', about: 'about' }[scene];
+    scheduler: 'scheduler', live: 'live', tournaments: 'tournaments', 'admin-board': 'leaderboard', logs: 'logs', appearance: 'appearance', controls: 'appearance', settings: 'appearance', about: 'about', lobby: 'live' }[scene];
+if (scene === 'lobby') Object.assign(responses['admin:instance:detail'], { card: cards[3], state: 'LOBBY', awaitingStart: true, countdown: 10, teams: null, leader: null, remainingMs: 241000 });
 if (adminSection) {
     send('open', { view: 'admin', data: adminData });
     const adm = await import('./admin/admin.js');

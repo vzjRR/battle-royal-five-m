@@ -49,7 +49,7 @@ Config.Permissions = {
         ['spectate.any'] = 'host',
         ['tournament.edit'] = 'manager',
         ['debug'] = 'admin',
-        ['ui.edit'] = 'admin',            -- theme, layout, colors, branding (Admin Center → Appearance)
+        ['ui.edit'] = 'admin',            -- theme, layout, colors, branding (Admin Center → Settings)
     },
 
     cacheSeconds = 30,
