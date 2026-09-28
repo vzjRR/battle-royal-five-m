@@ -34,7 +34,7 @@ local ADAPTERS = {
         key = 'lbPhone', resources = { 'lb-phone' }, name = 'LB Phone',
         add = function(res)
             return exports[res]:AddCustomApp({
-                identifier = APP_ID, name = label(), description = description(), developer = 'Krovix Store',
+                identifier = APP_ID, name = label(), description = description(), developer = 'vzjRR',
                 defaultApp = preinstalled(), size = 2048,
                 ui = RES .. '/' .. PAGE,
                 icon = iconUrl(),
@@ -48,7 +48,7 @@ local ADAPTERS = {
         key = 'lbTablet', resources = { 'lb-tablet' }, name = 'LB Tablet',
         add = function(res)
             return exports[res]:AddCustomApp({
-                identifier = APP_ID, resource = RES, name = label(), description = description(), developer = 'Krovix Store',
+                identifier = APP_ID, resource = RES, name = label(), description = description(), developer = 'vzjRR',
                 defaultApp = preinstalled(), size = 2048,
                 ui = PAGE .. '?device=tablet',   -- path inside `resource`
                 icon = iconUrl(),
@@ -61,7 +61,7 @@ local ADAPTERS = {
         key = 'quasar', resources = { 'qs-smartphone-pro' }, name = 'Quasar Smartphone PRO',
         add = function(res)
             return exports[res]:addCustomApp({
-                app = APP_ID, label = label(), description = description(), creator = 'Krovix Store',
+                app = APP_ID, label = label(), description = description(), creator = 'vzjRR',
                 image = iconUrl(), ui = NUI .. PAGE,
                 job = false, blockedJobs = {}, timeout = 5000, category = 'social', isGame = false, age = '16+',
                 extraDescription = {},

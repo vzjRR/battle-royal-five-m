@@ -34,7 +34,8 @@ def build_section():
         stat = stat.strip()
         if stat:
             files = stat.split(' file')[0].strip()
-        subject = subject.replace('|', '\\|')
+        # old commits used a former publisher name; show the current one
+        subject = subject.replace('|', '\\|').replace('Krovix' + ' Store', 'Krovix Team')
         rows.append(f'| {date} | {subject} | {files} |')
     total = git('rev-list', '--count', 'HEAD').strip()
     lines = [

@@ -1,7 +1,7 @@
-# Store listing draft — EVENT STUDIO by Krovix Store
+# Store listing draft — EVENT STUDIO by Krovix Team
 
 > Internal draft for the Tebex package page and the Cfx.re forum release post. Not shipped to customers.
-> **Publish only after the in-game test matrix passes** (docs/TESTING.md §2). Prices and support details are placeholders for Krovix Store to fill in.
+> **Publish only after the in-game test matrix passes** (docs/TESTING.md §2). Prices and support details are placeholders for Krovix Team to fill in.
 
 ---
 
@@ -44,14 +44,14 @@ Racing (circuits, sprints, time trials, drag, boat, bike, elimination races, par
 | Subscription based | Yes — monthly subscription |
 | Lines (approximately) | ~10,800 Lua + ~1,600 UI |
 | Requirements | OneSync; optional: oxmysql, ESX/QBCore/Qbox, ox_inventory |
-| Support | Yes (*Krovix Store support channel — fill in*) |
+| Support | Yes (*Krovix Team support channel — fill in*) |
 
 ## Package plan (see docs/PROTECTION.md)
 
 | Package | Type | Notes |
 |---|---|---|
 | EVENT STUDIO — Monthly | Subscription, billed every month | The only public package. Access ends when the subscription ends (revocable). Tied to the buyer's Cfx account |
-| Partner / approved servers | Manual payment on the monthly package | Krovix Store issues access itself (Tebex → Payments → Manual Payment). Check how this behaves on subscriptions before use (PROTECTION.md §5) |
+| Partner / approved servers | Manual payment on the monthly package | Krovix Team issues access itself (Tebex → Payments → Manual Payment). Check how this behaves on subscriptions before use (PROTECTION.md §5) |
 
 Pricing (to fill in): monthly price ______ · optional "network" tier for several servers on one Cfx account, enforced by the EULA.
 

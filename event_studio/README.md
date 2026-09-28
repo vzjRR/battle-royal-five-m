@@ -2,7 +2,7 @@
 
 **An event & competition platform for FiveM servers.** Create, schedule, run, watch, score and reward recurring events (races, PvP, objectives, survival, hunts, obstacle courses, social games and tournaments) from one resource.
 
-By **Krovix Store** · Version: **0.1.0-alpha** · Frameworks: **Standalone, ESX, QBCore, Qbox**
+Developer: **vzjRR** · Publisher: **Krovix Team** · Version: **0.1.0-alpha** · Frameworks: **Standalone, ESX, QBCore, Qbox**
 
 ---
 

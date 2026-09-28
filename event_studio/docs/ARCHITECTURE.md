@@ -1,6 +1,6 @@
 # EVENT STUDIO — Architecture
 
-> Author: Krovix Store · Applies to: 0.1.0-alpha and later
+> Author: vzjRR (Krovix Team) · Applies to: 0.1.0-alpha and later
 
 ## 1. Guiding principles
 

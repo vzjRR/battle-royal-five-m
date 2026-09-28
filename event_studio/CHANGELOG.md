@@ -36,7 +36,7 @@ All notable changes to EVENT STUDIO. Uses [Semantic Versioning](https://semver.o
 - No modes loaded on a real FXServer (every event failed with "unknown mode"): the manifest used `modes/*/server.lua`, and FXServer does not expand a wildcard in a folder name. Mode files are now listed explicitly; the test runner rejects such patterns like FXServer does.
 
 ### Changed
-- Publisher branding: Krovix Store.
+- Branding: developer vzjRR, publisher Krovix Team.
 
 ## [0.1.0-alpha] — 2026-09-25
 

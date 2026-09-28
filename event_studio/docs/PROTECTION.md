@@ -1,6 +1,6 @@
 # EVENT STUDIO — Licensing, Activation & Code Protection Plan
 
-> Owner: **Krovix Store** · Status: approved design for 1.0 packaging · Researched 2026-09-25
+> Owner: **Krovix Team** · Status: approved design for 1.0 packaging · Researched 2026-09-25
 > This document answers the requirement: *"Nobody can copy, edit, modify or alter anything. Activation is only by me, per server, from my backend. It must not be hackable or patchable."*
 
 ---
@@ -61,7 +61,7 @@
   `config/**`, `locales/*.lua`, `integrations/custom/*.lua`, `web/themes/*.css`, `migrations/*.sql`.
 - At runtime the server's license key is checked against the entitlement **before** decryption. An unapproved server can't start the resource.
 
-### Layer 2 — Activation controlled by Krovix Store (Tebex)
+### Layer 2 — Activation controlled by Krovix Team (Tebex)
 - **Public sales:** Tebex checkout. Every sale is logged and tied to the buyer's Cfx account.
 - **Hand-picked activation ("only me"):** keep the package hidden or unlisted and issue access yourself with **Tebex → Payments → Create Payment → Manual Payment** (the customer's Cfx-linked account plus the package). Nobody gets the asset without you.
 - **Licensing model — monthly subscription (chosen):** one Tebex *subscription* package billed monthly. Stop renewals, cancel, refund or charge back, and access ends (PLA §6.3(ii)). There is no one-time package, so there are no irrevocable licenses in circulation.
@@ -96,7 +96,7 @@ If you want something that only exists on **your** backend, build **online featu
 
 ---
 
-## 5. Activation workflow (step by step, for Krovix Store)
+## 5. Activation workflow (step by step, for Krovix Team)
 
 1. `python3 tools/build_release.py` produces `dist/event_studio-<ver>.zip`.
 2. Cfx Portal → *Created Assets* → upload the zip → wait for "escrowed".
@@ -107,6 +107,22 @@ If you want something that only exists on **your** backend, build **online featu
 5. The customer downloads it from their Cfx Portal (*Granted Assets*) and adds `ensure event_studio`. It runs on servers using license keys from **that** account only.
 6. To revoke (subscriptions): cancel the subscription in Tebex. The entitlement ends and the resource won't start on their next restart.
 7. Updates: rebuild → re-upload → customers download the new version from the Portal.
+
+### 5b. Private test on a friend's server (before the store listing)
+
+The same system gives a private test: only the account you choose can run it, and nobody can buy it.
+
+1. Build and upload as in steps 1–2 (escrowed asset in the Cfx Portal).
+2. Tebex: create a package for the asset and set it **hidden** (not listed in the store). The price does not matter, because nobody can reach the checkout.
+3. Ask your friend for the **Cfx.re account that owns their server's license key** (the one in their `server.cfg` / txAdmin). Tebex → Payments → **Create Payment → Manual Payment** → that account + the hidden package.
+4. Your friend downloads it from their Cfx Portal (*Granted Assets*) and adds `ensure event_studio`.
+5. It runs only on servers whose license key belongs to that account. A copy on any other server stops with *"You lack the required entitlement"*, and the Lua code is encrypted.
+6. To end the test, refund or delete the manual payment in Tebex (check once that access disappears after the friend's next server restart).
+
+Limits:
+- Access follows the **account**, not one server: if your friend runs several servers from the same account, it starts on all of them.
+- The NUI files (`web/`) are never encrypted by escrow (a Cfx rule). They contain no game logic.
+- Never send the friend the raw files (GitHub, the `dist/` zip or a folder copy): those are not encrypted and have no entitlement check. Only the escrowed download from the Portal is protected.
 
 ---
 

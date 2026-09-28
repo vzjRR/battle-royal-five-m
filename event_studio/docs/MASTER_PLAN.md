@@ -1,6 +1,6 @@
 # EVENT STUDIO — Master Plan
 
-> Product owner / publisher: **Krovix Store** · Version target: `0.1.0-alpha` → `1.0.0`
+> Product owner / publisher: **Krovix Team** · Version target: `0.1.0-alpha` → `1.0.0`
 > Companion documents: [RESEARCH](RESEARCH.md) · [ARCHITECTURE](ARCHITECTURE.md) · [EVENT_ENGINE](EVENT_ENGINE.md) · [EVENT_CATALOG](EVENT_CATALOG.md) · [SECURITY](SECURITY.md) · [DATABASE](DATABASE.md) · [API](API.md) · [DEVELOPMENT](DEVELOPMENT.md) · [TESTING](TESTING.md)
 
 ---
@@ -91,7 +91,7 @@ Full plan: [PROTECTION.md](PROTECTION.md). Summary of the researched, platform-c
 
 | Goal | Mechanism |
 |---|---|
-| Only servers approved by Krovix Store can run it | **Cfx Asset Escrow**: the entitlement is checked against the server's license key before decryption. Customers are approved through **Tebex** (checkout or **manual payments**). |
+| Only servers approved by Krovix Team can run it | **Cfx Asset Escrow**: the entitlement is checked against the server's license key before decryption. Customers are approved through **Tebex** (checkout or **manual payments**). |
 | Revoke a customer | **Monthly Tebex subscription (chosen model)**: access ends when the subscription ends (PLA §6.3(ii)). No one-time package is sold, because one-time licenses would be irrevocable (PLA §6.3(i)). |
 | Core cannot be read or edited | Escrow encrypts all Lua; server code is only decrypted in memory. Editable surface = `config/**`, `locales`, `web/themes`, `integrations/custom`, `migrations`. |
 | Client/NUI copying is worthless | Server-authoritative architecture: no rules, scoring, rewards or admin logic on the client; NUI is a view. |

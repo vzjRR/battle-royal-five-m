@@ -32,7 +32,7 @@ Citizen.CreateThread(function()
     ES.Tournaments.start()
     ES.ready = true
     GlobalState['es:ready'] = true
-    Log.info('Event Studio %s ready — %d modes, %d definitions, %d arenas (Krovix Store)',
+    Log.info('Event Studio %s ready — %d modes, %d definitions, %d arenas (Krovix Team)',
         ES.version, ES.Util.count(ES.Modes), ES.Util.count(ES.Definitions.list), ES.Util.count(ES.Arenas.list))
     if GetConvar('onesync', 'off') == 'off' then
         Log.error('OneSync is disabled. Event Studio requires OneSync (set onesync on).')

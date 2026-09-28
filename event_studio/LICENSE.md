@@ -1,12 +1,12 @@
 # EVENT STUDIO — Subscription License Agreement (DRAFT)
 
-> **Draft for review.** Krovix Store should have this checked by a qualified lawyer for their jurisdiction before publishing it. It is written to be consistent with the Cfx.re Creator Platform License Agreement (PLA) and the Tebex terms, which take precedence where they apply.
+> **Draft for review.** Krovix Team should have this checked by a qualified lawyer for their jurisdiction before publishing it. It is written to be consistent with the Cfx.re Creator Platform License Agreement (PLA) and the Tebex terms, which take precedence where they apply.
 
-Copyright © 2026 Krovix Store. All rights reserved.
+Copyright © 2026 Krovix Team. All rights reserved.
 
 ## 1. Parties and scope
 
-This agreement is between **Krovix Store** ("Licensor") and the person or organisation that obtains access to EVENT STUDIO through the Licensor's Tebex store ("Licensee"). It covers the EVENT STUDIO FiveM resource, its updates, and its documentation (together, the "Software").
+This agreement is between **Krovix Team** ("Licensor") and the person or organisation that obtains access to EVENT STUDIO through the Licensor's Tebex store ("Licensee"). It covers the EVENT STUDIO FiveM resource, its updates, and its documentation (together, the "Software").
 
 ## 2. License grant
 
@@ -42,7 +42,7 @@ Updates are delivered through the Cfx.re Portal while the subscription is active
 
 ## 6. Ownership
 
-The Software is licensed, not sold. All intellectual property rights stay with Krovix Store, apart from the Rockstar/Cfx.re elements that belong to their owners. Content the Licensee creates with the Software (event definitions, arenas, schedules, stored data) belongs to the Licensee.
+The Software is licensed, not sold. All intellectual property rights stay with Krovix Team, apart from the Rockstar/Cfx.re elements that belong to their owners. Content the Licensee creates with the Software (event definitions, arenas, schedules, stored data) belongs to the Licensee.
 
 ## 7. Data
 
@@ -58,7 +58,7 @@ The Licensor may report breaches to Cfx.re and Tebex, which can lead to the enti
 
 ## 10. General
 
-This agreement, the store page, the Cfx.re PLA and the Tebex terms are the complete agreement. If one clause is found invalid, the rest still applies. Governing law: **[to be completed by Krovix Store]**.
+This agreement, the store page, the Cfx.re PLA and the Tebex terms are the complete agreement. If one clause is found invalid, the rest still applies. Governing law: **[to be completed by Krovix Team]**.
 
 ---
 

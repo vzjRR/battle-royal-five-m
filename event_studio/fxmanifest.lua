@@ -3,7 +3,7 @@ game 'gta5'
 lua54 'yes'
 
 name 'event_studio'
-author 'Krovix Store'
+author 'vzjRR (Krovix Team)'
 description 'EVENT STUDIO — event & competition platform for FiveM'
 version '0.1.0-alpha'
 

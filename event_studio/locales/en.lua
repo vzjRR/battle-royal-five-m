@@ -153,7 +153,7 @@ ES.RegisterLocale('en', {
     -- NUI admin
     ['ui.admin'] = 'Admin Center', ['ui.dashboard'] = 'Dashboard', ['ui.definitions'] = 'Events', ['ui.builder'] = 'Event Builder',
     ['ui.arenas'] = 'Routes & arenas', ['ui.scheduler'] = 'Scheduler', ['ui.live_events'] = 'Active Events', ['ui.logs'] = 'Logs',
-    ['ui.settings'] = 'Settings', ['ui.create'] = 'Create', ['ui.save'] = 'Save', ['ui.delete'] = 'Delete', ['ui.cancel'] = 'Cancel',
+    ['ui.settings'] = 'Settings', ['ui.about'] = 'About', ['ui.create'] = 'Create', ['ui.save'] = 'Save', ['ui.delete'] = 'Delete', ['ui.cancel'] = 'Cancel',
     ['ui.confirm'] = 'Confirm', ['ui.start'] = 'Start', ['ui.force_start'] = 'Force start', ['ui.pause'] = 'Pause', ['ui.resume'] = 'Resume',
     ['ui.stop'] = 'Force finish', ['ui.restart'] = 'Restart', ['ui.announce'] = 'Announce', ['ui.add_player'] = 'Add player',
     ['ui.remove'] = 'Remove', ['ui.teleport'] = 'Teleport', ['ui.reset'] = 'Reset', ['ui.disqualify'] = 'Disqualify', ['ui.give_reward'] = 'Reward',

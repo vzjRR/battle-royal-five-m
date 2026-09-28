@@ -15,7 +15,7 @@ export const A = { data: null, section: 'dashboard', liveId: null, liveTimer: nu
 const sections = [
     ['dashboard', 'home', 'dashboard'], ['definitions', 'list', 'definitions'], ['builder', 'pencil', 'builder'], ['arenas', 'pin', 'arenas'],
     ['scheduler', 'clock', 'scheduler'], ['live', 'live', 'live_events'], ['tournaments', 'trophy', 'tournaments'], ['leaderboard', 'star', 'leaderboard'],
-    ['logs', 'logs', 'logs'], ['appearance', 'palette', 'appearance'], ['settings', 'settings', 'settings'],
+    ['logs', 'logs', 'logs'], ['appearance', 'palette', 'appearance'], ['about', 'info', 'about'],
 ];
 
 export const can = (action) => !!(A.data && A.data.perms && A.data.perms[action]);
@@ -284,7 +284,7 @@ function tournaments() {
             h('div.field', h('button.btn.primary', { onclick: async () => { if (await call('admin:tournament:create', { ...f, name: f.name || undefined }, t('saved'))) refresh(); } }, t('create'))))) : null);
 }
 
-// Leaderboard / logs / settings -----------------------------------------------------
+// Leaderboard / logs / about --------------------------------------------------------
 
 async function loadBoard(category) {
     const r = await rpc('admin:leaderboard', { category });
@@ -327,16 +327,16 @@ function logs() {
         }) : h('div.empty', '—')));
 }
 
-function settings() {
+function about() {
     return h('div.scroll.pad', h('div.about',
         h('div.about-card',
             brandLogo(),
             h('h2.display', 'EVENT STUDIO'),
             h('p.muted', t('about_tagline')),
             h('div.about-rows',
-                h('div.about-row', h('span.faint', t('about_developer')), h('b.row', 'vzjRR', h('span.faint', '·'), 'Krovix Team', flagOman(13))),
-                h('div.about-row', h('span.faint', t('about_publisher')), h('b', 'Krovix Store'))),
-            h('p.about-rights', `© ${new Date().getFullYear()} Krovix Store. ${t('about_rights')}`))));
+                h('div.about-row', h('span.faint', t('about_developer')), h('b.row', 'vzjRR', flagOman(13))),
+                h('div.about-row', h('span.faint', t('about_publisher')), h('b', 'Krovix Team'))),
+            h('p.about-rights', `© ${new Date().getFullYear()} Krovix Team. ${t('about_rights')}`))));
 }
 
 // Shell --------------------------------------------------------------------------
@@ -354,7 +354,7 @@ export function onUI() {
 
 export function render() {
     if (!A.data) return;
-    const views = { dashboard, definitions, builder: builderView, arenas: arenaView, scheduler, live, tournaments, leaderboard, logs, appearance: appearanceView, settings };
+    const views = { dashboard, definitions, builder: builderView, arenas: arenaView, scheduler, live, tournaments, leaderboard, logs, appearance: appearanceView, about };
     const brand = store.ui.brand || {};
     const titleKey = (sections.find((s) => s[0] === A.section) || [])[2];
     mount($('admin'), h('div.shell',
@@ -363,7 +363,7 @@ export function render() {
             h('button.close-x', { onclick: closePanels, 'aria-label': t('close') }, ico('close'))),
         h('div.shell-body',
             h('div.side', sections.map(([key, icon, label]) => h(`button.nav${A.section === key ? '.active' : ''}`, { onclick: () => go(key) }, h('span.ico', ico(icon, 17)), t(label))),
-                h('div.foot', '© Krovix Store')),
+                h('div.foot', '© Krovix Team')),
             h('div.main', h('div.main-head', h('h2', t(titleKey)), h('div.spacer'), h('button.btn.sm', { onclick: refresh }, t('refresh'))),
                 h('div.grow', { style: { display: 'flex', flexDirection: 'column', minHeight: 0 } }, views[A.section]())))));
 }

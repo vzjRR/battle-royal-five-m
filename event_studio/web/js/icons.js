@@ -42,6 +42,7 @@ const P = {
     medal: ['c12,15,5', 'M8.5 3L12 10l3.5-7'],
     signin: ['M12 3v12', 'M7 10l5 5 5-5', 'M5 21h14'],
     plus: ['M12 5v14', 'M5 12h14'],
+    info: ['c12,12,9', 'M12 11v6', 'M12 7.5h.01'],
 };
 
 const NS = 'http://www.w3.org/2000/svg';
