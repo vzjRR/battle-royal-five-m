@@ -106,12 +106,12 @@ ES.Definition({
 })
 
 ES.Definition({
-    id = 'freeze_challenge', name = 'Freeze Challenge', mode = 'redlight', arena = 'lsia_runway_field',
-    description = 'Do not move. At all. Survivors share the win.',
-    players = { min = 2, max = 32 }, timing = { registration = 90, duration = 90 },
-    options = { freezeOnly = true, tolerance = 0.6 },
-    scoring = 'casual',
-    rewards = { participation = { { type = 'cash', amount = 1000 } } },
+    id = 'beach_red_light', name = 'Red Light, Green Light: Beach Night', mode = 'redlight', arena = 'vespucci_beach_track',
+    description = 'Midnight on Vespucci Beach. Walk on the green light, stand still on red. Move on red and the tower shoots.',
+    players = { min = 2, max = 32 }, timing = { registration = 120, duration = 300 },
+    gameplay = { clockHour = 0, weather = 'CLEAR' },   -- night for the players in the event only
+    options = { shootOnMove = true, walkOnly = true, tolerance = 0.8, greenMin = 3, greenMax = 6, redMin = 3, redMax = 6 },
+    scoring = 'casual', rewards = podium,
 })
 
 ES.Definition({

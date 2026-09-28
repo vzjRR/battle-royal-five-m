@@ -62,6 +62,10 @@ local gameplaySchema = {
     friendlyFire = 'boolean',
     restoreWeapons = 'boolean',
     blockInventoryWeapons = 'boolean',
+    -- time of day and weather inside the event (only for the players in it; nil = the server's own)
+    clockHour = { type = 'integer', min = 0, max = 23, optional = true },
+    weather = { type = 'enum', optional = true, values = { 'CLEAR', 'EXTRASUNNY', 'CLOUDS', 'OVERCAST', 'RAIN', 'CLEARING',
+        'THUNDER', 'SMOG', 'FOGGY', 'XMAS', 'SNOW', 'SNOWLIGHT', 'BLIZZARD', 'HALLOWEEN', 'NEUTRAL' } },
 }
 
 local defaultTeamNames = { 'Red', 'Blue', 'Green', 'Yellow', 'Purple', 'Orange', 'Cyan', 'Pink' }

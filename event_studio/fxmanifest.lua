@@ -129,6 +129,7 @@ client_scripts {
     'client/components/*.lua',
     'modes/ctf/client.lua',
     'modes/package/client.lua',
+    'modes/redlight/client.lua',
     'client/main.lua',
 }
 

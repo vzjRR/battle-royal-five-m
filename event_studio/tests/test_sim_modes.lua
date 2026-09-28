@@ -250,32 +250,35 @@ H.test('custom mode: staff manual scoring via admin RPC', function()
     H.eq(inst.results[1].src, p2)
 end)
 
-H.test('freeze challenge: settle time, then movement eliminates; survivors share 1st; no finish line', function()
-    local a, b, c = table.unpack(H.players(3, 8800))
-    for _, s in ipairs({ a, b, c }) do H.setPos(s, 0.0, 0.0, 14.0) end
-    local inst = H.createAndJoin('freeze_challenge', { a, b, c })
+H.test('beach red light: night, walking only, moving on red = shot from the tower and out', function()
+    local a, b = table.unpack(H.players(2, 8800))
+    for _, s in ipairs({ a, b }) do H.setPos(s, 0.0, 0.0, 3.0) end
+    local inst = H.createAndJoin('beach_red_light', { a, b })
     H.toActive(inst)
-    H.eq(inst:component('zones'), nil, 'no finish zone in the freeze challenge')
     local snap = H.lastPush(a, 'state')
-    H.eq(snap.objective, ES.Locales.en.obj_freeze, 'freeze objective, not red light')
-    -- landing / settling during the first seconds does not count
-    H.setPos(a, Sim.players[a].pos.x + 2.0, Sim.players[a].pos.y, Sim.players[a].pos.z)
-    Sim.advance(3000)
-    H.eq(inst.participants[a].status, 'active', 'moving while settling is fine')
-    Sim.advance(3000)   -- freeze is on and measured
+    H.eq(snap.gameplay.clockHour, 0, 'midnight for the players in the event')
+    local setup
+    for _, m in ipairs(H.pushes(a, 'mode')) do if m.redlight and m.redlight.tower then setup = m.redlight end end
+    H.ok(setup and setup.walkOnly, 'clients get the tower, the track and walking only')
+    H.ok(setup.tower.z > setup.finish.z, 'tower above the finish line')
+    -- wait for a red light that is being measured
+    for _ = 1, 400 do
+        if inst.data.light == 'red' and inst.data.snapshot then break end
+        Sim.advance(100)
+    end
+    H.eq(inst.data.light, 'red')
+    H.clear(b)
     local p = Sim.players[b].pos
     H.setPos(b, p.x + 3.0, p.y, p.z)
-    Sim.advance(1500)
-    H.eq(inst.participants[b].status, 'eliminated', 'moving during the freeze eliminates')
-    -- a falls a little (height only): not movement
-    p = Sim.players[c].pos
-    H.setPos(c, p.x, p.y, p.z - 1.5)
-    Sim.advance(1500)
-    H.eq(inst.participants[c].status, 'active', 'height change is not movement')
-    H.ok(H.waitState(inst, 'ARCHIVED', 200000), 'ended, state=' .. inst.state)
-    local place = {}
-    for _, r in ipairs(inst.results) do place[r.src] = r.placement end
-    H.eq(place[a], 1) H.eq(place[c], 1, 'survivors share 1st place')
-    H.eq(place[b], 3, 'eliminated player after the survivors')
-    for _, s in ipairs({ a, b, c }) do Sim.players[s] = nil end
+    Sim.advance(600)
+    local shotAt
+    for _, m in ipairs(H.pushes(b, 'mode')) do if m.redlightShot then shotAt = m.redlightShot end end
+    H.ok(shotAt and shotAt.src == b, 'the tower fires at the player who moved')
+    H.eq(inst.participants[b].status, 'active', 'the shot lands before the player is out')
+    Sim.advance(1600)
+    H.eq(inst.participants[b].status, 'eliminated')
+    H.eq(inst.participants[b].eliminatedReason, 'shot')
+    inst:cancel('test')
+    Sim.advance(1000)
+    for _, s in ipairs({ a, b }) do Sim.players[s] = nil end
 end)

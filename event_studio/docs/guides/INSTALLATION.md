@@ -41,7 +41,7 @@ Typed commands (`/event`, `/events`, `/eventjoin`, …) are registered only for 
 ```
 [event_studio:info] Storage adapter: oxmysql
 [event_studio:info] Framework adapter: qbcore (items: ox_inventory)
-[event_studio:info] Event Studio 0.1.0-alpha ready — 20 modes, 48 definitions, 12 arenas (Krovix Team)
+[event_studio:info] Event Studio 0.1.0-alpha ready — 20 modes, 48 definitions, 13 arenas (Krovix Team)
 ```
 
 With oxmysql, the tables are created automatically (`migrations/001_initial.sql`). To create them by hand, set `Config.Database.runMigrations = false` and import the SQL file yourself.

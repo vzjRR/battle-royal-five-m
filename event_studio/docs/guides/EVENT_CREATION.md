@@ -21,7 +21,8 @@ ES.Definition({
     players = { min = 2, max = 2, spectators = true, reconnectGrace = 60,
                 teams = nil },          -- { count = 2, auto = true } for team events
     timing = { registration = 120, lobby = 5, countdown = 5, duration = 600, grace = 30, results = 15 },
-    gameplay = { health = 200, armor = 0, friendlyFire = false, restoreWeapons = true },
+    gameplay = { health = 200, armor = 0, friendlyFire = false, restoreWeapons = true,
+                 clockHour = 0, weather = 'CLEAR' },   -- optional: time of day (0-23) and weather inside the event only
     options = { lives = 1, rounds = 5, killTarget = 0, weapons = { 'WEAPON_PISTOL' } },   -- mode options
     scoring = 'competitive',            -- profile name or inline table
     rewards = {
@@ -46,7 +47,7 @@ Anything you leave out comes from `Config.General.definitionDefaults`. Definitio
 | ctf | capturesToWin, pickupRadius, captureRadius, dropReturnSeconds, weapons |
 | zone_survival | phases, moving, eliminateOutsideSeconds, damagePerSecond, weapons, ammo, requireVehicle |
 | hunt | ordered, hidden, hints, pointsPerFind, radius, vehicle |
-| redlight | freezeOnly, greenMin/Max, redMin/Max, tolerance, reactionMs |
+| redlight | greenMin/Max, redMin/Max, tolerance, reactionMs, shootOnMove (moving on red: shot from the tower), walkOnly (no sprint/jump) |
 | trivia | questionSet (`memory` = sequence questions), questions, count, secondsPerQuestion, pointsCorrect, speedBonus, shuffle |
 | reaction | rounds, minDelay, maxDelay, earlyPenalty, points, windowMs |
 | custom | teleport, weapons, vehicle, instructions |

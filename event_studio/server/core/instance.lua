@@ -166,6 +166,7 @@ function Instance:snapshot(src)
         teams = #self.teams > 0 and self:publicTeams() or nil,
         spectateOnEliminate = self.def.players.spectateOnEliminate,
         gameplay = { health = self.def.gameplay.health, armor = self.def.gameplay.armor,
+                     clockHour = self.def.gameplay.clockHour, weather = self.def.gameplay.weather,
                      restoreWeapons = self.def.gameplay.restoreWeapons, blockInventoryWeapons = self.def.gameplay.blockInventoryWeapons },
         objective = (self.mode.objectiveKeyOf and ES.Lp(src, self.mode.objectiveKeyOf(self))) or (self.mode.objectiveKey and ES.Lp(src, self.mode.objectiveKey)) or nil,
         awaitingStart = self.awaitingStart == true or nil,   -- waiting for the host to press Start
