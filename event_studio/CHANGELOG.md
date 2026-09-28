@@ -33,6 +33,7 @@ All notable changes to EVENT STUDIO. Uses [Semantic Versioning](https://semver.o
 - **CI:** GitHub Actions runs the syntax check, all tests and the release guard on every push.
 
 ### Fixed
+- **Race HUD lap and checkpoint counts never changed:** passing a checkpoint updated the server but not the HUD tiles (they only refreshed on state changes). The HUD now updates on every checkpoint and shows checkpoints passed in the current lap (0/6 → 6/6), and the lap number moves on each lap; the scoreboard shows the same count.
 - HUD stayed on screen after an event ended: entering ARCHIVED sent a final state snapshot after the 'left' message. The server no longer does, and the client ignores ARCHIVED snapshots.
 - No modes loaded on a real FXServer (every event failed with "unknown mode"): the manifest used `modes/*/server.lua`, and FXServer does not expand a wildcard in a folder name. Mode files are now listed explicitly; the test runner rejects such patterns like FXServer does.
 

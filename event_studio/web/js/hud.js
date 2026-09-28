@@ -170,7 +170,14 @@ export function expandBoard(open) {
     mount(el, h('div.section-title', { style: { padding: '8px 14px 0' } }, snap ? snap.name : ''), boardRows(0));
 }
 
-export function onCheckpoints() { /* checkpoint progress arrives through the state/hud snapshot */ }
+/** Checkpoint passed: update the lap / checkpoint tiles at once (the full state snapshot follows from the server). */
+export function onCheckpoints(d) {
+    const pr = d && d.personal;
+    if (!pr || !snap || !snap.hud) return;
+    if (snap.hud.checkpoints !== undefined) Object.assign(snap.hud, { checkpoint: pr.passed ?? snap.hud.checkpoint, checkpoints: pr.total ?? snap.hud.checkpoints });
+    if (snap.hud.laps !== undefined) Object.assign(snap.hud, { lap: pr.lap ?? snap.hud.lap, laps: pr.laps ?? snap.hud.laps });
+    renderHud();
+}
 
 export function onZoneProgress(list) { progress = list || []; renderHud(); }
 

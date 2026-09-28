@@ -83,6 +83,8 @@ function CP:accept(p, i)
     end
     if self.cfg.onCheckpoint then self.cfg.onCheckpoint(p, i, pr.lap) end
     self.inst:push(p, 'component', { name = 'checkpoints', update = self:personal(p) })
+    -- the HUD's lap / checkpoint / position tiles come from the state snapshot: refresh it for this player
+    if p.src then self.inst:syncState(p.src) end
     if pr.done and self.cfg.onComplete then self.cfg.onComplete(p) end
 end
 
@@ -90,7 +92,9 @@ function CP:personal(p)
     local pr = self:progressOf(p)
     local visited
     if not self.ordered then visited = U.keys(pr.visited) end
-    return { next = pr.idx, lap = pr.lap, laps = self.laps, count = pr.count, total = #self.points,
+    -- passed = checkpoints passed in the current lap (0 at the start of a lap, total when finished)
+    local passed = pr.done and #self.points or (self.ordered and pr.idx - 1 or U.count(pr.visited))
+    return { next = pr.idx, lap = pr.lap, laps = self.laps, count = pr.count, total = #self.points, passed = passed,
              done = pr.done, visited = visited }
 end
 

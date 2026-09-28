@@ -184,3 +184,45 @@ H.test('a reward that fails (framework not ready) is retried until it succeeds',
     H.eq(#ES.Rewards.pendingFor(Sim.players[a].license), 0)
     Sim.players[a] = nil
 end)
+
+H.test('HUD: checkpoint and lap counts update after every checkpoint (2 laps)', function()
+    assert(ES.Definitions.register({
+        id = 'test_race_laps', name = 'Test Race Laps', mode = 'race', arena = 'downtown_circuit',
+        players = { min = 1, max = 8 }, timing = { registration = 30, lobby = 2, countdown = 2, duration = 900, grace = 20, results = 3 },
+        options = { laps = 2 },
+    }))
+    local s = H.players(1, 7100)[1]
+    H.setPos(s, 500.0, 500.0, 30.0)
+    local inst = H.createAndJoin('test_race_laps', { s })
+    H.toActive(inst)
+    local n = #arena.checkpoints
+    local function hud()
+        local st = H.lastPush(s, 'state')
+        return st and st.hud or {}
+    end
+    H.eq(hud().checkpoint, 0, 'nothing passed at the start')
+    H.eq(hud().lap, 1) H.eq(hud().laps, 2)
+    for lap = 1, 2 do
+        for i, cp in ipairs(arena.checkpoints) do
+            Sim.advance(2000)
+            H.setPos(s, cp.x, cp.y, cp.z)
+            H.clear(s)
+            local ok, res = H.rpc(s, 'event:action', { action = 'checkpoint', data = { index = i } })
+            H.ok(ok, ('lap %d checkpoint %d rejected: %s'):format(lap, i, tostring(res)))
+            local h = hud()
+            if lap == 1 and i < n then
+                H.eq(h.checkpoint, i, ('HUD shows %d passed after checkpoint %d'):format(i, i))
+                H.eq(h.lap, 1)
+            elseif lap == 1 and i == n then
+                H.eq(h.lap, 2, 'lap 2 after the last checkpoint of lap 1')
+                H.eq(h.checkpoint, 0, 'lap 2 starts at 0 passed')
+            elseif lap == 2 and i < n then
+                H.eq(h.checkpoint, i) H.eq(h.lap, 2)
+            end
+            H.eq(res.passed, (lap == 1 and i == n) and 0 or i, 'the checkpoint answer carries the same count')
+        end
+    end
+    H.ok(H.waitState(inst, 'ARCHIVED', 60000), 'race finished after 2 laps')
+    H.eq(inst.results[1].src, s)
+    Sim.players[s] = nil
+end)

@@ -88,7 +88,7 @@ ES.RegisterMode('race', {
         local pr = cp:personal(p)
         local position
         for i, row in ipairs(inst:scoreRows()) do if row.src == p.src then position = i end end
-        return { lap = pr.lap, laps = pr.laps, checkpoint = math.min(pr.next, pr.total), checkpoints = pr.total,
+        return { lap = pr.lap, laps = pr.laps, checkpoint = pr.passed, checkpoints = pr.total,
                  position = position, racers = #inst:allParticipants() }
     end,
 
@@ -97,6 +97,6 @@ ES.RegisterMode('race', {
         local cp = inst:component('checkpoints')
         if not cp then return nil end
         local pr = cp:personal(p)
-        return ('L%d · %d/%d'):format(pr.lap, math.min(pr.next, pr.total), pr.total)
+        return ('L%d · %d/%d'):format(pr.lap, pr.passed, pr.total)
     end,
 })
