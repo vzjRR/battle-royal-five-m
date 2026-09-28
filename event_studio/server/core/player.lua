@@ -31,12 +31,27 @@ function ES.instanceCard(inst, src)
     }
 end
 
-RPC.register('client:ready', { public = true, rate = { burst = 3, per = 30 } }, function(src)
+-- Each player's language (the flag switch in the event window). Messages to that player use it.
+ES.PlayerLocales = ES.PlayerLocales or {}
+local function setLocale(src, code)
+    if type(code) == 'string' and code:sub(1, 1) ~= '_' and ES.Locales[code] then ES.PlayerLocales[src] = code end
+end
+AddEventHandler('playerDropped', function() ES.PlayerLocales[source] = nil end)
+
+RPC.register('player:locale', { public = true, schema = { code = { type = 'string', maxLen = 8 } }, rate = { burst = 4, per = 10 } }, function(src, data)
+    if not ES.Locales[data.code] or data.code:sub(1, 1) == '_' then return false, 'unknown_locale' end
+    setLocale(src, data.code)
+    return { strings = ES.uiStrings(data.code), locale = ES.localeInfo(data.code) }
+end)
+
+RPC.register('client:ready', { public = true, schema = { locale = { type = 'string', maxLen = 8, optional = true } }, rate = { burst = 3, per = 30 } }, function(src, data)
+    setLocale(src, data and data.locale)
+    local code = ES.PlayerLocales[src]
     local level, role = ES.Perm.level(src)
     local recovery = ES.Manager.onClientReady(src)
     Citizen.CreateThread(function() Citizen.Wait(5000) ES.Rewards.deliverPending(src) end)
     return {
-        version = ES.version, ui = ES.UI.effective(), commands = level > 0 and Config.Commands or nil, strings = ES.uiStrings(), locale = ES.localeInfo(),
+        version = ES.version, ui = ES.UI.effective(), commands = level > 0 and Config.Commands or nil, strings = ES.uiStrings(code), locale = ES.localeInfo(code),
         framework = ES.Bridge.name, staff = level > 0, role = role, recovery = recovery,
         scoring = Config.Scoring.profiles,
     }

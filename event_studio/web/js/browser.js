@@ -1,6 +1,6 @@
 // EVENT STUDIO — player event browser (active & open, upcoming, leaderboard, tournaments)
 import { h, $, mount, show, t, errText, fmtClock, fmtDate, fmtRace, categoryOf, placeBadge, statusChip, store, badge, ico } from './ui.js';
-import { rpc, closePanels, embed } from './app.js';
+import { rpc, closePanels, embed, langSwitch } from './app.js';
 import { toast } from './hud.js';
 import { confirmDialog, brandLogo } from './admin/admin.js';
 
@@ -63,6 +63,7 @@ function header() {
         h('div.tabs', tabs.map(([k, label]) => h(`button.tab${tab === k ? '.active' : ''}`, {
             onclick: () => { tab = k; if (k === 'leaderboard') loadBoard(); render(); },
         }, label))),
+        langSwitch(),
         embed ? null : h('button.close-x', { onclick: closePanels, 'aria-label': t('close') }, ico('close')));
 }
 

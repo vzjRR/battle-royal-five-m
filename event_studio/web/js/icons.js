@@ -85,6 +85,24 @@ export function glyph(name, size) {
 
 export const ICON_NAMES = Object.keys(P);
 
+/** Flag of the United Kingdom (Union Jack), for the English side of the language switch. */
+export function flagUK(height = 14) {
+    const svg = document.createElementNS(NS, 'svg');
+    svg.setAttribute('viewBox', '0 0 60 30');
+    svg.setAttribute('height', height);
+    svg.setAttribute('width', height * 2);
+    svg.setAttribute('role', 'img');
+    svg.setAttribute('aria-label', 'United Kingdom');
+    svg.classList.add('flag');
+    const add = (tag, attrs) => { const el = document.createElementNS(NS, tag); for (const k in attrs) el.setAttribute(k, attrs[k]); svg.appendChild(el); };
+    add('rect', { width: 60, height: 30, fill: '#012169' });
+    add('path', { d: 'M0 0L60 30M60 0L0 30', stroke: '#ffffff', 'stroke-width': 6 });
+    add('path', { d: 'M0 0L60 30M60 0L0 30', stroke: '#C8102E', 'stroke-width': 2 });
+    add('path', { d: 'M30 0V30M0 15H60', stroke: '#ffffff', 'stroke-width': 10 });
+    add('path', { d: 'M30 0V30M0 15H60', stroke: '#C8102E', 'stroke-width': 6 });
+    return svg;
+}
+
 /** Flag of Oman (emoji flags do not render in FiveM's browser on Windows). */
 export function flagOman(height = 14) {
     const svg = document.createElementNS(NS, 'svg');

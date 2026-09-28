@@ -364,7 +364,7 @@ RPC.register('admin:player:reward', {
     ES.Storage.markPayout(key, ok and 'paid' or 'failed')
     Log.audit('reward.manual', src, nil, { target = GetPlayerName(tostring(data.target)), reward = data.reward, ok = ok })
     if not ok then return false, 'reward_failed' end
-    ES.push(data.target, 'announce', { text = L('reward_received', ES.Rewards.describe(data.reward)), kind = 'success' })
+    ES.push(data.target, 'announce', ES.say(data.target, 'success', 'reward_received', ES.Rewards.describe(data.reward)))
     return true
 end)
 

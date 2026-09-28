@@ -1,5 +1,5 @@
 -- EVENT STUDIO — English locale. Copy this file to add a language (e.g. locales/es.lua with ES.RegisterLocale('es', {...}))
--- and set Config.General.locale (or pick it in Admin Center → Appearance → Language). Keys starting with 'ui.' are sent to the NUI.
+-- and set Config.General.locale (the default; each player can switch with the flag switch). Keys starting with 'ui.' are sent to the NUI.
 
 ES.RegisterLocale('en', {
     _name = 'English',
@@ -154,7 +154,7 @@ ES.RegisterLocale('en', {
     -- NUI admin
     ['ui.admin'] = 'Admin Center', ['ui.dashboard'] = 'Dashboard', ['ui.definitions'] = 'Events', ['ui.builder'] = 'Event Builder',
     ['ui.arenas'] = 'Routes & arenas', ['ui.scheduler'] = 'Scheduler', ['ui.live_events'] = 'Active Events', ['ui.logs'] = 'Logs',
-    ['ui.settings'] = 'Settings', ['ui.about'] = 'About', ['ui.language'] = 'Language', ['ui.language_help'] = 'Language for every player: event window, HUD, announcements and the Admin Center. Applies to everyone after Save.', ['ui.create'] = 'Create', ['ui.save'] = 'Save', ['ui.delete'] = 'Delete', ['ui.cancel'] = 'Cancel',
+    ['ui.settings'] = 'Settings', ['ui.about'] = 'About', ['ui.create'] = 'Create', ['ui.save'] = 'Save', ['ui.delete'] = 'Delete', ['ui.cancel'] = 'Cancel',
     ['ui.confirm'] = 'Confirm', ['ui.start'] = 'Start', ['ui.force_start'] = 'Force start', ['ui.pause'] = 'Pause', ['ui.resume'] = 'Resume',
     ['ui.stop'] = 'Force finish', ['ui.restart'] = 'Restart', ['ui.announce'] = 'Announce', ['ui.add_player'] = 'Add player',
     ['ui.remove'] = 'Remove', ['ui.teleport'] = 'Teleport', ['ui.reset'] = 'Reset', ['ui.disqualify'] = 'Disqualify', ['ui.give_reward'] = 'Reward',

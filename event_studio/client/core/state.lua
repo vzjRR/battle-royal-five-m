@@ -60,15 +60,14 @@ ES.on('ui', function(d)
     ES.NUI.send('ui', d)
 end)
 
--- Staff picked another language in the Admin Center: new texts and text direction for the NUI.
-ES.on('locale', function(d)
-    if type(d) ~= 'table' then return end
-    if ES.ServerInfo then ES.ServerInfo.strings, ES.ServerInfo.locale = d.strings, d.locale end
-    if d.locale and d.locale.code then ES.localeOverride = d.locale.code end
-    ES.NUI.send('locale', d)
-end)
-
-ES.on('announce', function(d) ES.NUI.send('toast', d) end)
+-- Translatable messages carry lkey / largs: show them in this player's language.
+local function localized(d)
+    if type(d) == 'table' and d.lkey then
+        d.text = ES.msg(nil, d.lkey, table.unpack(d.largs or {})).text
+    end
+    return d
+end
+ES.on('announce', function(d) ES.NUI.send('toast', localized(d)) end)
 ES.on('notify', function(d) ES.NUI.send('toast', d) end)
 ES.on('results', function(d) ES.NUI.send('results', d) end)
 ES.on('mode', function(d)

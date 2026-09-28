@@ -97,7 +97,7 @@ const baseUI = {
     locale: lang, locales: [{ code: 'en', name: 'English' }, { code: 'ar', name: 'العربية' }] };
 if (params.get('accent')) baseUI.colors.accent = '#' + params.get('accent');
 responses['admin:ui:get'] = { effective: { ...baseUI, themes }, overrides: { theme: baseUI.theme, browserLayout: baseUI.browserLayout, ...(scene === 'controls' ? { keys: { browser: 'F6' } } : {}) },
-    base: baseUI, baseKeys: { browser: 'F7', scoreboard: 'U', reset: 'F9' }, baseLocale: 'en' };
+    base: baseUI, baseKeys: { browser: 'F7', scoreboard: 'U', reset: 'F9' } };
 send('init', { strings, locale: { code: lang, dir: ['ar', 'he', 'fa', 'ur'].includes(lang) ? 'rtl' : 'ltr' }, staff: true, role: 'admin', ui: { ...baseUI, themes } });
 
 if (!document.body.dataset.embed) document.body.style.background = 'linear-gradient(180deg, #1b2a44 0%, #3b3a52 42%, #7a5238 60%, #151a24 61%, #0b0e14 100%)';

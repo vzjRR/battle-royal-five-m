@@ -161,7 +161,7 @@ function Rewards.deliverPending(src)
         pendingIds[id] = nil
     end
     if #received > 0 then
-        ES.push(src, 'announce', { text = L('reward_received_late', table.concat(received, ', ')), kind = 'success' })
+        ES.push(src, 'announce', ES.say(src, 'success', 'reward_received_late', table.concat(received, ', ')))
     end
     return #received
 end
@@ -231,7 +231,7 @@ function Rewards.distribute(inst)
                 end
             end
             if online and #received > 0 then
-                ES.push(src, 'announce', { text = L('reward_received', table.concat(received, ', ')), kind = 'success' })
+                ES.push(src, 'announce', ES.say(src, 'success', 'reward_received', table.concat(received, ', ')))
             end
         end
     end

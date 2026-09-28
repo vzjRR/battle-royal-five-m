@@ -1,4 +1,4 @@
--- EVENT STUDIO — Arabic locale (العربية). Set Config.General.locale = 'ar' (or pick it in Admin Center → Appearance → Language). The NUI switches to right-to-left automatically.
+-- EVENT STUDIO — Arabic locale (العربية). Set Config.General.locale = 'ar' (the default; each player can switch with the flag switch). The NUI switches to right-to-left automatically.
 -- Placeholders (%s, %d) must stay in the same order as in locales/en.lua. Missing keys fall back to English.
 
 ES.RegisterLocale('ar', {
@@ -156,7 +156,7 @@ ES.RegisterLocale('ar', {
     -- NUI admin
     ['ui.admin'] = 'مركز الإدارة', ['ui.dashboard'] = 'لوحة التحكم', ['ui.definitions'] = 'الفعاليات', ['ui.builder'] = 'منشئ الفعاليات',
     ['ui.arenas'] = 'المسارات والمواقع', ['ui.scheduler'] = 'الجدولة', ['ui.live_events'] = 'الفعاليات الجارية', ['ui.logs'] = 'السجلات',
-    ['ui.settings'] = 'الإعدادات', ['ui.about'] = 'حول', ['ui.language'] = 'اللغة', ['ui.language_help'] = 'لغة جميع اللاعبين: نافذة الفعاليات والواجهة والإعلانات ومركز الإدارة. تُطبّق على الجميع بعد الحفظ.', ['ui.create'] = 'إنشاء', ['ui.save'] = 'حفظ', ['ui.delete'] = 'حذف', ['ui.cancel'] = 'إلغاء',
+    ['ui.settings'] = 'الإعدادات', ['ui.about'] = 'حول', ['ui.create'] = 'إنشاء', ['ui.save'] = 'حفظ', ['ui.delete'] = 'حذف', ['ui.cancel'] = 'إلغاء',
     ['ui.confirm'] = 'تأكيد', ['ui.start'] = 'بدء', ['ui.force_start'] = 'بدء إجباري', ['ui.pause'] = 'إيقاف مؤقت', ['ui.resume'] = 'استئناف',
     ['ui.stop'] = 'إنهاء إجباري', ['ui.restart'] = 'إعادة التشغيل', ['ui.announce'] = 'إعلان', ['ui.add_player'] = 'إضافة لاعب',
     ['ui.remove'] = 'إزالة', ['ui.teleport'] = 'انتقال', ['ui.reset'] = 'إعادة', ['ui.disqualify'] = 'استبعاد', ['ui.give_reward'] = 'منح جائزة',

@@ -223,7 +223,9 @@ end
 
 ---Localized announcement to the instance audience.
 function Instance:announce(key, kind, ...)
-    self:broadcast('announce', { text = L(key, ...), kind = kind or 'info' })
+    local m = ES.msg(nil, key, ...) -- each client shows it in its player's language (lkey / largs)
+    m.kind = kind or 'info'
+    self:broadcast('announce', m)
 end
 
 ----------------------------------------------------------------------------
@@ -397,7 +399,7 @@ end
 enter[S.CANCELLED] = function(self, old, reason)
     self.cancelledFrom = old
     if self.def.visibility == 'public' and not self.invite then
-        ES.Announce.global('cancelled', 'announce_cancelled', self.def.name, L('reason_' .. tostring(reason)))
+        ES.Announce.global('cancelled', 'announce_cancelled', self.def.name, { lkey = 'reason_' .. tostring(reason) })
     end
     self.deadline = ES.now() -- archive on next tick
 end

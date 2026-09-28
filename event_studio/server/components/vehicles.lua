@@ -56,7 +56,7 @@ function Vehicles:provision(p, point)
     end
     if not DoesEntityExist(veh) then
         Log.warn('#%d vehicle %s failed to spawn (invalid model?)', self.inst.id, tostring(spec.model))
-        self.inst:push(p, 'announce', { text = L('vehicle_spawn_failed'), kind = 'error' })
+        self.inst:push(p, 'announce', ES.say(p, 'error', 'vehicle_spawn_failed'))
         return nil
     end
     SetEntityRoutingBucket(veh, self.inst.bucket)

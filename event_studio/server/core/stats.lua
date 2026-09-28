@@ -30,7 +30,7 @@ function Stats.record(inst, rows)
             if inst.mode.personalBests and r.finishMs and r.status == 'finished' then
                 local improved, previous = ES.Storage.submitBest(r.identifier, r.name, inst.def.id, r.finishMs)
                 if improved and r.src then
-                    ES.push(r.src, 'announce', { text = L('personal_best', ES.Util.fmtDuration(r.finishMs)), kind = 'success' })
+                    ES.push(r.src, 'announce', ES.say(r.src, 'success', 'personal_best', ES.Util.fmtDuration(r.finishMs)))
                 end
             end
         end

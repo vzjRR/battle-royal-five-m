@@ -64,10 +64,6 @@ function UI.validate(s)
         if type(s.browserKeepMoving) ~= 'boolean' then return nil, 'invalid' end
         out.browserKeepMoving = s.browserKeepMoving
     end
-    if s.locale ~= nil then
-        if type(s.locale) ~= 'string' or s.locale:sub(1, 1) == '_' or not ES.Locales[s.locale] then return nil, 'unknown_locale' end
-        out.locale = s.locale
-    end
     if s.hudPosition ~= nil then
         if not HUD_POS[s.hudPosition] then return nil, 'invalid' end
         out.hudPosition = s.hudPosition
@@ -152,8 +148,7 @@ function UI.effective()
     local ui = merge(Config.UI, UI.overrides)
     if not ES.theme(ui.theme) then ui.theme = 'krovix-gilded' end
     ui.keys = UI.keys()
-    ui.locale = ES.localeCode()
-    ui.locales = ES.availableLocales()
+    ui.locales = ES.availableLocales()   -- the flag switch (each player picks their own language)
     ui.themes = ES.allThemes()
     ui.extraThemes = nil
     UI.cache = ui
@@ -183,19 +178,13 @@ function UI.load()
     local saved = docs.ui
     if saved then
         local clean, err = UI.validate(saved)
-        if clean then UI.overrides = clean UI.cache = nil ES.localeOverride = clean.locale else Log.warn('Saved UI settings ignored: %s', tostring(err)) end
+        if clean then UI.overrides = clean UI.cache = nil else Log.warn('Saved UI settings ignored: %s', tostring(err)) end
     end
 end
 
 local function broadcast()
     UI.cache = nil
-    local before = ES.localeCode()
-    ES.localeOverride = UI.overrides.locale
     ES.push(-1, 'ui', UI.effective())
-    if ES.localeCode() ~= before then
-        -- new language: every player gets the new texts and text direction
-        ES.push(-1, 'locale', { strings = ES.uiStrings(), locale = ES.localeInfo() })
-    end
 end
 
 function UI.save(overrides, actor)
@@ -211,7 +200,7 @@ function UI.reset(actor)
 end
 
 RPC.register('admin:ui:get', { perm = 'admin.open', rate = { burst = 5, per = 10 } }, function()
-    return { effective = UI.effective(), overrides = UI.overrides, base = Config.UI, baseKeys = UI.keys({}), baseLocale = (Config.General and Config.General.locale) or 'en' }
+    return { effective = UI.effective(), overrides = UI.overrides, base = Config.UI, baseKeys = UI.keys({}) }
 end)
 
 RPC.register('admin:ui:save', { perm = 'ui.edit', schema = { settings = 'table' }, rate = { burst = 4, per = 10 } }, function(src, data)

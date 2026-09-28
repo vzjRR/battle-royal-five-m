@@ -517,7 +517,7 @@ function T.launchMatch(t, m)
     m.status = 'live'
     for _, s in ipairs(invite) do
         ES.Manager.join(s, instId, true)
-        ES.push(s, 'announce', { text = L('tournament_match_ready', t.name), kind = 'info' })
+        ES.push(s, 'announce', ES.say(s, 'info', 'tournament_match_ready', t.name))
     end
     ES.Manager.get(instId):start(true)
     save(t)

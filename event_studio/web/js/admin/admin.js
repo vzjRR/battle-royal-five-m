@@ -1,7 +1,7 @@
 // EVENT STUDIO — Admin Center. Controls are hidden when the server says the role lacks a permission;
 // the server still enforces every action.
 import { h, $, mount, show, t, errText, fmtClock, fmtDate, fmtRace, categoryOf, placeBadge, statusChip, store, badge, ico } from '../ui.js';
-import { rpc, closePanels } from '../app.js';
+import { rpc, closePanels, langSwitch } from '../app.js';
 import { toast } from '../hud.js';
 import { builderView } from './builder.js';
 import { arenaView, onArenaCheck, onArenaRecorded } from './arenas.js';
@@ -360,6 +360,7 @@ export function render() {
     mount($('admin'), h('div.shell',
         h('div.shell-head',
             h('div.brand', brandLogo(), h('div', h('h1.display', t('admin')), h('small', brand.title || 'Event Studio'))),
+            h('div.spacer'), langSwitch(),
             h('button.close-x', { onclick: closePanels, 'aria-label': t('close') }, ico('close'))),
         h('div.shell-body',
             h('div.side', sections.map(([key, icon, label]) => h(`button.nav${A.section === key ? '.active' : ''}`, { onclick: () => go(key) }, h('span.ico', ico(icon, 17)), t(label))),

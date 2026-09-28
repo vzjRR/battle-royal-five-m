@@ -4,6 +4,8 @@ import * as hud from './hud.js';
 import * as browser from './browser.js';
 import * as admin from './admin/admin.js';
 import { applyUI } from './theme.js';
+import { h } from './ui.js';
+import { flagOman, flagUK } from './icons.js';
 
 // Inside a phone or tablet the page is an iframe on cfx-nui-<resource>; the resource name comes from the address.
 const hostResource = (location.hostname.match(/^cfx-nui-(.+)$/) || [])[1];
@@ -37,6 +39,27 @@ export function closePanels() {
     browser.onClose();
     admin.onClose();
     post('close');
+}
+
+/**
+ * Language switch (each player picks their own): Oman flag = Arabic, UK flag = English.
+ * Shown when both languages are installed.
+ */
+export function langSwitch() {
+    const codes = (store.ui.locales || []).map((l) => l.code);
+    if (!codes.includes('ar') || !codes.includes('en')) return null;
+    const current = document.documentElement.lang === 'ar' ? 'ar' : 'en';
+    const side = (code, flag, label) => h(`button.lang-opt${current === code ? '.active' : ''}`, {
+        type: 'button', 'aria-label': label, 'aria-pressed': current === code ? 'true' : 'false', title: label,
+        onclick: () => { if (current !== code) switchLocale(code); },
+    }, flag);
+    return h('div.lang-switch', { role: 'group', 'aria-label': 'Language / اللغة' },
+        side('ar', flagOman(14), 'العربية'), side('en', flagUK(14), 'English'));
+}
+
+export async function switchLocale(code) {
+    const r = await post('setLocale', { code });
+    if (r && r.strings) handlers.locale(r); // the phone page gets no messages: apply the answer directly
 }
 
 function applyLocale(locale) {

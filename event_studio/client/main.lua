@@ -2,9 +2,14 @@
 
 local booted = false
 
+-- The player's own language (flag switch in the event window), kept on their PC between sessions.
+local LOCALE_KVP = 'es_locale'
+
 local function boot()
+    local saved = GetResourceKvpString(LOCALE_KVP)
+    if saved and ES.Locales[saved] then ES.localeOverride = saved else saved = nil end
     for attempt = 1, 30 do
-        local ok, res = ES.rpcAwait('client:ready', {}, 8000)
+        local ok, res = ES.rpcAwait('client:ready', { locale = saved }, 8000)
         if ok and type(res) == 'table' then
             ES.ServerInfo = res
             if res.locale and res.locale.code then ES.localeOverride = res.locale.code end
@@ -25,6 +30,22 @@ end
 CreateThread(function()
     while not NetworkIsSessionStarted() do Wait(500) end
     boot()
+end)
+
+---Switch this player's language: texts and direction change at once (event window, HUD, phone app, messages).
+function ES.setLocale(code)
+    if type(code) ~= 'string' or code:sub(1, 1) == '_' or not ES.Locales[code] then return nil end
+    ES.localeOverride = code
+    SetResourceKvp(LOCALE_KVP, code)
+    local payload = { strings = ES.uiStrings(code), locale = ES.localeInfo(code) }
+    if ES.ServerInfo then ES.ServerInfo.strings, ES.ServerInfo.locale = payload.strings, payload.locale end
+    ES.NUI.send('locale', payload)
+    ES.rpc('player:locale', { code = code }) -- so chat / notifications from the server use it too
+    return payload
+end
+
+RegisterNUICallback('setLocale', function(data, cb)
+    cb(ES.setLocale(type(data) == 'table' and data.code) or { ok = false })
 end)
 
 -- Browser ----------------------------------------------------------------------

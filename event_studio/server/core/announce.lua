@@ -3,21 +3,36 @@
 local Announce = { outputs = {} }
 ES.Announce = Announce
 
-Announce.outputs.nui = function(target, text, kind)
-    TriggerClientEvent('es:push', target, 'announce', { text = text, kind = kind or 'global' })
+-- `msg` (optional) is { lkey, largs } from ES.msg: each player then sees the text in their own language.
+
+---Text for one player: their language when the message is translatable, otherwise the text as given.
+local function textFor(src, text, msg)
+    if not msg or not msg.lkey then return text end
+    return ES.msg(ES.PlayerLocales and ES.PlayerLocales[src], msg.lkey, table.unpack(msg.largs or {}, 1, msg.n or #(msg.largs or {}))).text
 end
 
-Announce.outputs.chat = function(target, text)
-    if GetResourceState('chat') ~= 'started' then return end
-    TriggerClientEvent('chat:addMessage', target, { args = { Config.Notifications.chatPrefix or '[Events]', text } })
-end
-
-Announce.outputs.notify = function(target, text, kind)
+local function eachTarget(target, fn)
     if target == -1 then
-        for _, id in ipairs(GetPlayers()) do ES.Bridge.notify(tonumber(id), text, kind) end
+        for _, id in ipairs(GetPlayers()) do fn(tonumber(id)) end
     else
-        ES.Bridge.notify(target, text, kind)
+        fn(target)
     end
+end
+
+Announce.outputs.nui = function(target, text, kind, msg)
+    -- one event for everyone: the client translates lkey / largs into the player's language itself
+    TriggerClientEvent('es:push', target, 'announce', { text = text, kind = kind or 'global', lkey = msg and msg.lkey, largs = msg and msg.largs })
+end
+
+Announce.outputs.chat = function(target, text, _, msg)
+    if GetResourceState('chat') ~= 'started' then return end
+    eachTarget(target, function(src)
+        TriggerClientEvent('chat:addMessage', src, { args = { Config.Notifications.chatPrefix or '[Events]', textFor(src, text, msg) } })
+    end)
+end
+
+Announce.outputs.notify = function(target, text, kind, msg)
+    eachTarget(target, function(src) ES.Bridge.notify(src, textFor(src, text, msg), kind) end)
 end
 
 Announce.outputs.discord = function(_, text)
@@ -31,10 +46,11 @@ function Announce.registerOutput(name, fn) Announce.outputs[name] = fn end
 function Announce.global(event, localeKey, ...)
     local outputs = Config.Notifications.global[event]
     if not outputs then return end
-    local text = L(localeKey, ...)
+    local m = ES.msg(nil, localeKey, ...)
+    local msg = { lkey = m.lkey, largs = m.largs, n = select('#', ...) }
     for _, o in ipairs(outputs) do
         local fn = Announce.outputs[o]
-        if fn then pcall(fn, -1, text, 'global') end
+        if fn then pcall(fn, -1, m.text, 'global', msg) end
     end
 end
 

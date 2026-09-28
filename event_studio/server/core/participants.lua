@@ -194,7 +194,7 @@ end
 function Instance:disqualify(src, actor)
     local p = self.participants[src]
     if not p then return false, 'not_joined' end
-    ES.push(src, 'announce', { text = L('you_disqualified'), kind = 'error' })
+    ES.push(src, 'announce', ES.say(src, 'error', 'you_disqualified'))
     return self:removeParticipant(src, 'disqualified')
 end
 
@@ -259,7 +259,7 @@ function Instance:rejoin(p, src)
     if self.state ~= S.ACTIVE then self:push(p, 'freeze', { frozen = true }) end
     self:syncState(src)
     self:dirty()
-    self:push(p, 'announce', { text = L('you_rejoined'), kind = 'success' })
+    self:push(p, 'announce', ES.say(p, 'success', 'you_rejoined'))
     Log.info('#%d %s rejoined', self.id, p.name)
     return true
 end
@@ -300,7 +300,7 @@ function Instance:eliminate(p, reason, killer)
     for _, obj in ipairs(self.componentOrder) do
         if obj.onEliminated then pcall(obj.onEliminated, obj, p, reason) end
     end
-    self:push(p, 'announce', { text = L('you_eliminated'), kind = 'error' })
+    self:push(p, 'announce', ES.say(p, 'error', 'you_eliminated'))
     self:syncState(p.src)
     self:dirty()
     TriggerEvent('event_studio:eliminated', self.id, p.src, reason, killer and killer.src or nil)
@@ -313,7 +313,7 @@ function Instance:markFinished(p)
     if not p or p.status ~= 'active' then return false end
     p.status = 'finished'
     p.finishMs = self:elapsedMs()
-    self:push(p, 'announce', { text = L('you_finished', U.fmtDuration(p.finishMs)), kind = 'success' })
+    self:push(p, 'announce', ES.say(p, 'success', 'you_finished', U.fmtDuration(p.finishMs)))
     self:syncState(p.src)
     self:dirty()
     self:checkViability()

@@ -180,42 +180,46 @@ H.test('the eventstudio console command is restricted; player messages name no t
     end
 end)
 
-H.test('language: picked in Appearance, applies to everyone live, persists, reset goes back to config', function()
-    local admin, player = table.unpack(H.players(2, 995))
-    H.admin(admin)
-    Sim.advance(2600)
-    local _, ready = H.rpc(player, 'client:ready', {})
-    H.eq(ready.ui.locale, Config.General.locale or 'en')
+H.test('language: each player picks their own; texts and personal messages follow it', function()
+    local a, b = table.unpack(H.players(2, 995))
+    local _, readyA = H.rpc(a, 'client:ready', {})
+    H.eq(readyA.locale.code, Config.General.locale or 'en', 'no choice yet: server default')
     local codes = {}
-    for _, l in ipairs(ready.ui.locales) do codes[l.code] = l.name end
-    H.eq(ready.ui.locales[1].code, 'en', 'English first')
-    H.eq(codes.ar, 'العربية', 'Arabic offered with its own name')
+    for _, l in ipairs(readyA.ui.locales) do codes[l.code] = true end
+    H.ok(codes.ar and codes.en, 'Arabic and English offered (flag switch)')
 
+    -- a player who saved Arabic before gets Arabic texts straight away
+    local _, readyB = H.rpc(b, 'client:ready', { locale = 'ar' })
+    H.eq(readyB.locale.code, 'ar') H.eq(readyB.locale.dir, 'rtl')
+    H.eq(readyB.strings.about, 'حول')
+
+    -- switching later
     Sim.advance(2600)
-    local okBad, errBad = H.rpc(admin, 'admin:ui:save', { settings = { locale = 'xx' } })
+    local ok, res = H.rpc(a, 'player:locale', { code = 'ar' })
+    H.ok(ok) H.eq(res.strings.about, 'حول')
+    Sim.advance(2600)
+    local okBad, errBad = H.rpc(a, 'player:locale', { code = 'xx' })
     H.no(okBad) H.eq(errBad, 'unknown_locale')
     Sim.advance(2600)
-    local okP, errP = H.rpc(player, 'admin:ui:save', { settings = { locale = 'ar' } })
-    H.no(okP) H.eq(errP, 'forbidden')
+    H.ok((H.rpc(a, 'player:locale', { code = 'en' })))
 
-    H.clear(player)
+    -- personal messages use each player's language
+    H.eq(ES.say(b, 'info', 'you_eliminated').text, ES.Locales.ar.you_eliminated)
+    H.eq(ES.say(a, 'info', 'you_eliminated').text, ES.Locales.en.you_eliminated)
+    -- announcements carry the key so every client can show its own language
+    local m = ES.msg(nil, 'announce_cancelled', 'Race', { lkey = 'reason_admin' })
+    H.eq(m.lkey, 'announce_cancelled')
+    H.eq(ES.msg('ar', m.lkey, table.unpack(m.largs)).text, ES.translate('ar', 'announce_cancelled', 'Race', ES.translate('ar', 'reason_admin')))
+    H.eq(ES.Lp(b, 'security_kick'), ES.Locales.ar.security_kick)
+end)
+
+H.test('the Admin Center has no server-wide language setting any more', function()
+    local admin = H.players(1, 998)[1]
+    H.admin(admin)
     Sim.advance(2600)
     local ok, eff = H.rpc(admin, 'admin:ui:save', { settings = { locale = 'ar' } })
     H.ok(ok, tostring(eff))
-    H.eq(eff.locale, 'ar')
-    local pushed = H.lastPush(player, 'locale')
-    H.ok(pushed, 'players get the new language at once')
-    H.eq(pushed.locale.code, 'ar') H.eq(pushed.locale.dir, 'rtl')
-    H.eq(pushed.strings.about, 'حول', 'NUI texts in Arabic')
-    H.eq(L('ui.about'), 'حول', 'server messages in Arabic too')
-    local _, again = H.rpc(player, 'client:ready', {})
-    H.eq(again.locale.code, 'ar', 'players who join later get it too')
-
-    ES.UI.overrides, ES.UI.cache, ES.localeOverride = {}, nil, nil
-    ES.UI.load()
-    H.eq(ES.localeCode(), 'ar', 'saved language survives a restart')
-
+    H.eq(ES.UI.overrides.locale, nil, 'ignored')
     Sim.advance(2600)
     H.ok((H.rpc(admin, 'admin:ui:reset', { confirm = true })))
-    H.eq(ES.localeCode(), Config.General.locale or 'en', 'reset goes back to config/general.lua')
 end)

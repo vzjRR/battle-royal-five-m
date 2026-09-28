@@ -77,7 +77,7 @@ function Log.security(src, reason, data)
     end
     local max = sec.maxViolationsBeforeKick or 0
     if max > 0 and v.count >= max and src and src > 0 then
-        DropPlayer(tostring(src), L('security_kick'))
+        DropPlayer(tostring(src), ES.Lp(src, 'security_kick'))
     end
 end
 

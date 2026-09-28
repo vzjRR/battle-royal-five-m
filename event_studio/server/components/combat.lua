@@ -132,8 +132,8 @@ function Combat:confirmDeath(p, hint)
     local killer = killerSrc and self.inst.participants[killerSrc] or nil
     self.damageLog[p.src] = nil
     if killer and killer ~= p then
-        self.inst:push(killer, 'announce', { text = L('you_killed', p.name), kind = 'success' })
-        self.inst:push(p, 'announce', { text = L('killed_by', killer.name), kind = 'error' })
+        self.inst:push(killer, 'announce', ES.say(killer, 'success', 'you_killed', p.name))
+        self.inst:push(p, 'announce', ES.say(p, 'error', 'killed_by', killer.name))
     end
     self.inst:onDeath(p, killer, weapon)
     if p.status ~= 'active' then return end -- mode may have eliminated/finished
