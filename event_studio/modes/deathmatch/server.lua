@@ -48,13 +48,17 @@ local function roundWinner(inst)
         return
     end
     SetTimeout(4000, function()
-        if inst.state == ES.Lifecycle.States.ACTIVE then startRound(inst) end
+        if inst.state == ES.Lifecycle.States.ACTIVE then startRound(inst)
+        elseif inst.state == ES.Lifecycle.States.PAUSED then inst.data.roundPending = true end -- start it on resume
     end)
     inst.data.betweenRounds = true
 end
 
 ES.RegisterMode('deathmatch', {
     label = 'Deathmatch',
+    onResume = function(inst)
+        if inst.data.roundPending then inst.data.roundPending = nil startRound(inst) end
+    end,
     category = 'combat',
     description = 'Free-for-all or team combat with configurable weapons, lives, kill target and rounds.',
     teams = 'optional',

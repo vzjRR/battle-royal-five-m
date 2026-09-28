@@ -248,6 +248,48 @@ end
 control('start', 'instance.start', false, function(i) return i:start(false) end)
 control('forceStart', 'instance.start', true, function(i) return i:start(true) end)
 control('go', 'instance.start', false, function(i) return i:go() end) -- the host starts the countdown
+
+---The host key / `/eventstart [id]` (outside the Admin Center): closes registration, and when the players are in the
+---arena starts the countdown. Without an id it picks the event the host is in, else the only one waiting.
+local function startTarget(src, id)
+    if id then return ES.Manager.get(id) end
+    local mine = ES.Manager.ofPlayer(src)
+    if mine and (mine.awaitingStart or mine.state == ES.Lifecycle.States.REGISTRATION) then return mine end
+    local waiting, open = {}, {}
+    for _, i in pairs(ES.Manager.instances) do
+        if i.state == ES.Lifecycle.States.LOBBY and i.awaitingStart then waiting[#waiting + 1] = i end
+        if i.state == ES.Lifecycle.States.REGISTRATION then open[#open + 1] = i end
+    end
+    if #waiting == 1 then return waiting[1] end
+    if #waiting > 1 then return nil, 'multiple_waiting' end
+    if #open == 1 then return open[1] end
+    if #open > 1 then return nil, 'multiple_waiting' end
+    return nil, 'nothing_to_start'
+end
+
+RPC.register('host:start', { perm = 'instance.start', schema = { id = 'integer?' }, rate = { burst = 3, per = 5 } }, function(src, data)
+    local i, err = startTarget(src, data.id)
+    if not i then return false, err or 'not_found' end
+    local ok, res, step
+    if i.state == ES.Lifecycle.States.REGISTRATION or i.state == ES.Lifecycle.States.SCHEDULED then
+        ok, res = i:start(false)
+        step = 'registration_closed'
+    else
+        ok, res = i:go()
+        step = 'countdown'
+    end
+    if ok == false then return false, res end
+    Log.audit('instance.host_start', src, i.id, { step = step })
+    return { id = i.id, name = i.def.name, step = step }
+end)
+
+-- staff who join while an event waits for Start get its card too
+AddEventHandler('event_studio:clientReady', function(src)
+    if not ES.Perm.can(src, 'instance.start') then return end
+    for _, i in pairs(ES.Manager.instances) do
+        if i.state == ES.Lifecycle.States.LOBBY and i.awaitingStart then ES.push(src, 'hostPrompt', i:hostPrompt()) end
+    end
+end)
 control('pause', 'instance.pause', false, function(i) return i:pause() end)
 control('resume', 'instance.pause', false, function(i) return i:resume() end)
 control('stop', 'instance.stop', true, function(i) return i:finishNow('admin') end)

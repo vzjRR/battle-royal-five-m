@@ -316,10 +316,15 @@ function Instance:markFinished(p)
     self:push(p, 'announce', ES.say(p, 'success', 'you_finished', U.fmtDuration(p.finishMs)))
     self:syncState(p.src)
     self:dirty()
-    -- first finisher: the others get the finish grace time (every mode that ranks by finishing)
-    if self.state == S.ACTIVE and self.mode.rankBy == 'finish' and not self.flags.firstFinish then
-        self.flags.firstFinish = true
-        self:finish('winner')
+    -- finish-line modes: the grace time starts when the podium is complete (flow.graceAfterPlace, default 3rd place)
+    -- or when nobody is left racing
+    if self.state == S.ACTIVE and self.mode.finishLine then
+        local finished = 0
+        for _, q in pairs(self.participants) do if q.status == 'finished' then finished = finished + 1 end end
+        -- small races: the last place before the final racer counts (2 racers: 1st, 3 racers: 2nd)
+        local place = (Config.General.flow and Config.General.flow.graceAfterPlace) or 3
+        place = math.max(1, math.min(place, (self.startCount or place + 1) - 1))
+        if finished >= place or #self:activeParticipants() == 0 then self:setState(S.FINISHING, 'podium') end
     end
     self:checkViability()
     return true
@@ -328,7 +333,12 @@ end
 ---Finish automatically when the event can no longer continue.
 function Instance:checkViability()
     if self.state == S.FINISHING then
-        if #self:activeParticipants() == 0 and not self:hasPendingReconnect() then self:setState(S.RESULTS, 'all_finished') end
+        -- everyone is done: results a short moment after the last one (flow.lastFinishWait)
+        if #self:activeParticipants() == 0 and not self:hasPendingReconnect() and not self.flags.allDone then
+            self.flags.allDone = true
+            self.deadline = ES.now() + ((Config.General.flow and Config.General.flow.lastFinishWait) or 10) * 1000
+            self:syncState()
+        end
         return
     end
     if not (self.state == S.ACTIVE or self.state == S.PAUSED or self.state == S.LOBBY or self.state == S.COUNTDOWN) then

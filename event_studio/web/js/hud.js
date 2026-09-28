@@ -348,3 +348,18 @@ export function onRole(d) {
     if (changed && !d.silent) banner(d.label.toUpperCase(), d.color || 'var(--accent)', 2500);
     renderHud();
 }
+
+// Staff: events waiting for the host's Start. A small card with the host key (works without the Admin Center).
+const prompts = new Map();
+export function onHostPrompt(d) {
+    if (!d || !d.id) return;
+    if (d.clear) prompts.delete(d.id); else prompts.set(d.id, d);
+    let el = document.getElementById('hostprompt');
+    if (!el) { el = h('div#hostprompt.host-prompt'); document.body.appendChild(el); }
+    const key = (store.ui.keys && store.ui.keys.hostStart) || 'F10';
+    mount(el, [...prompts.values()].map((p) => h('div.host-card',
+        h('div.host-dot'),
+        h('div', h('b', t('host_ready', p.name, p.players)), h('small', t('host_press', key, p.countdown || 10))),
+        h('kbd', key))));
+    show(el, prompts.size > 0);
+}

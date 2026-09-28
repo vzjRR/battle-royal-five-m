@@ -249,3 +249,33 @@ H.test('custom mode: staff manual scoring via admin RPC', function()
     finishAndArchive(inst)
     H.eq(inst.results[1].src, p2)
 end)
+
+H.test('freeze challenge: settle time, then movement eliminates; survivors share 1st; no finish line', function()
+    local a, b, c = table.unpack(H.players(3, 8800))
+    for _, s in ipairs({ a, b, c }) do H.setPos(s, 0.0, 0.0, 14.0) end
+    local inst = H.createAndJoin('freeze_challenge', { a, b, c })
+    H.toActive(inst)
+    H.eq(inst:component('zones'), nil, 'no finish zone in the freeze challenge')
+    local snap = H.lastPush(a, 'state')
+    H.eq(snap.objective, ES.Locales.en.obj_freeze, 'freeze objective, not red light')
+    -- landing / settling during the first seconds does not count
+    H.setPos(a, Sim.players[a].pos.x + 2.0, Sim.players[a].pos.y, Sim.players[a].pos.z)
+    Sim.advance(3000)
+    H.eq(inst.participants[a].status, 'active', 'moving while settling is fine')
+    Sim.advance(3000)   -- freeze is on and measured
+    local p = Sim.players[b].pos
+    H.setPos(b, p.x + 3.0, p.y, p.z)
+    Sim.advance(1500)
+    H.eq(inst.participants[b].status, 'eliminated', 'moving during the freeze eliminates')
+    -- a falls a little (height only): not movement
+    p = Sim.players[c].pos
+    H.setPos(c, p.x, p.y, p.z - 1.5)
+    Sim.advance(1500)
+    H.eq(inst.participants[c].status, 'active', 'height change is not movement')
+    H.ok(H.waitState(inst, 'ARCHIVED', 200000), 'ended, state=' .. inst.state)
+    local place = {}
+    for _, r in ipairs(inst.results) do place[r.src] = r.placement end
+    H.eq(place[a], 1) H.eq(place[c], 1, 'survivors share 1st place')
+    H.eq(place[b], 3, 'eliminated player after the survivors')
+    for _, s in ipairs({ a, b, c }) do Sim.players[s] = nil end
+end)

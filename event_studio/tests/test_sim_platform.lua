@@ -211,6 +211,7 @@ H.test('tournament end-to-end: 4 players knockout via match instances', function
     local t = ES.Tournaments.list[tid]
     local function playLive()
         for _, inst in pairs(ES.Manager.instances) do
+            if inst.tournament == tid and inst.state == 'LOBBY' and inst.awaitingStart then inst:go() end -- the host starts each match
             if inst.tournament == tid and inst.state == 'ACTIVE' then
                 local list = {}
                 for s in pairs(inst.participants) do list[#list + 1] = s end

@@ -11,8 +11,10 @@ Config.General = {
         manualStart = true,   -- players wait in the arena until the host presses Start (Admin Center → Active Events)
         countdown = 10,       -- seconds of countdown after Start
         lobbyWaitMax = 300,   -- nobody pressed Start: begin anyway after this many seconds (0 = always wait for the host)
-        finishGrace = 60,     -- after the first player finishes, the others have at most this many seconds to finish;
-                              -- the event ends earlier when everyone has finished
+        graceAfterPlace = 3,  -- races / hunts / red light: the finish grace starts when this place has finished
+                              -- (with fewer racers: the place before the last one, e.g. 1st in a 2-player race)
+        finishGrace = 60,     -- ...and then the others have at most this many seconds to finish
+        lastFinishWait = 10,  -- when everyone has finished, results come this many seconds after the last one
     },
 
     -- Routing bucket pool used for event instances. Pick a range no other resource uses.

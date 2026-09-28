@@ -16,6 +16,7 @@ ES.RegisterMode('race', {
     minPlayers = 1,
     rankBy = 'finish',
     graceOnFinish = true,
+    finishLine = true,        -- finish grace after the podium (Config.General.flow)
     personalBests = true,
     arena = { requires = { 'checkpoints' } },
     objectiveKey = 'obj_race',
@@ -56,7 +57,6 @@ ES.RegisterMode('race', {
                 if first then
                     inst.data.winner = p
                     inst:announce('announce_race_winner', 'success', p.name, U.fmtDuration(p.finishMs))
-                    inst:finish('winner')
                 end
             end,
             onLap = function(p, lap)

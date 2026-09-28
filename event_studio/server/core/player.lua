@@ -50,6 +50,7 @@ RPC.register('client:ready', { public = true, schema = { locale = { type = 'stri
     local level, role = ES.Perm.level(src)
     local recovery = ES.Manager.onClientReady(src)
     Citizen.CreateThread(function() Citizen.Wait(5000) ES.Rewards.deliverPending(src) end)
+    Citizen.CreateThread(function() Citizen.Wait(3000) TriggerEvent('event_studio:clientReady', src) end)
     return {
         version = ES.version, ui = ES.UI.effective(), commands = level > 0 and Config.Commands or nil, strings = ES.uiStrings(code), locale = ES.localeInfo(code),
         framework = ES.Bridge.name, staff = level > 0, role = role, recovery = recovery,

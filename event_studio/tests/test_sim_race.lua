@@ -250,7 +250,7 @@ H.test('start: players wait in the arena until the host presses Start, then a 10
     Sim.players[s], Sim.players[admin] = nil, nil
 end)
 
-H.test('start: without a host the event begins after flow.lobbyWaitMax; tournament matches start by themselves', function()
+H.test('start: without a host the event begins after flow.lobbyWaitMax; tournament matches wait for the host too', function()
     local s = H.players(1, 7300)[1]
     H.setPos(s, 500.0, 500.0, 30.0)
     local inst = H.createAndJoin('test_race', { s })
@@ -261,13 +261,13 @@ H.test('start: without a host the event begins after flow.lobbyWaitMax; tourname
     Sim.advance(1000)
     local ok, id = ES.Manager.create('test_race', { registration = 30, tournament = 'T1' })
     H.ok(ok)
-    H.ok(ES.Manager.get(id).autoStart)
+    H.no(ES.Manager.get(id).autoStart, 'tournament match waits for the host')
     ES.Manager.get(id):cancel('test')
     Sim.advance(1000)
     Sim.players[s] = nil
 end)
 
-H.test('finish: after the first finisher the others get at most 60 s; ends early when everyone finished', function()
+H.test('finish: 2 racers: grace after the 1st; everyone finished -> results 10 s after the last one', function()
     local a, b = table.unpack(H.players(2, 7400))
     for _, s in ipairs({ a, b }) do H.setPos(s, 500.0, 500.0, 30.0) end
     local inst = H.createAndJoin('test_race', { a, b })
@@ -285,8 +285,56 @@ H.test('finish: after the first finisher the others get at most 60 s; ends early
         H.setPos(b, pt.x, pt.y, pt.z)
         H.ok((H.rpc(b, 'event:action', { action = 'checkpoint', data = { index = i } })))
     end
-    H.eq(inst.state, 'RESULTS', 'everyone finished: results straight away')
+    H.eq(inst.state, 'FINISHING', 'everyone finished: short wait first')
+    local wait = inst.deadline - ES.now()
+    H.ok(wait <= 10000 and wait > 9000, '10 s after the last finisher, got ' .. wait)
+    Sim.advance(10500)
+    H.eq(inst.state, 'RESULTS')
     H.eq(inst.results[2].status, 'finished')
     H.ok(H.waitState(inst, 'ARCHIVED', 30000))
     Sim.players[a], Sim.players[b] = nil, nil
+end)
+
+H.test('finish: 5 racers: the 60 s grace starts at 3rd place, not at the winner', function()
+    local srcs = H.players(5, 7500)
+    for _, s in ipairs(srcs) do H.setPos(s, 500.0, 500.0, 30.0) end
+    local inst = H.createAndJoin('test_race', srcs)
+    H.toActive(inst)
+    drive(inst, { srcs[1] })
+    H.eq(inst.state, 'ACTIVE', 'winner in: race goes on')
+    drive(inst, { srcs[2] })
+    H.eq(inst.state, 'ACTIVE', '2nd in: race goes on')
+    drive(inst, { srcs[3] })
+    H.eq(inst.state, 'FINISHING', '3rd in: the last minute starts')
+    local left = inst.deadline - ES.now()
+    H.ok(left <= 60000 and left > 55000, 'grace 60 s, got ' .. left)
+    H.ok(H.waitState(inst, 'RESULTS', 61000), 'results after the minute')
+    H.eq(inst.results[4].status, 'active', 'still racing at the end: unfinished but ranked')
+    H.ok(H.waitState(inst, 'ARCHIVED', 60000))
+    for _, s in ipairs(srcs) do Sim.players[s] = nil end
+end)
+
+H.test('host key / /eventstart: 1st press closes registration, 2nd starts the countdown; staff get the card', function()
+    local racer, host, player = table.unpack(H.players(3, 7600))
+    H.admin(host)
+    H.setPos(racer, 500.0, 500.0, 30.0)
+    local inst = H.createAndJoin('test_race', { racer })
+    local okP, errP = H.rpc(player, 'host:start', {})
+    H.no(okP) H.eq(errP, 'forbidden', 'players cannot start events')
+    H.clear(host)
+    local ok, res = H.rpc(host, 'host:start', {})
+    H.ok(ok, tostring(res)) H.eq(res.step, 'registration_closed')
+    H.eq(inst.state, 'LOBBY') H.ok(inst.awaitingStart)
+    local card = H.lastPush(host, 'hostPrompt')
+    H.ok(card and card.id == inst.id and not card.clear, 'staff see the "ready to start" card')
+    H.eq(H.lastPush(racer, 'hostPrompt'), nil, 'racers do not')
+    Sim.advance(2000)
+    ok, res = H.rpc(host, 'host:start', {})
+    H.ok(ok, tostring(res)) H.eq(res.step, 'countdown')
+    H.eq(inst.state, 'COUNTDOWN')
+    card = H.lastPush(host, 'hostPrompt')
+    H.ok(card.clear, 'card removed when the countdown starts')
+    inst:cancel('test')
+    Sim.advance(1000)
+    for _, s in ipairs({ racer, host, player }) do Sim.players[s] = nil end
 end)

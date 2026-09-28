@@ -347,7 +347,7 @@ function about() {
 
 export function brandLogo() {
     const src = logoOf(store.ui);
-    return h('div.logo', src ? h('img', { src, alt: '' }) : (store.ui.brand && store.ui.brand.title ? store.ui.brand.title.slice(0, 2).toUpperCase() : 'ES'));
+    return h(src ? 'div.logo.has-img' : 'div.logo', src ? h('img', { src, alt: '' }) : (store.ui.brand && store.ui.brand.title ? store.ui.brand.title.slice(0, 2).toUpperCase() : 'ES'));
 }
 
 /** Appearance changed (live push): redraw if the Admin Center is open. */

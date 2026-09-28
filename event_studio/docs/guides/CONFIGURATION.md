@@ -6,7 +6,7 @@ All settings live in `config/`. Files marked **shared** are also sent to players
 |---|---|---|
 | `general.lua` | shared | locale, engine tick, bucket range, default definition values, exit behaviour, join cooldown, anti-cheat tolerances |
 | `phone.lua` | shared | the Events app for phones and tablets: on/off, name, icon, preinstalled, one switch per phone ([guide](PHONES.md)) |
-| `general.lua` → `flow` | shared | start and finish of every event: `manualStart` (host presses Start), `countdown` (10 s), `lobbyWaitMax` (start anyway after 300 s; 0 = wait), `finishGrace` (60 s after the first finisher) |
+| `general.lua` → `flow` | shared | start and finish of every event: `manualStart` (host presses Start), `countdown` (10 s), `lobbyWaitMax` (start anyway after 300 s; 0 = wait), `graceAfterPlace` (3: the grace starts at 3rd place), `finishGrace` (60 s), `lastFinishWait` (10 s after the last finisher) |
 | `commands.lua` | shared | staff command names (set one to `false` to disable it) and the default player keys (F7 events window, U scoreboard, F9 race reset; Admin Center → Settings → Player controls overrides them) |
 | `ui.lua` | shared | design (theme), player window layout, colors, branding, artwork, HUD position, scoreboard, category icons/colors |
 | `scoring.lua` | shared | season period and scoring profiles |

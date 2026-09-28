@@ -39,15 +39,24 @@ local function endRound(inst, winnerTeam, reason)
     if inst.teams[winnerTeam].score >= need or inst.data.round >= o.rounds then
         return inst:finishNow('rounds')
     end
-    SetTimeout(4000, function()
-        if inst.state ~= ES.Lifecycle.States.ACTIVE then return end
+    local function nextRound()
         if o.swapSides then inst.data.defenders = attackers(inst) end
         startRound(inst)
+    end
+    SetTimeout(4000, function()
+        if inst.state == ES.Lifecycle.States.PAUSED then inst.data.roundPending = nextRound return end -- on resume
+        if inst.state ~= ES.Lifecycle.States.ACTIVE then return end
+        nextRound()
     end)
 end
 
 ES.RegisterMode('vip', {
     label = 'Protect the VIP',
+    onResume = function(inst)
+        local fn = inst.data.roundPending
+        inst.data.roundPending = nil
+        if fn then fn() end
+    end,
     category = 'combat',
     description = 'Bodyguards escort a VIP to extraction while attackers try to take the VIP out. Sides swap every round.',
     teams = 'required',

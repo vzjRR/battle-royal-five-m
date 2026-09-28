@@ -17,7 +17,7 @@ for c in ('ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'):gmatch('.') do KEYS[c] = true 
 for i = 0, 9 do KEYS['NUMPAD' .. i] = true end
 for _, k in ipairs({ 'HOME', 'END', 'INSERT', 'DELETE', 'PAGEUP', 'PAGEDOWN' }) do KEYS[k] = true end
 UI.KEYS = KEYS
-local KEY_ACTIONS = { browser = true, scoreboard = true, reset = true }
+local KEY_ACTIONS = { browser = true, scoreboard = true, reset = true, hostStart = true }
 
 ---Normalise a key name ('f7' -> 'F7'); nil if it is not allowed.
 function UI.cleanKey(v)

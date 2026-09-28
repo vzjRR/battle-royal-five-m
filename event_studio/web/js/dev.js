@@ -93,11 +93,11 @@ const baseUI = {
     brand: { title: 'Event Studio', subtitle: 'Community Events', logo: 'auto' }, colors: {}, hudPosition: 'top-right', scoreboardRows: 5, dateFormat: 'en-GB',
     categories: { racing: { icon: 'flag', color: '#ff6b3d' }, vehicle: { icon: 'car', color: '#ffb020' }, combat: { icon: 'crosshair', color: '#ff3d71' }, objective: { icon: 'target', color: '#3dd6ff' },
         survival: { icon: 'shield', color: '#7cff6b' }, hunt: { icon: 'compass', color: '#c36bff' }, obstacle: { icon: 'mountain', color: '#6b8cff' }, social: { icon: 'dice', color: '#ff6bd6' }, tournament: { icon: 'trophy', color: '#ffd23d' } },
-    keys: { browser: params.get('key') || 'F7', scoreboard: 'U', reset: 'F9' },
+    keys: { browser: params.get('key') || 'F7', scoreboard: 'U', reset: 'F9', hostStart: 'F10' },
     locale: lang, locales: [{ code: 'en', name: 'English' }, { code: 'ar', name: 'العربية' }] };
 if (params.get('accent')) baseUI.colors.accent = '#' + params.get('accent');
 responses['admin:ui:get'] = { effective: { ...baseUI, themes }, overrides: { theme: baseUI.theme, browserLayout: baseUI.browserLayout, ...(scene === 'controls' ? { keys: { browser: 'F6' } } : {}) },
-    base: baseUI, baseKeys: { browser: 'F7', scoreboard: 'U', reset: 'F9' } };
+    base: baseUI, baseKeys: { browser: 'F7', scoreboard: 'U', reset: 'F9', hostStart: 'F10' } };
 send('init', { strings, locale: { code: lang, dir: ['ar', 'he', 'fa', 'ur'].includes(lang) ? 'rtl' : 'ltr' }, staff: true, role: 'admin', ui: { ...baseUI, themes } });
 
 if (!document.body.dataset.embed) document.body.style.background = 'linear-gradient(180deg, #1b2a44 0%, #3b3a52 42%, #7a5238 60%, #151a24 61%, #0b0e14 100%)';
@@ -145,6 +145,7 @@ const rows = [{ src: 2, name: 'Rook', placement: 1, status: 'active', score: 0, 
     { src: 6, name: 'Juno', placement: 5, status: 'eliminated', score: 0, extra: 'L1 · 4/8' }];
 if (scene === 'browser') send('open', { view: 'browser' });
 if (scene === 'admin') send('open', { view: 'admin', data: adminData });
+if (scene === 'host') { send('state', { ...race, state: 'LOBBY', awaitingStart: true, remainingMs: null }); send('hostPrompt', { id: 1005, name: 'Alamo Sea Boat Race', players: 6, countdown: 10 }); }
 if (scene === 'hud') { send('state', race); send('scoreboard', { rows }); send('toast', { text: 'Registration open: Trivia Night (#1003). Press F7 to join!', kind: 'global' }); }
 if (scene === 'results') send('results', { name: 'Downtown Street Circuit', winner: 'Rook', remainingMs: 60000, rows: [
     { src: 2, name: 'Rook', placement: 1, status: 'finished', score: 0, kills: 0, finishMs: 187432, points: 110 },

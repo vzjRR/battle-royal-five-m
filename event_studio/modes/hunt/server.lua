@@ -11,6 +11,7 @@ ES.RegisterMode('hunt', {
     teams = 'none',
     minPlayers = 1,
     rankBy = 'finish',
+    finishLine = true,
     arena = { requires = { 'targets' } },
     objectiveKey = 'obj_hunt',
     rulesKey = 'rules_hunt',

@@ -93,6 +93,7 @@ const handlers = {
         browser.onUI();
         admin.onUI();
     },
+    hostPrompt: (d) => hud.onHostPrompt(d),
     close: () => closePanels(),
     arenaCheck: (d) => admin.onArenaCheck(d),
     arenaRecorded: (d) => admin.onArenaRecorded(d),

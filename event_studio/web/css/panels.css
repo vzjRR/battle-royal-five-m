@@ -6,7 +6,8 @@
 .shell-head { display: flex; align-items: center; gap: 14px; padding: 14px 20px; border-bottom: 1px solid var(--line); background: var(--head-bg); }
 .brand { display: flex; align-items: center; gap: 10px; }
 .brand .logo { width: 40px; height: 40px; border-radius: var(--radius-sm); background: var(--grad-accent); display: grid; place-items: center; font-weight: 900; color: var(--accent-text); overflow: hidden; flex-shrink: 0; }
-.brand .logo img { width: 100%; height: 100%; object-fit: cover; }
+.brand .logo img { width: 100%; height: 100%; object-fit: contain; }
+.brand .logo.has-img { background: transparent; clip-path: none; }   /* transparent mark: no tile behind it */
 .brand h1 { font-size: 15px; font-weight: 800; line-height: 1.15; letter-spacing: .06em; text-transform: uppercase; }
 .brand small { display: block; color: var(--text-faint); font-size: 11px; text-transform: uppercase; letter-spacing: .08em; }
 .tabs { display: flex; gap: 4px; margin-inline-start: 18px; }
@@ -136,7 +137,7 @@ button.erow:hover { background: var(--panel); border-color: var(--line-strong); 
   border: 1px solid var(--line); border-radius: var(--radius-sm); background: var(--panel-2); }
 .key-row label { display: flex; flex-direction: column; gap: 2px; font-size: 13px; }
 .key-row small { color: var(--text-faint); font-size: 11px; }
-.key-row select { font-family: var(--font-mono); font-weight: 700; }
+.key-row select { font-weight: 700; }
 .key-row.bad { border-color: var(--bad-line); background: var(--bad-soft); }
 @media (max-width: 720px) { .key-row { grid-template-columns: minmax(0, 1fr) 110px 30px; } .key-row > .faint { display: none; } }
 

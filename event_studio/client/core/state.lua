@@ -67,10 +67,14 @@ local function localized(d)
     end
     return d
 end
+-- Staff: an event is waiting for Start (card with the host key), or no longer waiting.
+ES.on('hostPrompt', function(d) ES.NUI.send('hostPrompt', d) end)
+
 ES.on('announce', function(d) ES.NUI.send('toast', localized(d)) end)
 ES.on('notify', function(d) ES.NUI.send('toast', d) end)
 ES.on('results', function(d) ES.NUI.send('results', d) end)
 ES.on('mode', function(d)
+    if type(d) == 'table' and type(d.banner) == 'table' and d.banner.lkey then d.banner.text = L(d.banner.lkey) end
     ES.NUI.send('mode', d)
     if Client.modeHandler then pcall(Client.modeHandler, d) end
 end)

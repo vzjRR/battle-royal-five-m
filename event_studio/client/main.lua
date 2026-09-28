@@ -102,7 +102,23 @@ local KEY_ACTIONS = {
         release = function() ES.NUI.send('scoreboardExpand', { open = false }) end },
     reset = { cmd = 'es_reset', label = 'Event: back to the last checkpoint',
         press = function() if ES.resetToCheckpoint then ES.resetToCheckpoint() end end },
+    -- staff only: close registration, then start the countdown, without opening the Admin Center
+    hostStart = { cmd = 'es_host', label = 'Events (staff): start the waiting event', staff = true,
+        press = function() ES.hostStart() end },
 }
+
+local function hostToast(ok, res)
+    if ok and type(res) == 'table' then
+        ES.NUI.send('toast', { text = L(res.step == 'countdown' and 'ui.host_started' or 'ui.host_closed', res.name), kind = 'success' })
+    else
+        ES.NUI.send('toast', { text = 'err_' .. tostring(res), kind = 'error', key = true })
+    end
+end
+
+---Host key / /eventstart: registration open -> close it; players in the arena -> 10 s countdown.
+function ES.hostStart(id)
+    ES.rpc('host:start', { id = id }, hostToast)
+end
 
 local activeKey = {}     -- action -> key in effect ('F7'), nil when off
 local mapped = {}        -- internal command -> true
@@ -134,8 +150,9 @@ end
 ---Apply the player keys sent by the server (ui.keys); called on boot and on every appearance change.
 function ES.applyKeys(keys)
     keys = type(keys) == 'table' and keys or (ES.Config.Commands.keys or {})
-    for action in pairs(KEY_ACTIONS) do
+    for action, a in pairs(KEY_ACTIONS) do
         local key = type(keys[action]) == 'string' and keys[action]:upper() or nil
+        if a.staff and not (ES.ServerInfo and ES.ServerInfo.staff) then key = nil end
         if action == 'browser' and not key then key = 'F7' end
         activeKey[action] = key
         if key then mapKey(action, key) end
@@ -179,6 +196,9 @@ function ES.registerStaffCommands()
         RegisterCommand(cmds.spectate, function(_, args)
             ES.rpc('event:spectate', { id = tonumber(args[1]) }, function(ok, res) if not ok then toast(ok, res) end end)
         end, false)
+    end
+    if cmds.hostStart then
+        RegisterCommand(cmds.hostStart, function(_, args) ES.hostStart(tonumber(args[1])) end, false)
     end
     if ES.registerArenaFixCommand then ES.registerArenaFixCommand() end
 end

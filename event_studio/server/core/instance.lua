@@ -36,7 +36,7 @@ function Instance.new(id, def, opts)
         tournament = opts.tournament,
         match = opts.match,
         createdBy = opts.createdBy,
-        autoStart = opts.autoStart == true or opts.tournament ~= nil, -- tournament matches start by themselves
+        autoStart = opts.autoStart == true,   -- true = skip the host's Start (API / tests); tournaments wait for the host too
         createdAt = os.time(),
         startAt = opts.startAt,
         clock = { startedAt = nil, pausedAt = nil, pausedTotal = 0 },
@@ -167,7 +167,7 @@ function Instance:snapshot(src)
         spectateOnEliminate = self.def.players.spectateOnEliminate,
         gameplay = { health = self.def.gameplay.health, armor = self.def.gameplay.armor,
                      restoreWeapons = self.def.gameplay.restoreWeapons, blockInventoryWeapons = self.def.gameplay.blockInventoryWeapons },
-        objective = self.mode.objectiveKey and ES.Lp(src, self.mode.objectiveKey) or nil,
+        objective = (self.mode.objectiveKeyOf and ES.Lp(src, self.mode.objectiveKeyOf(self))) or (self.mode.objectiveKey and ES.Lp(src, self.mode.objectiveKey)) or nil,
         awaitingStart = self.awaitingStart == true or nil,   -- waiting for the host to press Start
     }
     local rp = (p and p.returnPoint) or (self.spectators[src] and self.spectators[src].returnPoint)
@@ -283,8 +283,13 @@ function Instance:setState(new, reason)
         Log.warn('#%d illegal transition %s -> %s (%s)', self.id, old, new, tostring(reason))
         return false
     end
+    if old == S.LOBBY and self.awaitingStart then
+        local id = self.id
+        Instance.eachStarter(function(src) ES.push(src, 'hostPrompt', { id = id, clear = true }) end)
+    end
     self.state = new
     self.stateSince = ES.now()
+    self.prevDeadline = self.deadline   -- PAUSED needs the running timer (cleared just below)
     self.deadline = nil
     self.stateReason = reason
     Log.debug('#%d %s -> %s (%s)', self.id, old, new, tostring(reason))
@@ -306,15 +311,27 @@ end
 local function secs(n) return ES.now() + (n or 0) * 1000 end
 local function flow() return (Config.General and Config.General.flow) or {} end
 
----Tell the staff online that an event is waiting for Start.
-local function notifyStaff(self)
+---The on-screen "ready to start" card for staff (hostPrompt topic).
+function Instance:hostPrompt()
+    return { id = self.id, name = self.def.name, players = self:participantCount({ active = true }), countdown = flow().countdown or 10 }
+end
+
+local function eachStarter(fn)
     for _, id in ipairs(GetPlayers()) do
         local src = tonumber(id)
-        if ES.Perm.level(src) > 0 then
-            ES.push(src, 'announce', ES.say(src, 'info', 'announce_ready_to_start', self.def.name, self.id, self:participantCount({ active = true })))
-        end
+        if ES.Perm.can(src, 'instance.start') then fn(src) end
     end
 end
+
+---Tell the staff online that an event is waiting for Start (message + card with the host key).
+local function notifyStaff(self)
+    local key = ES.UI.keys().hostStart or '/' .. tostring(Config.Commands.hostStart)
+    eachStarter(function(src)
+        ES.push(src, 'announce', ES.say(src, 'info', 'announce_ready_to_start', self.def.name, self.id, self:participantCount({ active = true }), key))
+        ES.push(src, 'hostPrompt', self:hostPrompt())
+    end)
+end
+Instance.eachStarter = eachStarter
 
 enter[S.REGISTRATION] = function(self)
     self.deadline = secs(self.def.timing.registration)
@@ -392,16 +409,17 @@ end
 
 enter[S.PAUSED] = function(self)
     self.clock.pausedAt = ES.now()
-    self.pausedRemaining = self.deadline and math.max(0, self.deadline - ES.now()) or nil
+    self.pausedRemaining = self.prevDeadline and math.max(0, self.prevDeadline - ES.now()) or nil
     self.deadline = nil
     self:broadcast('freeze', { frozen = true })
     self:announce('announce_paused', 'warn')
 end
 
 enter[S.FINISHING] = function(self)
-    -- the first player finished: the rest get a grace time (config flow.finishGrace, else the definition's grace)
+    -- the podium is complete (flow.graceAfterPlace): the others get flow.finishGrace seconds (else the definition's grace)
     local g = flow().finishGrace
     if g == nil then g = self.def.timing.grace or 0 end
+    if #self:activeParticipants() == 0 then g = flow().lastFinishWait or 10 end   -- everyone is already done
     if g <= 0 then return self:setState(S.RESULTS, 'grace_skipped') end
     self.deadline = secs(g)
     if #self:activeParticipants() > 0 then self:announce('announce_finish_grace', 'warn', g) end
@@ -471,7 +489,7 @@ function Instance:finish(reason)
     if self.state ~= S.ACTIVE and self.state ~= S.PAUSED then return false, 'invalid_state' end
     if self.state == S.PAUSED then self:setState(S.ACTIVE, 'finish') end
     -- modes where players cross a finish (races, hunts, red light) give the others a grace time
-    if self.mode.graceOnFinish or self.mode.rankBy == 'finish' then return self:setState(S.FINISHING, reason) end
+    if self.mode.graceOnFinish or self.mode.finishLine then return self:setState(S.FINISHING, reason) end
     return self:setState(S.RESULTS, reason)
 end
 

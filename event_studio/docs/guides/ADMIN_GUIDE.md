@@ -20,8 +20,9 @@ Open the Admin Center with `/event`. What you see depends on your role; the serv
 - **Scheduler:** turn schedules on or off, create weekly/daily/monthly/one-off/interval schedules, toggle the Event Director.
 - **Active Events:** full control of each instance. The actions marked in red ask for confirmation.
   - **Close registration** (needs the minimum player count; the second button ignores it): the players are moved into the arena and wait, frozen, with "Waiting for the host to start" on screen. Staff online get a message that the event is ready.
-  - **Start (10 s countdown)**: press it when everyone is in and ready. If nobody presses it, the event starts on its own after `Config.General.flow.lobbyWaitMax` seconds (default 5 minutes; 0 = always wait). Tournament matches start by themselves.
-  - **Finish grace:** in races, hunts and red light, when the first player finishes the others get up to 60 seconds (`flow.finishGrace`) to finish; the event ends earlier once everyone has finished. Combat and objective modes end as soon as the winner is decided.
+  - **Start (10 s countdown)**: press it when everyone is in and ready. If nobody presses it, the event starts on its own after `Config.General.flow.lobbyWaitMax` seconds (default 5 minutes; 0 = always wait). Tournament matches wait for the host too.
+  - **Without the Admin Center:** staff press the **host key (F10)** in game: the first press closes registration, the second starts the countdown. `/eventstart [id]` does the same. Staff see a card on screen when an event is ready. Change the key in Settings → Player controls.
+  - **Finish grace:** in races, hunts and red light, when **3rd place** has finished the others get up to 60 seconds (`flow.finishGrace`). With fewer racers it starts one place before the last (2 racers: after the winner). When everyone has finished, the results come 10 seconds after the last one (`flow.lastFinishWait`). Combat and objective modes end as soon as the winner is decided.
   - Pause / Resume (the timer freezes, players freeze)
   - Force finish (goes straight to results and rewards) / Cancel (no rewards) / Restart (same players, fresh instance)
   - Per player: Teleport to spawn, Reset (respawn plus vehicle and loadout), +10 points, Remove, Disqualify

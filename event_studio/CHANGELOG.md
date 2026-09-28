@@ -5,8 +5,8 @@ All notable changes to EVENT STUDIO. Uses [Semantic Versioning](https://semver.o
 ## [Unreleased]
 
 ### Changed
-- **The host starts every event.** After registration closes, players wait in the arena until the host presses **Start** in Active Events; then a 10-second countdown runs. Staff are told when an event is ready; without a host it starts after 5 minutes (`Config.General.flow`). Tournament matches start by themselves.
-- **Finish grace for everyone:** after the first player finishes (races, hunts, red light), the others have at most 60 seconds; the event ends as soon as everyone has finished.
+- **The host starts every event** (tournament matches too). After registration closes, players wait in the arena until the host presses **Start** in Active Events, or the **host key F10** / `/eventstart` in game (no Admin Center needed); then a 10-second countdown runs. Staff get an on-screen card when an event is ready; without a host it starts after 5 minutes (`Config.General.flow`).
+- **Finish grace:** races, hunts and red light give the others 60 seconds once **3rd place** has finished; when everyone has finished, results come 10 seconds after the last one.
 - **About page:** fixed product information with the transparent Krovix mark (not changed by Settings); the Oman flag is shown with the publisher, Krovix Team. **Appearance** is now called **Settings**.
 - **Wording:** "Live" now reads as active / in progress, not broadcast: Arabic "الجارية والمفتوحة" and "جارية" (was "مباشر"), English "Active & Open", "In progress", "Active Events".
 - **Typed commands are staff only.** `/event`, `/events`, `/eventjoin`, `/eventleave`, `/eventspectate` and `/eventarenafix` are registered only for players with a staff role; the console command `eventstudio` is restricted (console, or `command.eventstudio` ACE). Players use the events window key (F7) to see events and register, join, leave or spectate.
@@ -36,6 +36,9 @@ All notable changes to EVENT STUDIO. Uses [Semantic Versioning](https://semver.o
 - **CI:** GitHub Actions runs the syntax check, all tests and the release guard on every push.
 
 ### Fixed
+- **Pausing an event erased its timer:** after Resume the event never ran out of time. The remaining time is now kept.
+- **Rounds (Deathmatch, Protect the VIP) stopped after a pause** between rounds; the next round now starts on Resume.
+- **Freeze Challenge:** no finish zone or red-light objective any more, a few seconds to stand still before movement counts, only horizontal movement counts (landing does not), and every survivor shares 1st place.
 - **Race HUD lap and checkpoint counts never changed:** passing a checkpoint updated the server but not the HUD tiles (they only refreshed on state changes). The HUD now updates on every checkpoint and shows checkpoints passed in the current lap (0/6 → 6/6), and the lap number moves on each lap; the scoreboard shows the same count.
 - HUD stayed on screen after an event ended: entering ARCHIVED sent a final state snapshot after the 'left' message. The server no longer does, and the client ignores ARCHIVED snapshots.
 - No modes loaded on a real FXServer (every event failed with "unknown mode"): the manifest used `modes/*/server.lua`, and FXServer does not expand a wildcard in a folder name. Mode files are now listed explicitly; the test runner rejects such patterns like FXServer does.

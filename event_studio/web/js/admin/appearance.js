@@ -10,7 +10,7 @@ const LAYOUTS = ['compact', 'docked', 'full'];
 // Same list as server/core/ui.lua (F8 is the console and is never offered).
 const KEYS = [...[1, 2, 3, 4, 5, 6, 7, 9, 10, 11, 12].map((n) => 'F' + n), ...'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'.split(''),
     ...[0, 1, 2, 3, 4, 5, 6, 7, 8, 9].map((n) => 'NUMPAD' + n), 'HOME', 'END', 'INSERT', 'DELETE', 'PAGEUP', 'PAGEDOWN'];
-const KEY_ACTIONS = ['browser', 'scoreboard', 'reset'];
+const KEY_ACTIONS = ['browser', 'scoreboard', 'reset', 'hostStart'];
 
 const S = { loaded: false, loading: false, base: null, baseKeys: {}, draft: null, dirty: false };
 

@@ -12,6 +12,7 @@ Config.Commands = {
     leave = 'eventleave',        -- staff: leave the event or stop spectating
     spectate = 'eventspectate',  -- staff: /eventspectate [id]
     arenaFix = 'eventarenafix',  -- staff: /eventarenafix <arenaId> [apply] — check and fix an arena in game
+    hostStart = 'eventstart',    -- staff: /eventstart [id] — close registration, then start the countdown (same as the host key)
 
     -- Player keys. Change them live in Admin Center → Settings → Player controls if a key clashes with another
     -- resource on your server (the saved choice overrides these). Allowed: F1-F12 except F8, A-Z, 0-9, NUMPAD0-9,
@@ -20,5 +21,6 @@ Config.Commands = {
         browser = 'F7',          -- events window (always on)
         scoreboard = 'U',        -- hold to expand the scoreboard while in an event; false = off
         reset = 'F9',            -- races: back to the last checkpoint; false = off
+        hostStart = 'F10',       -- staff only: press to close registration, press again to start (10 s countdown)
     },
 }
